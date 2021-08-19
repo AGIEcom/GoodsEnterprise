@@ -1,0 +1,190 @@
+﻿@page "/all-brand"
+@model GoodsEnterprise.Web.Pages.BrandModel
+@addTagHelper *, LazZiya.TagHelpers
+
+@{
+    ViewData["Title"] = "Brand";
+    var Edit = "";
+    var List = "";
+    //var Create = "";
+
+    if (Convert.ToString(ViewData["PageType"]) == "Edit")
+    {
+        Edit = "display:block;";
+        List = "display:none;";
+        //Create = "display:none;";
+    }
+    //else if (Convert.ToString(ViewData["PageType"]) == "Create")
+    //{
+    //    Edit = "display:none;";
+    //    List = "display:none;";
+    //    Create = "display:block;";
+    //}
+    else
+    {
+        Edit = "display:none;";
+        List = "display:block;";
+        //Create = "display:none;";
+    }
+
+    var imagePath = "";
+    if (ViewData["ImagePath"] != null)
+    {
+        imagePath = Convert.ToString(ViewData["ImagePath"]);
+
+    }
+}
+
+<div class="alert alert-success" id="success-alert" style="display:none;">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    @ViewData["SuccessMsg"]
+</div>
+
+<div id="brandlist" style="@List">
+    <form asp-page="./Brand" method="get">
+            <div class="form-actions no-color">
+                <p>
+                    Find by Brand Name:
+                    <input type="text" name="SearchByBrandName" value="@Model.PaginationModel.CurrentFilter" />
+                    <input type="submit" value="Search" class="btn btn-primary" /> |
+                    <a asp-page="./Brand">Back to full List</a>
+                </p>
+            </div>
+        </form>
+    <a id="lnkCreateBrand" class="btn btn-primary">Create New Brand</a>
+    <table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                @*<th scope="col">Id</th>*@
+                <th scope="col">Brand Name</th>
+                <th scope="col">Brand Description</th>
+                <th scope="col">Status</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.lstbrand)
+            {
+                <tr>
+                    <th scope="row">@item.Name</th>
+                    @*<td>@item.Name</td>*@
+                    <td>@item.Description</td>
+                    <td>@item.IsActive</td>
+                    <td>
+                        <a asp-page-handler="Edit" asp-route-brandId="@item.Id" class="btn btn-primary">Edit</a> |
+                        <a asp-page-handler="DeleteBrand" asp-route-brandId="@item.Id" class="btn btn-primary btn-brand-delete">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <paging total-records="Model.PaginationModel.TotalRecords"
+            page-no="Model.PaginationModel.PageNumber"
+            page-size="Model.PaginationModel.PageSize"
+            query-string-key-page-no="tablePageNo"
+            query-string-key-page-size="tablePageSize"
+            page-size-dropdown-items="5-10-15-20"
+            max-displayed-pages="10">
+    </paging>
+</div>
+
+
+
+<div id="divCreateUpdateBrand" style="@Edit">
+    <form method="post" enctype="multipart/form-data" asp-page-handler="UploadFile">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+        {
+            <input asp-for="objBrand.Id" type="hidden" class="form-control" id="txtBrandID">
+            <input asp-for="objBrand.ImageUrl200" type="hidden" class="form-control" id="txtImageUrl200">
+            <input asp-for="objBrand.ImageUrl500" type="hidden" class="form-control" id="txtImageUrl500">
+            <input asp-for="objBrand.IsDelete" type="hidden" class="form-control" id="txtIsDelete">
+            <input asp-for="objBrand.Createdby" type="hidden" class="form-control" id="txtCreatedby">
+            <input asp-for="objBrand.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
+            <input asp-for="objBrand.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
+            <input asp-for="objBrand.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
+        }
+
+        <div class="mb-3">
+            <label for="txtProductName" class="form-label">Name</label>
+            <input asp-for="objBrand.Name" type="text" class="form-control" id="txtBrand">
+            <span asp-validation-for="objBrand.Name" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label for="txtBrand" class="form-label">Description</label>
+            <input asp-for="objBrand.Description" type="text" class="form-control" id="txtDescription">
+        </div>
+        <div class="mb-3">
+            <label for="txtCost" class="form-label">IsActive</label>
+            <input asp-for="objBrand.IsActive" type="checkbox" id="txtIsActive">
+        </div>
+        <div class="mb-3">
+            <input type="file" id="fileUpload" class="fileUpload" asp-for="Upload" accept="image/*" onchange="fileValidation()">
+            @if (imagePath != "")
+            {
+                <img src="@imagePath" id="imgPath" alt="Sample Image" width="250" height="250" />
+            }
+        </div>
+        <button type="submit" class="btn btn-primary brand-submit">Submit</button>
+        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+        {
+            <a asp-page-handler="Reset" asp-route-brandId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="btn btn-light">Reset</a>
+        }
+        else
+        {
+            <a asp-page-handler="Clear" class="btn btn-light">Clear</a>
+        }
+        <a asp-page="/Brand" class="btn btn-light">Close</a>
+    </form>
+</div>
+
+
+@*<div id="divCreateUpdateBrand" style="@Create">
+        <form method="POST" enctype="multipart/form-data" asp-page-handler="UploadFile">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+            {
+                <input asp-for="objBrand.Id" type="hidden" class="form-control" id="txtBrandID">
+            }
+
+            <div class="mb-3">
+                <label for="txtProductName" class="form-label">Name</label>
+                <input asp-for="objBrand.Name" type="text" class="form-control" id="txtBrand">
+                <span asp-validation-for="objBrand.Name" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label for="txtBrand" class="form-label">Description</label>
+                <input asp-for="objBrand.Description" type="text" class="form-control" id="txtDescription">
+            </div>
+            <div class="mb-3">
+                <label for="txtCost" class="form-label">IsActive</label>
+                <input asp-for="objBrand.IsActive" type="checkbox" id="txtIsActive" checked="objBrand.IsActive">
+            </div>
+            <div class="mb-3">
+                <input type="file" id="fileUpload" class="fileUpload" asp-for="Upload" accept="image/*" onchange="fileValidation()">
+                @if (imagePath != "")
+                {
+                    <img src="@imagePath" alt="Sample Image" width="300px" />
+                }
+            </div>
+            <button type="submit" class="btn btn-primary brand-submit">Submit</button>
+
+            <a asp-page-handler="Clear" class="btn btn-light">Clear</a>
+            <a asp-page="/Brand" class="btn btn-light">Close</a>
+        </form>
+    </div>*@
+
+
+@if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
+{
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#success-alert").show();
+            $("#success-alert").fadeTo(2000, 3000).slideUp(3000, function () {
+                $("#success-alert").slideUp(3000);
+            });
+        });
+
+    </script>
+}

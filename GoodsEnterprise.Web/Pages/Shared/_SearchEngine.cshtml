@@ -1,0 +1,13 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<form method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by Brand Name:
+            <input type="text" name="SearchByBrandName" value="@Model.PaginationModel.CurrentFilter" />
+            <input type="submit" value="Search" class="btn btn-primary" /> |
+            <a asp-page="./Brand">Back to full List</a>
+        </p>
+    </div>
+</form>
