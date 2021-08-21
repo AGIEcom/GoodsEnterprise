@@ -52,6 +52,7 @@ namespace GoodsEnterprise
                 options.PageViewLocationFormats.Add("/Pages/Partials/{0}" + RazorViewEngine.ViewExtension);
             });
             services.AddScoped<IBrandDA, BrandDA>();
+            services.AddScoped(typeof(IGeneralRepository<>), typeof(GeneralRepository<>));
             services.AddControllersWithViews();   
         }
 

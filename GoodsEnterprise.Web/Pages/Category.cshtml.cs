@@ -15,39 +15,39 @@ using System.Threading.Tasks;
 namespace GoodsEnterprise.Web.Pages
 {
     /// <summary>
-    /// BrandModel
+    /// CategoryModel
     /// </summary>
-    public class BrandModel : PageModel
+    public class CategoryModel : PageModel
     {
         /// <summary>
-        /// BrandModel
+        /// CategoryModel
         /// </summary>
-        /// <param name="brand"></param>
-        public BrandModel(IGeneralRepository<Brand> brand)
+        /// <param name="category"></param>
+        public CategoryModel(IGeneralRepository<Category> category)
         {
-            _brand = brand;
+            _category = category;
         }
 
-        private readonly IGeneralRepository<Brand> _brand;
+        private readonly IGeneralRepository<Category> _category;
     
         [BindProperty()]
-        public Brand objBrand { get; set; }
+        public Category objCategory { get; set; }
 
         [BindProperty]
         public IFormFile Upload { get; set; }
 
-        public List<Brand> lstbrand = new List<Brand>();
+        public List<Category> lstcategory = new List<Category>();
 
         public Pagination PaginationModel { get; set; } = new Pagination();
 
         /// <summary>
         /// OnGetAsync
         /// </summary>
-        /// <param name="SearchByBrandName"></param>
+        /// <param name="SearchByCategoryName"></param>
         /// <param name="tablePageNo"></param>
         /// <param name="tablePageSize"></param>
         /// <returns></returns>
-        public async Task OnGetAsync(string SearchByBrandName, int tablePageNo = 1, int tablePageSize = 5)
+        public async Task OnGetAsync(string SearchByCategoryName, int tablePageNo = 1, int tablePageSize = 5)
         {
             try
             {
@@ -61,17 +61,17 @@ namespace GoodsEnterprise.Web.Pages
 
                 PaginationModel.PageNumber = tablePageNo;
                 PaginationModel.PageSize = tablePageSize;
-                PaginationModel.CurrentFilter = SearchByBrandName;
-                PaginationModel.StoreProcedure = "[dbo].[USP_GetBrands]";
-                lstbrand = await _brand.GetAllWithPaginationAsync(PaginationModel);
-                if (lstbrand == null || lstbrand?.Count == 0)
+                PaginationModel.CurrentFilter = SearchByCategoryName;
+                PaginationModel.StoreProcedure = "[dbo].[USP_GetCategories]";
+                lstcategory = await _category.GetAllWithPaginationAsync(PaginationModel);
+                if (lstcategory == null || lstcategory?.Count == 0)
                 {
                     ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
                 }
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"Error in OnGetAsync(), Brand");
+                Log.Error(ex, $"Error in OnGetAsync(), Category");
                 throw;
             }
         }
@@ -81,23 +81,22 @@ namespace GoodsEnterprise.Web.Pages
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<IActionResult> OnGetEditAsync(int brandId)
+        public async Task<IActionResult> OnGetEditAsync(int categoryId)
         {
             try
             {
-                objBrand = await _brand.GetAsync(filter: x => x.Id == brandId && x.IsDelete != true); 
+                objCategory = await _category.GetAsync(filter: x => x.Id == categoryId && x.IsDelete != true); 
             
-                if (objBrand == null)
+                if (objCategory == null)
                 {
-                    return Redirect("~/all-brand");
+                    return Redirect("~/all-category");
                 }
                 ViewData["PageType"] = "Edit";
-                ViewData["PagePrimaryID"] = objBrand.Id;
-                ViewData["ImagePath"] = objBrand.ImageUrl500;
+                ViewData["PagePrimaryID"] = objCategory.Id;
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"Error in OnGetEditAsync(), Brand, BrandId: { brandId }");
+                Log.Error(ex, $"Error in OnGetEditAsync(), Category, CategoryId: { categoryId }");
                 throw;
             }
             return Page();
@@ -111,13 +110,13 @@ namespace GoodsEnterprise.Web.Pages
         {
             try
             {
-                objBrand = new Brand();
-                objBrand.IsActive = false;
+                objCategory = new Category();
+                objCategory.IsActive = false;
                 ViewData["PageType"] = "Edit";
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"Error in OnGetClear(), Brand");
+                Log.Error(ex, $"Error in OnGetClear(), Category");
                 throw;
             }
             return Page();
@@ -127,48 +126,47 @@ namespace GoodsEnterprise.Web.Pages
         /// OnResetClear
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> OnGetReset(int brandId)
+        public async Task<IActionResult> OnGetReset(int categoryId)
         {
             try
             {
-                objBrand = await _brand.GetAsync(filter: x => x.Id == brandId && x.IsDelete != true);
+                objCategory = await _category.GetAsync(filter: x => x.Id == categoryId && x.IsDelete != true);
                 ViewData["PageType"] = "Edit";
-                ViewData["PagePrimaryID"] = objBrand.Id;
-                ViewData["ImagePath"] = objBrand.ImageUrl500;
+                ViewData["PagePrimaryID"] = objCategory.Id;
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"Error in OnResetClear(), Brand, BrandId: { objBrand.Id }");
+                Log.Error(ex, $"Error in OnResetClear(), Category, CategoryId: { objCategory.Id }");
                 throw;
             }
             return Page();
         }
 
         /// <summary>
-        /// OnGetDeleteBrandAsync
+        /// OnGetDeleteCategoryAsync
         /// </summary>
-        /// <param name="brandId"></param>
+        /// <param name="categoryId"></param>
         /// <returns></returns>
-        public async Task<IActionResult> OnGetDeleteBrandAsync(int brandId)
+        public async Task<IActionResult> OnGetDeleteCategoryAsync(int categoryId)
         {
             try
             {
-                var brand = await _brand.GetAsync(filter: x => x.Id == brandId);
-                if (brand != null)
+                var category = await _category.GetAsync(filter: x => x.Id == categoryId);
+                if (category != null)
                 {
-                    await _brand.LogicalDeleteAsync(brand);
-                    ViewData["SuccessMsg"] = $"Brand: {brand.Name} {Constants.DeletedMessage}";
-                    HttpContext.Session.SetString(Constants.StatusMessage, $"Brand: {brand.Name} {Constants.DeletedMessage}");
+                    await _category.LogicalDeleteAsync(category);
+                    ViewData["SuccessMsg"] = $"Category: {category.Name} {Constants.DeletedMessage}";
+                    HttpContext.Session.SetString(Constants.StatusMessage, $"Category: {category.Name} {Constants.DeletedMessage}");
                 }
 
                 ViewData["PageType"] = "List";
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"Error in OnGetDeleteBrandAsync(), Brand, BrandId: { brandId }");
+                Log.Error(ex, $"Error in OnGetDeleteCategoryAsync(), Category, CategoryId: { categoryId }");
                 throw;
             }
-            return Redirect("~/all-brand");
+            return Redirect("~/all-category");
         }
 
         /// <summary>
@@ -179,47 +177,34 @@ namespace GoodsEnterprise.Web.Pages
         {
             try
             {
-                Brand existingBrand = await _brand.GetAsync(filter: x => x.Name == objBrand.Name && x.IsDelete != true);
-                if (existingBrand != null)
+                Category existingCategory = await _category.GetAsync(filter: x => x.Name == objCategory.Name && x.IsDelete != true);
+                if (existingCategory != null)
                 {
-                    if ((objBrand.Id == 0) || (objBrand.Id != 0 && objBrand.Id != existingBrand.Id))
+                    if ((objCategory.Id == 0) || (objCategory.Id != 0 && objCategory.Id != existingCategory.Id))
                     {
                         ViewData["PageType"] = "Edit";
-                        if (objBrand.Id != 0)
+                        if (objCategory.Id != 0)
                         {
-                            ViewData["PagePrimaryID"] = objBrand.Id;
-                            ViewData["ImagePath"] = objBrand.ImageUrl500;
+                            ViewData["PagePrimaryID"] = objCategory.Id;
                         }
-                        ViewData["SuccessMsg"] = $"Brand: {objBrand.Name} {Constants.AlreadyExistMessage}";
+                        ViewData["SuccessMsg"] = $"Category: {objCategory.Name} {Constants.AlreadyExistMessage}";
                         return Page();
                     }
                 }
 
-                Tuple<string, string> tupleImagePath = await Common.UploadImages(Upload, objBrand);
-
                 if (ModelState.IsValid)
                 {
-                    if (objBrand.Id == 0)
+                    if (objCategory.Id == 0)
                     {
-                        objBrand.ImageUrl500 = tupleImagePath.Item1;
-                        objBrand.ImageUrl200 = tupleImagePath.Item2;
-                        await _brand.InsertAsync(objBrand);
+                        await _category.InsertAsync(objCategory);
                         HttpContext.Session.SetString(Constants.StatusMessage, Constants.SaveMessage);
                     }
                     else
                     {
-                        if (!string.IsNullOrEmpty(tupleImagePath.Item1))
-                        {
-                            objBrand.ImageUrl500 = tupleImagePath.Item1;
-                        }
-                        if (!string.IsNullOrEmpty(tupleImagePath.Item2))
-                        {
-                            objBrand.ImageUrl200 = tupleImagePath.Item2;
-                        }
-                        await _brand.UpdateAsync(objBrand);
+                        await _category.UpdateAsync(objCategory);
                         HttpContext.Session.SetString(Constants.StatusMessage, Constants.UpdateMessage);
                     }
-                    return Redirect("all-brand");
+                    return Redirect("all-category");
                 }
                 else
                 {
@@ -229,7 +214,7 @@ namespace GoodsEnterprise.Web.Pages
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"Error in OnPostUploadFileAsync(), Brand, BrandId: { objBrand?.Id }");
+                Log.Error(ex, $"Error in OnPostUploadFileAsync(), Category, CategoryId: { objCategory?.Id }");
                 throw;
             }
         }

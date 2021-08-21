@@ -27,7 +27,6 @@ $(".btn-brand-delete").click(function () {
         return false;
 });
 
-
 function fileValidation() {
     var fileInput =
         document.getElementById('fileUpload');
@@ -52,7 +51,55 @@ function fileValidation() {
     }
 }
 
+//category master
+$("#lnkCreateCategory").click(function () {
+    $("#divCreateUpdateCategory").css("display", "block");
+    $("#categorylist").css("display", "none");
+});
 
+$(".category-submit").click(function () {
+    if ($("#txtCategory").val() == "") {
+        alert("The Name field is required.");
+        $("#txtCategory").focus();
+        return false;
+    }
+    else {
+        return true;
+    }
+});
+$(".btn-category-delete").click(function () {
+    var result = confirm("Want to delete?");
+    if (result) {
+        return true;
+    }
+    else
+        return false;
+});
+
+//sub category master
+$("#lnkCreateSubCategory").click(function () {
+    $("#divCreateUpdateSubCategory").css("display", "block");
+    $("#subCategorylist").css("display", "none");
+});
+
+$(".subCategory-submit").click(function () {
+    if ($("#txtSubCategory").val() == "") {
+        alert("The Name field is required.");
+        $("#txtSUBCategory").focus();
+        return false;
+    }
+    else {
+        return true;
+    }
+});
+$(".btn-subCategory-delete").click(function () {
+    var result = confirm("Want to delete?");
+    if (result) {
+        return true;
+    }
+    else
+        return false;
+});
 
 //document.getElementById('editButton').onClick = function () {
 //    deliveryServiceClick();

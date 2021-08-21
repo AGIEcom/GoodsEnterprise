@@ -12,11 +12,12 @@ namespace GoodsEnterprise.DataAccess.Interface
       
         }
         public string SortBy { get; set; }
-        public int PageNumber { get; set; } = 0;
+        public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 5;
         public int TotalRecords { get; set; } = 0;
         public string CurrentFilter { get; set; }
         public string CurrentSort { get; set; }
+        public string StoreProcedure { get; set; }
 
     }
 }
