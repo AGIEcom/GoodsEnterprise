@@ -1,0 +1,49 @@
+﻿@page
+@model GoodsEnterprise.Web.Pages.LoginModel
+@{
+    Layout = "";
+}
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link href="~/css/Login.css" rel="stylesheet" asp-append-version="true" />
+<div class="alert alert-success" id="success-alert" style="display:none;">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    @ViewData["SuccessMsg"]
+</div>
+
+<div class="login-reg-panel">
+    <form method="post" enctype="multipart/form-data" asp-page-handler="Login">
+        <div class="login-info-box">
+            <h2>Have an account?</h2>
+            <p>Lorem ipsum dolor sit amet</p>
+            <label id="label-register" for="log-reg-show">Login</label>
+            <input type="radio" name="active-log-panel" id="log-reg-show" checked="checked">
+        </div>
+        <div class="white-panel">
+            <div class="login-show">
+                <h2>LOGIN</h2>
+                <input type="text" placeholder="Email" asp-for="objAdmin.Email">
+                <input type="password" placeholder="Password" asp-for="objAdmin.Password">
+                <button type="submit" class="login-btn">Submit</button>
+                @*<input type="button" value="Login">*@
+                <a href="">Forgot password?</a>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="~/js/Login.js" asp-append-version="true"></script>
+
+@if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
+{
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#success-alert").show();
+            $("#success-alert").fadeTo(2000, 3000).slideUp(3000, function () {
+                $("#success-alert").slideUp(3000);
+            });
+        });
+
+    </script>
+}

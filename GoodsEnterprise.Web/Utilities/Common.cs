@@ -12,6 +12,7 @@ namespace GoodsEnterprise.Web.Utilities
     /// </summary>
     public static class Common
     {
+        
         /// <summary>
         /// UploadImages
         /// </summary>
@@ -48,5 +49,7 @@ namespace GoodsEnterprise.Web.Utilities
             }
             return Tuple.Create(saveImage500, saveImage200);
         }
+
+        
     }
 }

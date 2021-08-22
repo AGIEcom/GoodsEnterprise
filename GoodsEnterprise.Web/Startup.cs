@@ -37,13 +37,17 @@ namespace GoodsEnterprise
                 options.PageViewLocationFormats
                        .Add("/Pages/Shared/{0}.cshtml");
             });
-        
-        services.AddDbContext<GoodsEnterpriseDbContext>(options =>
+            services.AddMvc().AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AddPageRoute("/Login", "");
+            });
+
+            services.AddDbContext<GoodsEnterpriseDbContext>(options =>
             options.UseSqlServer(
             Configuration.GetConnectionString("GoodsEnterpriseDatabase")));
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });

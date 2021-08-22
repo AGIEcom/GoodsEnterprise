@@ -26,5 +26,8 @@ namespace GoodsEnterprise.Web.Utilities
         public const string DeletedMessage = "Deleted successfully";
         public const string AlreadyExistMessage = "Name already exist";
         public const string NoRecordsFoundMessage = "No Records Found";
+        public const string LoginSession = "LoginSession";
+        public const string UserNamePasswordincorrect = "Username and password incorrect";
+        public const string UserNameNotavailable = "Username not available";
     }
 }

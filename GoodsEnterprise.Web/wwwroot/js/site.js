@@ -1,6 +1,23 @@
 ﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
+//datatable initilaze
+$(document).ready(function () {
+    $('#tblbrandMaster').DataTable({
+        'columnDefs': [{
+            'targets': [3], /* column index */
+            'orderable': false, /* true or false */ 
+           
+        }],
+        "order": [], 
+        lengthMenu: [5, 10, 20, 50],
+
+
+    }); 
+});
+
+//end
+
 // Write your Javascript code.
 //brand master
 $("#lnkCreateBrand").click(function () {
@@ -100,29 +117,5 @@ $(".btn-subCategory-delete").click(function () {
     else
         return false;
 });
-
-//document.getElementById('editButton').onClick = function () {
-//    deliveryServiceClick();
-//};
-
-//function deliveryServiceClick() {
-//    var dialogDiv = $('#dialogDiv');
-
-//    if (dialogDiv.length == 0) {
-//        dialogDiv = $("<div id='dialogDiv'><div/>").appendTo('body');
-//        $('#divCreateUpdateBrand').appendTo(dialogDiv).removeClass('hide')
-//        dialogDiv.attr("Title", "Please select your chosen delivery service.");
-
-
-//    } else {
-//        dialogDiv.dialog("open");
-//    }
-//}
-
-//$(".brand-clear").click(function () {
-//    $("#txtBrand").val("");
-//    $("#txtDescription").val("");
-//    $("#txtIsActive").prop("checked", "false");
-//});
-
+ 
 //brand master end

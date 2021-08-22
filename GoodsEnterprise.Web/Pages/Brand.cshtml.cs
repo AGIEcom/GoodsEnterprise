@@ -4,6 +4,7 @@ using GoodsEnterprise.Web.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace GoodsEnterprise.Web.Pages
         }
 
         private readonly IGeneralRepository<Brand> _brand;
-    
+
         [BindProperty()]
         public Brand objBrand { get; set; }
 
@@ -37,6 +38,7 @@ namespace GoodsEnterprise.Web.Pages
         public IFormFile Upload { get; set; }
 
         public List<Brand> lstbrand = new List<Brand>();
+        public Admin objAdmin = new Admin();
 
         public Pagination PaginationModel { get; set; } = new Pagination();
 
@@ -47,27 +49,28 @@ namespace GoodsEnterprise.Web.Pages
         /// <param name="tablePageNo"></param>
         /// <param name="tablePageSize"></param>
         /// <returns></returns>
-        public async Task OnGetAsync(string SearchByBrandName, int tablePageNo = 1, int tablePageSize = 5)
+        public async Task OnGetAsync()
         {
             try
             {
-                ViewData["PageType"] = "List";
-                if (!string.IsNullOrEmpty(HttpContext.Session.GetString(Constants.StatusMessage)))
+                var _admin = HttpContext.Session.GetString(Constants.LoginSession);
+                objAdmin = JsonConvert.DeserializeObject<Admin>(_admin);
+                if (objAdmin != null)
                 {
-                    ViewData["SuccessMsg"] = HttpContext.Session.GetString(Constants.StatusMessage);
-                    HttpContext.Session.SetString(Constants.StatusMessage, "");
+                    ViewData["PageType"] = "List";
+                    if (!string.IsNullOrEmpty(HttpContext.Session.GetString(Constants.StatusMessage)))
+                    {
+                        ViewData["SuccessMsg"] = HttpContext.Session.GetString(Constants.StatusMessage);
+                        HttpContext.Session.SetString(Constants.StatusMessage, "");
+                    }
+                    ViewData["PagePrimaryID"] = 0;
+                    lstbrand = await _brand.GetAllAsync(filter: x => x.IsDelete != true, orderBy: mt => mt.OrderBy(m => m.ModifiedDate).ThenBy(m => m.CreatedDate));
+                    if (lstbrand == null || lstbrand?.Count == 0)
+                    {
+                        ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
+                    }
                 }
-                ViewData["PagePrimaryID"] = 0;
 
-                PaginationModel.PageNumber = tablePageNo;
-                PaginationModel.PageSize = tablePageSize;
-                PaginationModel.CurrentFilter = SearchByBrandName;
-                PaginationModel.StoreProcedure = "[dbo].[USP_GetBrands]";
-                lstbrand = await _brand.GetAllWithPaginationAsync(PaginationModel);
-                if (lstbrand == null || lstbrand?.Count == 0)
-                {
-                    ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
-                }
             }
             catch (Exception ex)
             {
@@ -85,8 +88,8 @@ namespace GoodsEnterprise.Web.Pages
         {
             try
             {
-                objBrand = await _brand.GetAsync(filter: x => x.Id == brandId && x.IsDelete != true); 
-            
+                objBrand = await _brand.GetAsync(filter: x => x.Id == brandId && x.IsDelete != true);
+
                 if (objBrand == null)
                 {
                     return Redirect("~/all-brand");
@@ -199,10 +202,15 @@ namespace GoodsEnterprise.Web.Pages
 
                 if (ModelState.IsValid)
                 {
+                    var _admin = HttpContext.Session.GetString(Constants.LoginSession);
+                    objAdmin = JsonConvert.DeserializeObject<Admin>(_admin);
+
                     if (objBrand.Id == 0)
                     {
                         objBrand.ImageUrl500 = tupleImagePath.Item1;
                         objBrand.ImageUrl200 = tupleImagePath.Item2;
+                        objBrand.Createdby = objAdmin.Id;
+                        objBrand.CreatedDate = DateTime.Now;
                         await _brand.InsertAsync(objBrand);
                         HttpContext.Session.SetString(Constants.StatusMessage, Constants.SaveMessage);
                     }
@@ -216,6 +224,8 @@ namespace GoodsEnterprise.Web.Pages
                         {
                             objBrand.ImageUrl200 = tupleImagePath.Item2;
                         }
+                        objBrand.Modifiedby = objAdmin.Id;
+                        objBrand.ModifiedDate = DateTime.Now;
                         await _brand.UpdateAsync(objBrand);
                         HttpContext.Session.SetString(Constants.StatusMessage, Constants.UpdateMessage);
                     }
