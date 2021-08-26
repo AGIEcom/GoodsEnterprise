@@ -10,7 +10,6 @@ namespace GoodsEnterprise.Model.Models
         public Category()
         {
             Products = new HashSet<Product>();
-            SubCategories = new HashSet<SubCategory>();
         }
 
         public int Id { get; set; }
@@ -21,9 +20,10 @@ namespace GoodsEnterprise.Model.Models
         public DateTime? ModifiedDate { get; set; }
         public int? Modifiedby { get; set; }
         public bool IsActive { get; set; }
-        public bool? IsDelete { get; set; }
+        public bool IsDelete { get; set; }
+        public int BrandId { get; set; }
 
+        public virtual Brand Brand { get; set; }
         public virtual ICollection<Product> Products { get; set; }
-        public virtual ICollection<SubCategory> SubCategories { get; set; }
     }
 }

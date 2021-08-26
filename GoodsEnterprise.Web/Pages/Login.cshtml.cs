@@ -29,8 +29,12 @@ namespace GoodsEnterprise.Web.Pages
         [BindProperty()]
         public Admin objAdmin { get; set; }
 
-        public void OnGet()
+        /// <summary>
+        /// OnGetLogOut
+        /// </summary>
+        public void OnGetLogOut()
         {
+            HttpContext.Session.Clear();
         }
         /// <summary>
         /// Login Post method
@@ -40,13 +44,13 @@ namespace GoodsEnterprise.Web.Pages
         {
             try
             {
-                Admin existingBrand = await _admin.GetAsync(filter: x => x.Email == objAdmin.Email && x.IsDelete != true);
-                if (existingBrand != null)
+                Admin existingAdmin = await _admin.GetAsync(filter: x => x.Email == objAdmin.Email && x.IsDelete != true);
+                
+                if (existingAdmin != null)
                 {
-                    if(existingBrand.Password== objAdmin.Password)
+                    if(existingAdmin.Password== objAdmin.Password)
                     {
-                        HttpContext.Session.SetString(Constants.LoginSession, JsonConvert.SerializeObject(existingBrand));
-                        //return RedirectPreserveMethod("~/all-brand"); 
+                        HttpContext.Session.SetString(Constants.LoginSession, JsonConvert.SerializeObject(existingAdmin));
                         return RedirectToPage("Brand");
                     }
                     else
@@ -56,8 +60,8 @@ namespace GoodsEnterprise.Web.Pages
                     }
                 }
                 else
-                {
-                    ViewData["SuccessMsg"] = Constants.UserNameNotavailable;
+                {                    
+                     ViewData["SuccessMsg"] = Constants.UserNameNotavailable;
                     return Page();
                 }
 

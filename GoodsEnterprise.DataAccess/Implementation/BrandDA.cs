@@ -16,10 +16,10 @@ namespace GoodsEnterprise.DataAccess.Implementation
 
     public class BrandDA:IBrandDA
     {
-        private readonly GoodsEnterpriseDbContext _goodsEnterpriseDbContext;
-        public BrandDA(GoodsEnterpriseDbContext goodsEnterpriseDbContext)
+        private readonly GoodsEnterpriseContext _goodsEnterpriseContext;
+        public BrandDA(GoodsEnterpriseContext goodsEnterpriseContext)
         {
-            _goodsEnterpriseDbContext = goodsEnterpriseDbContext;
+            _goodsEnterpriseContext = goodsEnterpriseContext;
         }
     }
 }

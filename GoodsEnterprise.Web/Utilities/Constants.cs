@@ -21,6 +21,7 @@ namespace GoodsEnterprise.Web.Utilities
         public const string UploadPath = @"\wwwroot\UploadedImages\";
         public const string SavePath = @"\UploadedImages\";
         public const string Brand = "Brand";
+        public const string Product = "Product";
         public const string SaveMessage = "Saved successfully";
         public const string UpdateMessage = "Updated successfully";
         public const string DeletedMessage = "Deleted successfully";

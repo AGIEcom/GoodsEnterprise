@@ -5,12 +5,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -25,10 +22,10 @@ namespace GoodsEnterprise.Web.Pages
         /// SubCategoryModel
         /// </summary>
         /// <param name="subCategory"></param>
-        public SubCategoryModel(IGeneralRepository<SubCategory> subCategory, IGeneralRepository<Category> Category)
+        public SubCategoryModel(IGeneralRepository<SubCategory> subCategory, IGeneralRepository<Category> category)
         {
             _subCategory = subCategory;
-            _category = Category;
+            _category = category;
         }
 
         private readonly IGeneralRepository<SubCategory> _subCategory;
@@ -37,23 +34,17 @@ namespace GoodsEnterprise.Web.Pages
         [BindProperty()]
         public SubCategory objSubCategory { get; set; }
 
-        [BindProperty]
-        public IFormFile Upload { get; set; }
-
         public List<SubCategory> lstsubCategory = new List<SubCategory>();
 
         public Pagination PaginationModel { get; set; } = new Pagination();
-        [BindProperty]
-        public SelectList Categories { get; set; }
+
+        public SelectList Categories { get; set; } = new SelectList("");
 
         /// <summary>
         /// OnGetAsync
         /// </summary>
-        /// <param name="SearchBySubCategoryName"></param>
-        /// <param name="tablePageNo"></param>
-        /// <param name="tablePageSize"></param>
         /// <returns></returns>
-        public async Task OnGetAsync(string SearchBySubCategoryName, int tablePageNo = 1, int tablePageSize = 5)
+        public async Task OnGetAsync()
         {
             try
             {
@@ -65,12 +56,8 @@ namespace GoodsEnterprise.Web.Pages
                 }
                 ViewData["PagePrimaryID"] = 0;
 
-                PaginationModel.PageNumber = tablePageNo;
-                PaginationModel.PageSize = tablePageSize;
-                PaginationModel.CurrentFilter = SearchBySubCategoryName;
-                PaginationModel.StoreProcedure = "[dbo].[USP_GetSubCategories]";
-                lstsubCategory = await _subCategory.GetAllWithPaginationAsync(PaginationModel);
-               
+                lstsubCategory = await _subCategory.GetAllAsync(filter: x => x.IsDelete != true, orderBy: mt => mt.OrderByDescending(m => m.ModifiedDate == null ? m.CreatedDate : m.ModifiedDate));
+
                 if (lstsubCategory == null || lstsubCategory?.Count == 0)
                 {
                     ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
@@ -91,8 +78,7 @@ namespace GoodsEnterprise.Web.Pages
         {
             try
             {
-                Categories = new SelectList(await _category.GetAllAsync(filter: x => x.IsDelete != true),
-                           "Id", "Name", null);
+                await LoadCategory();
                 ViewData["PageType"] = "Edit";
             }
             catch (Exception ex)
@@ -112,14 +98,13 @@ namespace GoodsEnterprise.Web.Pages
         {
             try
             {
-                objSubCategory = await _subCategory.GetAsync(filter: x => x.Id == subCategoryId && x.IsDelete != true); 
-            
+                objSubCategory = await _subCategory.GetAsync(filter: x => x.Id == subCategoryId && x.IsDelete != true);
+
                 if (objSubCategory == null)
                 {
                     return Redirect("~/all-subCategory");
                 }
-                Categories = new SelectList(await _subCategory.GetAllAsync(filter: x => x.IsDelete != true),
-                           "CategoryId", "Name", null);
+                await LoadCategory();
                 ViewData["PageType"] = "Edit";
                 ViewData["PagePrimaryID"] = objSubCategory.Id;
             }
@@ -159,6 +144,7 @@ namespace GoodsEnterprise.Web.Pages
         {
             try
             {
+                await LoadCategory();
                 objSubCategory = await _subCategory.GetAsync(filter: x => x.Id == subCategoryId && x.IsDelete != true);
                 ViewData["PageType"] = "Edit";
                 ViewData["PagePrimaryID"] = objSubCategory.Id;
@@ -199,10 +185,10 @@ namespace GoodsEnterprise.Web.Pages
         }
 
         /// <summary>
-        /// OnPostUploadFileAsync
+        /// OnPostSubmitAsync
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> OnPostUploadFileAsync()
+        public async Task<IActionResult> OnPostSubmitAsync()
         {
             try
             {
@@ -238,14 +224,24 @@ namespace GoodsEnterprise.Web.Pages
                 else
                 {
                     ViewData["PageType"] = "Edit";
+                    await LoadCategory();
                     return Page();
                 }
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"Error in OnPostUploadFileAsync(), SubCategory, SubCategoryId: { objSubCategory?.Id }");
+                Log.Error(ex, $"Error in OnPostSubmitAsync(), SubCategory, SubCategoryId: { objSubCategory?.Id }");
                 throw;
             }
+        }
+        /// <summary>
+        /// LoadCategory
+        /// </summary>
+        /// <returns></returns>
+        private async Task LoadCategory()
+        {
+            Categories = new SelectList(await _category.GetAllAsync(filter: x => x.IsDelete != true),
+                           "Id", "Name", null);
         }
     }
 }

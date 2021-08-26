@@ -34,8 +34,9 @@ namespace GoodsEnterprise.Model.Models
         public int? Createdby { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public int? Modifiedby { get; set; }
-        public bool? IsActive { get; set; }
-        public bool? IsDelete { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsDelete { get; set; }
+        public DateTime? PasswordExpiryDate { get; set; }
 
         public virtual Role Role { get; set; }
         public virtual ICollection<CustomerBasket> CustomerBaskets { get; set; }

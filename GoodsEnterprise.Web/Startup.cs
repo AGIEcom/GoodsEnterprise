@@ -2,8 +2,10 @@ using GoodsEnterprise.DataAccess.Implementation;
 using GoodsEnterprise.DataAccess.Interface;
 using GoodsEnterprise.Model.Models;
 using GoodsEnterprise.Web.Middleware;
+using GoodsEnterprise.Web.Utilities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -41,8 +43,7 @@ namespace GoodsEnterprise
             {
                 options.Conventions.AddPageRoute("/Login", "");
             });
-
-            services.AddDbContext<GoodsEnterpriseDbContext>(options =>
+            services.AddDbContext<GoodsEnterpriseContext>(options =>
             options.UseSqlServer(
             Configuration.GetConnectionString("GoodsEnterpriseDatabase")));
             services.AddSession(options =>
@@ -57,6 +58,7 @@ namespace GoodsEnterprise
             });
             services.AddScoped<IBrandDA, BrandDA>();
             services.AddScoped(typeof(IGeneralRepository<>), typeof(GeneralRepository<>));
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddControllersWithViews();   
         }
 
@@ -84,6 +86,21 @@ namespace GoodsEnterprise
 
             app.UseAuthorization();
             app.UseSession();
+            app.Use(async (context, next) =>
+            {
+                string CurrentUserIDSession = context.Session.GetString(Constants.LoginSession);
+                if (context.Request.Path.Value != null && context.Request.Path.Value != "/" && !context.Request.Path.Value.Contains("/Login"))
+                {
+                    if (string.IsNullOrEmpty(CurrentUserIDSession))
+                    {
+                        var path = $"/Login";
+                        context.Response.Redirect(path);
+                        return;
+                    }
+
+                }
+                await next();
+            });
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();

@@ -1,0 +1,182 @@
+﻿@page "/all-product"
+@model GoodsEnterprise.Web.Pages.ProductModel
+
+@{
+    ViewData["Title"] = "Product";
+    var Edit = "";
+    var List = "";
+
+    if (Convert.ToString(ViewData["PageType"]) == "Edit")
+    {
+        Edit = "display:block;";
+        List = "display:none;";
+    }
+    else
+    {
+        Edit = "display:none;";
+        List = "display:block;";
+    }
+    var imagePath = "";
+    if (ViewData["ImagePath"] != null)
+    {
+        imagePath = Convert.ToString(ViewData["ImagePath"]);
+
+    }
+}
+
+<div class="alert alert-success" id="success-alert" style="display:none;">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    @ViewData["SuccessMsg"]
+</div>
+
+<div id="productlist" style="@List">
+    <a asp-page-handler="Create" id="lnkCreateProduct" class="btn btn-primary margin-bottom-15">Create New Product</a>
+    <table class="display" style="width:100%" id="tblProductMaster">
+        <thead>
+            <tr>
+                <th scope="col">Product Code</th>
+                <th scope="col">OuterEan</th>
+                <th scope="col">Status</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.lstproduct)
+            {
+            <tr>
+                <th scope="row">@item.Code</th>
+                <td>@item.OuterEan </td>
+                <td>@item.IsActive</td>
+                <td>
+                    <a asp-page-handler="Edit" asp-route-productId="@item.Id" class="btn btn-primary">Edit</a> |
+                    <a asp-page-handler="DeleteProduct" asp-route-productId="@item.Id" class="btn btn-primary btn-product-delete">Delete</a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div id="divCreateUpdateProduct" style="@Edit">
+    <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
+        <H3>Product</H3>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+        {
+            <input asp-for="objProduct.Id" type="hidden" class="form-control" id="txtProductID">
+            <input asp-for="objProduct.IsDelete" type="hidden" class="form-control" id="txtIsDelete">
+            <input asp-for="objProduct.Createdby" type="hidden" class="form-control" id="txtCreatedby">
+            <input asp-for="objProduct.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
+            <input asp-for="objProduct.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
+            <input asp-for="objProduct.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
+        }
+        <div class="mb-3">
+            <label for="lblProductCode" class="form-label">Code</label>
+            <input asp-for="objProduct.Code" type="text" class="form-control" id="txtProduct">
+        </div>
+        <div class="mb-3">
+            <label for="lblBrand" class="form-label">Brand</label>
+            <select asp-for="objProduct.BrandId" class="form-control"
+                    asp-items="Model.selectBrands" id="selectProductBrand">
+                <option value="0">-- Select Brand --</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="lblCategory" class="form-label">Category</label>
+            <select asp-for="objProduct.CategoryId" class="form-control"
+                    asp-items="Model.selectCategories" id="selectProductCategory">
+                <option value="0">-- Select Category --</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="lblSubCategory" class="form-label">SubCategory</label>
+            <select asp-for="objProduct.SubCategoryId" class="form-control"
+                    asp-items="Model.selectSubCategories" id="selectProductSubCategory">
+                <option value="0">-- Select SubCategory --</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="lblInnerEan" class="form-label">InnerEan</label>
+            <input asp-for="objProduct.InnerEan" type="text" class="form-control" id="txtInnerEan">
+        </div>
+        <div class="mb-3">
+            <label for="lblOuterEan" class="form-label">OuterEan</label>
+            <input asp-for="objProduct.OuterEan" type="text" class="form-control" id="txtOuterEan">
+        </div>
+        <div class="mb-3">
+            <label for="lblPackSize" class="form-label">PackSize</label>
+            <input asp-for="objProduct.PackSize" type="text" class="form-control" id="txtPackSize">
+        </div>
+        <div class="mb-3">
+            <label for="lblUpc" class="form-label">Upc</label>
+            <input asp-for="objProduct.Upc" type="text" class="form-control" id="txtUpc" onkeypress="return isNumber(event)">
+        </div>
+        <div class="mb-3">
+            <label for="lblLayerQuantity" class="form-label">LayerQuantity</label>
+            <input asp-for="objProduct.LayerQuantity" type="text" class="form-control" id="txtLayerQuantity" onkeypress="return isNumber(event)">
+        </div>
+        <div class="mb-3">
+            <label for="lblPalletQuantity" class="form-label">PalletQuantity</label>
+            <input asp-for="objProduct.PalletQuantity" type="text" class="form-control" id="txtPalletQuantity" onkeypress="return isNumber(event)">
+        </div>
+        <div class="mb-3">
+            <label for="lblHeight" class="form-label">Height</label>
+            <input asp-for="objProduct.Height" type="text" class="form-control" id="txtHeight" onkeypress="return isDecimal(event)">
+        </div>
+        <div class="mb-3">
+            <label for="lblHeight" class="form-label">Height</label>
+            <input asp-for="objProduct.Height" type="text" class="form-control" id="txtHeight" onkeypress="return isDecimal(event)">
+        </div>
+        <div class="mb-3">
+            <label for="lblWeight" class="form-label">Weight</label>
+            <input asp-for="objProduct.Weight" type="text" class="form-control" id="txtWeight" onkeypress="return isDecimal(event)">
+        </div>
+        <div class="mb-3">
+            <label for="lblWidth" class="form-label">Width</label>
+            <input asp-for="objProduct.Width" type="text" class="form-control" id="txtWidth" onkeypress="return isDecimal(event)">
+        </div>
+        <div class="mb-3">
+            <label for="lblNetWeight" class="form-label">NetWeight</label>
+            <input asp-for="objProduct.NetWeight" type="text" class="form-control" id="txtNetWeight" onkeypress="return isDecimal(event)">
+        </div>
+        <div class="mb-3">
+            <label for="lblDepth" class="form-label">Depth</label>
+            <input asp-for="objProduct.Depth" type="text" class="form-control" id="txtDepth" onkeypress="return isDecimal(event)">
+        </div>
+        <div class="mb-3">
+            <label for="lblIsActive" class="form-label">IsActive</label>
+            <input asp-for="objProduct.IsActive" type="checkbox" id="txtIsActive">
+        </div>
+        <div class="mb-3">
+            <input type="file" id="fileUpload" class="fileUpload" asp-for="Upload" accept="image/*" onchange="fileValidation()">
+            @if (imagePath != "")
+            {
+                <img src="@imagePath" id="imgPath" alt="Sample Image" width="250" height="250" />
+            }
+        </div>
+        <button type="submit" class="btn btn-primary product-submit">Submit</button>
+        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+        {
+            <a asp-page-handler="Reset" asp-route-productId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="btn btn-light">Reset</a>
+        }
+        else
+        {
+            <a asp-page-handler="Clear" class="btn btn-light">Clear</a>
+        }
+        <a asp-page="/Product" class="btn btn-light">Close</a>
+    </form>
+</div>
+
+@if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
+{
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#success-alert").show();
+            $("#success-alert").fadeTo(2000, 3000).slideUp(3000, function () {
+                $("#success-alert").slideUp(3000);
+            });
+        });
+
+    </script>
+}

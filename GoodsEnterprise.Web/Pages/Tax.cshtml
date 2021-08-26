@@ -1,0 +1,110 @@
+﻿@page "/all-tax"
+@model GoodsEnterprise.Web.Pages.TaxModel
+
+@{
+    ViewData["Title"] = "Tax";
+    var Edit = "";
+    var List = "";
+
+    if (Convert.ToString(ViewData["PageType"]) == "Edit")
+    {
+        Edit = "display:block;";
+        List = "display:none;";
+    }
+    else
+    {
+        Edit = "display:none;";
+        List = "display:block;";
+    }
+}
+
+<div class="alert alert-success" id="success-alert" style="display:none;">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    @ViewData["SuccessMsg"]
+</div>
+
+<div id="taxlist" style="@List">
+    <a id="lnkCreateTax" class="btn btn-primary margin-bottom-15">Create New Tax</a>
+    <table class="display" style="width:100%" id="tblTaxMaster">
+        <thead>
+            <tr>
+                <th scope="col">Tax Name</th>
+                <th scope="col">Tax Description</th>
+                <th scope="col">Status</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.lsttax)
+            {
+                <tr>
+                    <th scope="row">@item.Name</th>
+                    <td>@item.Description</td>
+                    <td>@item.IsActive</td>
+                    <td>
+                        <a asp-page-handler="Edit" asp-route-taxId="@item.Id" class="btn btn-primary">Edit</a> |
+                        <a asp-page-handler="DeleteTax" asp-route-taxId="@item.Id" class="btn btn-primary btn-tax-delete">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+<div id="divCreateUpdateTax" style="@Edit">
+    <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
+        <H3>Tax</H3>
+        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+        {
+            <input asp-for="objTax.Id" type="hidden" class="form-control" id="txtTaxID">
+            <input asp-for="objTax.IsDelete" type="hidden" class="form-control" id="txtIsDelete">
+            <input asp-for="objTax.Createdby" type="hidden" class="form-control" id="txtCreatedby">
+            <input asp-for="objTax.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
+            <input asp-for="objTax.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
+            <input asp-for="objTax.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
+        }
+
+        <div class="mb-3">
+            <label for="lblTax" class="form-label">Name</label>
+            <input asp-for="objTax.Name" type="text" class="form-control" id="txtTax">
+        </div>
+        <div class="mb-3">
+            <label for="lblDescription" class="form-label">Description</label>
+            <input asp-for="objTax.Description" type="text" class="form-control" id="txtDescription">
+        </div>
+        <div class="mb-3">
+            <label for="lblValue" class="form-label">Value</label>
+            <input asp-for="objTax.Value" type="text" class="form-control" id="txtValue" onkeypress="return isDecimal(event)">
+        </div>
+        <div class="mb-3">
+            <label for="lblIsActive" class="form-label">IsActive</label>
+            <input asp-for="objTax.IsActive" type="checkbox" id="txtIsActive">
+        </div>
+        <button type="submit" class="btn btn-primary tax-submit">Submit</button>
+        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+        {
+            <a asp-page-handler="Reset" asp-route-taxId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="btn btn-light">Reset</a>
+        }
+        else
+        {
+            <a asp-page-handler="Clear" class="btn btn-light">Clear</a>
+        }
+        <a asp-page="/Tax" class="btn btn-light">Close</a>
+    </form>
+</div>
+
+@if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
+{
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#success-alert").show();
+            $("#success-alert").fadeTo(2000, 3000).slideUp(3000, function () {
+                $("#success-alert").slideUp(3000);
+            });
+        });
+
+    </script>
+}

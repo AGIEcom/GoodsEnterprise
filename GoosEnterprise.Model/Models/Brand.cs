@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 #nullable disable
 
@@ -10,6 +9,7 @@ namespace GoodsEnterprise.Model.Models
     {
         public Brand()
         {
+            Categories = new HashSet<Category>();
             Products = new HashSet<Product>();
         }
 
@@ -23,7 +23,9 @@ namespace GoodsEnterprise.Model.Models
         public DateTime? ModifiedDate { get; set; }
         public int? Modifiedby { get; set; }
         public bool IsActive { get; set; }
-        public bool? IsDelete { get; set; }
+        public bool IsDelete { get; set; }
+
+        public virtual ICollection<Category> Categories { get; set; }
         public virtual ICollection<Product> Products { get; set; }
     }
 }

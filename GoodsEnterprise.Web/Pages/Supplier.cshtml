@@ -1,0 +1,110 @@
+﻿@page "/all-supplier"
+@model GoodsEnterprise.Web.Pages.SupplierModel
+
+@{
+    ViewData["Title"] = "Supplier";
+    var Edit = "";
+    var List = "";
+
+    if (Convert.ToString(ViewData["PageType"]) == "Edit")
+    {
+        Edit = "display:block;";
+        List = "display:none;";
+    }
+    else
+    {
+        Edit = "display:none;";
+        List = "display:block;";
+    }
+}
+
+<div class="alert alert-success" id="success-alert" style="display:none;">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    @ViewData["SuccessMsg"]
+</div>
+
+<div id="supplierlist" style="@List">
+    <a id="lnkCreateSupplier" class="btn btn-primary margin-bottom-15">Create New Supplier</a>
+    <table class="display" style="width:100%" id="tblSupplierMaster">
+        <thead>
+            <tr>
+                <th scope="col">Supplier Name</th>
+                <th scope="col">Supplier Description</th>
+                <th scope="col">Status</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.lstsupplier)
+            {
+                <tr>
+                    <th scope="row">@item.Name</th>
+                    <td>@item.Description</td>
+                    <td>@item.IsActive</td>
+                    <td>
+                        <a asp-page-handler="Edit" asp-route-supplierId="@item.Id" class="btn btn-primary">Edit</a> |
+                        <a asp-page-handler="DeleteSupplier" asp-route-supplierId="@item.Id" class="btn btn-primary btn-supplier-delete">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+<div id="divCreateUpdateSupplier" style="@Edit">
+    <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
+        <H3>Supplier</H3>
+        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+        {
+            <input asp-for="objSupplier.Id" type="hidden" class="form-control" id="txtSupplierID">
+            <input asp-for="objSupplier.IsDelete" type="hidden" class="form-control" id="txtIsDelete">
+            <input asp-for="objSupplier.Createdby" type="hidden" class="form-control" id="txtCreatedby">
+            <input asp-for="objSupplier.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
+            <input asp-for="objSupplier.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
+            <input asp-for="objSupplier.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
+        }
+
+        <div class="mb-3">
+            <label for="lblSupplier" class="form-label">Name</label>
+            <input asp-for="objSupplier.Name" type="text" class="form-control" id="txtSupplier">
+        </div>
+        <div class="mb-3">
+            <label for="lblDescription" class="form-label">Description</label>
+            <input asp-for="objSupplier.Description" type="text" class="form-control" id="txtDescription">
+        </div>
+        <div class="mb-3">
+            <label for="lblEmail" class="form-label">Email</label>
+            <input asp-for="objSupplier.Email" type="text" class="form-control" id="txtEmail" onblur="validateEmail(this);">
+        </div>
+        <div class="mb-3">
+            <label for="lblIsActive" class="form-label">IsActive</label>
+            <input asp-for="objSupplier.IsActive" type="checkbox" id="txtIsActive">
+        </div>
+        <button type="submit" class="btn btn-primary supplier-submit">Submit</button>
+        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+        {
+            <a asp-page-handler="Reset" asp-route-supplierId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="btn btn-light">Reset</a>
+        }
+        else
+        {
+            <a asp-page-handler="Clear" class="btn btn-light">Clear</a>
+        }
+        <a asp-page="/Supplier" class="btn btn-light">Close</a>
+    </form>
+</div>
+
+@if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
+{
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#success-alert").show();
+            $("#success-alert").fadeTo(2000, 3000).slideUp(3000, function () {
+                $("#success-alert").slideUp(3000);
+            });
+        });
+
+    </script>
+}

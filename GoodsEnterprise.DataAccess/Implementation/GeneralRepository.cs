@@ -18,7 +18,7 @@ namespace GoodsEnterprise.DataAccess.Implementation
     /// <typeparam name="T"></typeparam>
     public class GeneralRepository<T> : IGeneralRepository<T> where T : class
     {
-        private readonly GoodsEnterpriseDbContext context;
+        private readonly GoodsEnterpriseContext context;
         private DbSet<T> entities;
         string errorMessage = string.Empty;
 
@@ -26,7 +26,7 @@ namespace GoodsEnterprise.DataAccess.Implementation
         /// GeneralRepository
         /// </summary>
         /// <param name="context"></param>
-        public GeneralRepository(GoodsEnterpriseDbContext context)
+        public GeneralRepository(GoodsEnterpriseContext context)
         {
             this.context = context;
             entities = context.Set<T>();

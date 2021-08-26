@@ -53,24 +53,19 @@ namespace GoodsEnterprise.Web.Pages
         {
             try
             {
-                var _admin = HttpContext.Session.GetString(Constants.LoginSession);
-                objAdmin = JsonConvert.DeserializeObject<Admin>(_admin);
-                if (objAdmin != null)
+                ViewData["PageType"] = "List";
+                if (!string.IsNullOrEmpty(HttpContext.Session.GetString(Constants.StatusMessage)))
                 {
-                    ViewData["PageType"] = "List";
-                    if (!string.IsNullOrEmpty(HttpContext.Session.GetString(Constants.StatusMessage)))
-                    {
-                        ViewData["SuccessMsg"] = HttpContext.Session.GetString(Constants.StatusMessage);
-                        HttpContext.Session.SetString(Constants.StatusMessage, "");
-                    }
-                    ViewData["PagePrimaryID"] = 0;
-                    lstbrand = await _brand.GetAllAsync(filter: x => x.IsDelete != true, orderBy: mt => mt.OrderBy(m => m.ModifiedDate).ThenBy(m => m.CreatedDate));
-                    if (lstbrand == null || lstbrand?.Count == 0)
-                    {
-                        ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
-                    }
+                    ViewData["SuccessMsg"] = HttpContext.Session.GetString(Constants.StatusMessage);
+                    HttpContext.Session.SetString(Constants.StatusMessage, "");
                 }
+                ViewData["PagePrimaryID"] = 0;
 
+                lstbrand = await _brand.GetAllAsync(filter: x => x.IsDelete != true, orderBy: mt => mt.OrderByDescending(m => m.ModifiedDate == null ? m.CreatedDate : m.ModifiedDate));
+                if (lstbrand == null || lstbrand?.Count == 0)
+                {
+                    ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
+                }
             }
             catch (Exception ex)
             {
@@ -175,10 +170,10 @@ namespace GoodsEnterprise.Web.Pages
         }
 
         /// <summary>
-        /// OnPostUploadFileAsync
+        /// OnPostSubmitAsync
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> OnPostUploadFileAsync()
+        public async Task<IActionResult> OnPostSubmitAsync()
         {
             try
             {
@@ -198,7 +193,7 @@ namespace GoodsEnterprise.Web.Pages
                     }
                 }
 
-                Tuple<string, string> tupleImagePath = await Common.UploadImages(Upload, objBrand);
+                Tuple<string, string> tupleImagePath = await Common.UploadImages(Upload, objBrand.Name, Constants.Brand);
 
                 if (ModelState.IsValid)
                 {
@@ -210,7 +205,6 @@ namespace GoodsEnterprise.Web.Pages
                         objBrand.ImageUrl500 = tupleImagePath.Item1;
                         objBrand.ImageUrl200 = tupleImagePath.Item2;
                         objBrand.Createdby = objAdmin.Id;
-                        objBrand.CreatedDate = DateTime.Now;
                         await _brand.InsertAsync(objBrand);
                         HttpContext.Session.SetString(Constants.StatusMessage, Constants.SaveMessage);
                     }
@@ -225,7 +219,6 @@ namespace GoodsEnterprise.Web.Pages
                             objBrand.ImageUrl200 = tupleImagePath.Item2;
                         }
                         objBrand.Modifiedby = objAdmin.Id;
-                        objBrand.ModifiedDate = DateTime.Now;
                         await _brand.UpdateAsync(objBrand);
                         HttpContext.Session.SetString(Constants.StatusMessage, Constants.UpdateMessage);
                     }
@@ -239,7 +232,7 @@ namespace GoodsEnterprise.Web.Pages
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"Error in OnPostUploadFileAsync(), Brand, BrandId: { objBrand?.Id }");
+                Log.Error(ex, $"Error in OnPostSubmitAsync(), Brand, BrandId: { objBrand?.Id }");
                 throw;
             }
         }

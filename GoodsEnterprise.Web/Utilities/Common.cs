@@ -12,22 +12,29 @@ namespace GoodsEnterprise.Web.Utilities
     /// </summary>
     public static class Common
     {
-        
         /// <summary>
         /// UploadImages
         /// </summary>
         /// <param name="Upload"></param>
+        /// <param name="name"></param>
+        /// <param name="folderName"></param>
+        /// <param name="isImage500"></param>
+        /// <param name="isImage200"></param>
         /// <returns></returns>
-        public static async Task<Tuple<string, string>> UploadImages(IFormFile Upload, Brand objBrand)
+        public static async Task<Tuple<string, string>> UploadImages(IFormFile Upload, string name, string folderName, bool isImage500 = true, bool isImage200 = true)
         {
             string saveImage500 = string.Empty;
             string saveImage200 = string.Empty;
 
             if (Upload != null)
             {
-                string uploadImageFolderPath = Path.Combine($"{Directory.GetCurrentDirectory()}{Constants.UploadPath + Constants.Brand}");
-                string fileName500 = $"{objBrand.Name}_500_{DateTime.Now.ToString("yyyyMMddHHmmss")}{Path.GetExtension(Upload.FileName)}";
-                string fileName200 = $"{objBrand.Name}_200_{DateTime.Now.ToString("yyyyMMddHHmmss")}{Path.GetExtension(Upload.FileName)}";
+                string uploadImageFolderPath = Path.Combine($"{Directory.GetCurrentDirectory()}{Constants.UploadPath + folderName}");
+                if (!Directory.Exists(uploadImageFolderPath))
+                {
+                    Directory.CreateDirectory(uploadImageFolderPath);
+                }
+                string fileName500 = $"{name}_500_{DateTime.Now.ToString("yyyyMMddHHmmss")}{Path.GetExtension(Upload.FileName)}";
+                string fileName200 = $"{name}_200_{DateTime.Now.ToString("yyyyMMddHHmmss")}{Path.GetExtension(Upload.FileName)}";
                 string uploadImage500 = Path.Combine(uploadImageFolderPath, fileName500);
                 string uploadImage200 = Path.Combine(uploadImageFolderPath, fileName200);
 
@@ -36,20 +43,23 @@ namespace GoodsEnterprise.Web.Utilities
                     await Upload.CopyToAsync(memoryStream);
                     using (var image = Image.FromStream(memoryStream))
                     {
-                        Image imageResized500 = image.ResizeImage(250, 250);
-                        imageResized500.Save(uploadImage500);
-                        saveImage500 = Path.Combine(Constants.SavePath, Constants.Brand, fileName500);
+                        if (isImage500)
+                        {
+                            Image imageResized500 = image.ResizeImage(250, 250);
+                            imageResized500.Save(uploadImage500);
+                            saveImage500 = Path.Combine(Constants.SavePath, folderName, fileName500);
+                        }
                         //image.CompressImage(500, uploadImage);
-
-                        Image imageResized200 = image.ResizeToThumbnail();
-                        imageResized200.Save(uploadImage200);
-                        saveImage200 = Path.Combine(Constants.SavePath, Constants.Brand, fileName200);
+                        if (isImage200)
+                        {
+                            Image imageResized200 = image.ResizeToThumbnail();
+                            imageResized200.Save(uploadImage200);
+                            saveImage200 = Path.Combine(Constants.SavePath, folderName, fileName200);
+                        }
                     }
                 }
             }
             return Tuple.Create(saveImage500, saveImage200);
-        }
-
-        
+        }        
     }
 }

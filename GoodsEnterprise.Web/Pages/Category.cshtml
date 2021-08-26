@@ -1,30 +1,20 @@
 ﻿@page "/all-category"
 @model GoodsEnterprise.Web.Pages.CategoryModel 
-@addTagHelper *, LazZiya.TagHelpers
 
 @{
     ViewData["Title"] = "Category";
     var Edit = "";
     var List = "";
-    //var Create = "";
 
     if (Convert.ToString(ViewData["PageType"]) == "Edit")
     {
         Edit = "display:block;";
         List = "display:none;";
-        //Create = "display:none;";
     }
-    //else if (Convert.ToString(ViewData["PageType"]) == "Create")
-    //{
-    //    Edit = "display:none;";
-    //    List = "display:none;";
-    //    Create = "display:block;";
-    //}
     else
     {
         Edit = "display:none;";
         List = "display:block;";
-        //Create = "display:none;";
     }
 }
 
@@ -34,21 +24,10 @@
 </div>
 
 <div id="categorylist" style="@List">
-    <form asp-page="./Category" method="get">
-            <div class="form-actions no-color">
-                <p>
-                    Find by Category Name:
-                    <input type="text" name="SearchByCategoryName" value="@Model.PaginationModel.CurrentFilter" />
-                    <input type="submit" value="Search" class="btn btn-primary" /> |
-                    <a asp-page="./Category">Back to full List</a>
-                </p>
-            </div>
-        </form>
-    <a id="lnkCreateCategory" class="btn btn-primary">Create New Category</a>
-    <table class="table table-dark table-striped">
+    <a asp-page-handler="Create" id="lnkCreateCategory" class="btn btn-primary margin-bottom-15">Create New Category</a>
+    <table class="display" style="width:100%" id="tblCategoryMaster">
         <thead>
             <tr>
-                @*<th scope="col">Id</th>*@
                 <th scope="col">Category Name</th>
                 <th scope="col">Category Description</th>
                 <th scope="col">Status</th>
@@ -60,7 +39,6 @@
             {
                 <tr>
                     <th scope="row">@item.Name</th>
-                    @*<td>@item.Name</td>*@
                     <td>@item.Description</td>
                     <td>@item.IsActive</td>
                     <td>
@@ -71,24 +49,16 @@
             }
         </tbody>
     </table>
-    <paging total-records="Model.PaginationModel.TotalRecords"
-            page-no="Model.PaginationModel.PageNumber"
-            page-size="Model.PaginationModel.PageSize"
-            query-string-key-page-no="tablePageNo"
-            query-string-key-page-size="tablePageSize"
-            page-size-dropdown-items="5-10-15-20"
-            max-displayed-pages="10">
-    </paging>
 </div>
 
 
 
 <div id="divCreateUpdateCategory" style="@Edit">
-    <form method="post" enctype="multipart/form-data" asp-page-handler="UploadFile">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
+        <H3>Category</H3>
         @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
         {
-            <input asp-for="objCategory.Id" type="hidden" class="form-control" id="txtCategoryID">           
+            <input asp-for="objCategory.Id" type="hidden" class="form-control" id="txtCategoryID">
             <input asp-for="objCategory.IsDelete" type="hidden" class="form-control" id="txtIsDelete">
             <input asp-for="objCategory.Createdby" type="hidden" class="form-control" id="txtCreatedby">
             <input asp-for="objCategory.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
@@ -97,19 +67,24 @@
         }
 
         <div class="mb-3">
-            <label for="txtProductName" class="form-label">Name</label>
+            <label for="lblCategory" class="form-label">Name</label>
             <input asp-for="objCategory.Name" type="text" class="form-control" id="txtCategory">
-            <span asp-validation-for="objCategory.Name" class="text-danger"></span>
         </div>
         <div class="mb-3">
-            <label for="txtCategory" class="form-label">Description</label>
+            <label for="lblDescription" class="form-label">Description</label>
             <input asp-for="objCategory.Description" type="text" class="form-control" id="txtDescription">
         </div>
         <div class="mb-3">
-            <label for="txtCost" class="form-label">IsActive</label>
+            <label for="lblIsActive" class="form-label">IsActive</label>
             <input asp-for="objCategory.IsActive" type="checkbox" id="txtIsActive">
         </div>
-       
+        <div class="mb-3">
+            <label for="lblBrand" class="form-label">Brand</label>
+            <select asp-for="objCategory.BrandId" class="form-control"
+                    asp-items="Model.Brands" id="selectBrand">
+                <option value="0">-- Select Brand --</option>
+            </select>
+        </div>
         <button type="submit" class="btn btn-primary category-submit">Submit</button>
         @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
         {
@@ -122,43 +97,6 @@
         <a asp-page="/Category" class="btn btn-light">Close</a>
     </form>
 </div>
-
-
-@*<div id="divCreateUpdateCategory" style="@Create">
-        <form method="POST" enctype="multipart/form-data" asp-page-handler="UploadFile">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
-            {
-                <input asp-for="objCategory.Id" type="hidden" class="form-control" id="txtCategoryID">
-            }
-
-            <div class="mb-3">
-                <label for="txtProductName" class="form-label">Name</label>
-                <input asp-for="objCategory.Name" type="text" class="form-control" id="txtCategory">
-                <span asp-validation-for="objCategory.Name" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label for="txtCategory" class="form-label">Description</label>
-                <input asp-for="objCategory.Description" type="text" class="form-control" id="txtDescription">
-            </div>
-            <div class="mb-3">
-                <label for="txtCost" class="form-label">IsActive</label>
-                <input asp-for="objCategory.IsActive" type="checkbox" id="txtIsActive" checked="objCategory.IsActive">
-            </div>
-            <div class="mb-3">
-                <input type="file" id="fileUpload" class="fileUpload" asp-for="Upload" accept="image/*" onchange="fileValidation()">
-                @if (imagePath != "")
-                {
-                    <img src="@imagePath" alt="Sample Image" width="300px" />
-                }
-            </div>
-            <button type="submit" class="btn btn-primary category-submit">Submit</button>
-
-            <a asp-page-handler="Clear" class="btn btn-light">Clear</a>
-            <a asp-page="/Category" class="btn btn-light">Close</a>
-        </form>
-    </div>*@
-
 
 @if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
 {

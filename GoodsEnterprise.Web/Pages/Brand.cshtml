@@ -1,30 +1,20 @@
 ﻿@page "/all-brand"
 @model GoodsEnterprise.Web.Pages.BrandModel
-@addTagHelper *, LazZiya.TagHelpers
 
 @{
     ViewData["Title"] = "Brand";
     var Edit = "";
     var List = "";
-    //var Create = "";
 
     if (Convert.ToString(ViewData["PageType"]) == "Edit")
     {
         Edit = "display:block;";
         List = "display:none;";
-        //Create = "display:none;";
     }
-    //else if (Convert.ToString(ViewData["PageType"]) == "Create")
-    //{
-    //    Edit = "display:none;";
-    //    List = "display:none;";
-    //    Create = "display:block;";
-    //}
     else
     {
         Edit = "display:none;";
         List = "display:block;";
-        //Create = "display:none;";
     }
 
     var imagePath = "";
@@ -41,42 +31,38 @@
 </div>
 
 <div id="brandlist" style="@List">
-   
+
     <a id="lnkCreateBrand" class="btn btn-primary margin-bottom-15">Create New Brand</a>
-    <table  class="display" style="width:100%" id="tblbrandMaster">
+    <table class="display" style="width:100%" id="tblBrandMaster">
         <thead>
             <tr>
-                @*<th scope="col">Id</th>*@
                 <th scope="col">Brand Name</th>
                 <th scope="col">Brand Description</th>
                 <th scope="col">Status</th>
-                <th scope="col">Action</th> 
+                <th scope="col">Action</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model.lstbrand)
             {
-            <tr>
-                <th scope="row">@item.Name</th>
-                @*<td>@item.Name</td>*@
-                <td>@item.Description</td>
-                <td>@item.IsActive</td>
-                <td>
-                    <a asp-page-handler="Edit" asp-route-brandId="@item.Id" class="btn btn-primary">Edit</a> |
-                    <a asp-page-handler="DeleteBrand" asp-route-brandId="@item.Id" class="btn btn-primary btn-brand-delete">Delete</a>
-                </td> 
-            </tr>
+                <tr>
+                    <th scope="row">@item.Name</th>
+                    <td>@item.Description</td>
+                    <td>@item.IsActive</td>
+                    <td>
+                        <a asp-page-handler="Edit" asp-route-brandId="@item.Id" class="btn btn-primary">Edit</a> |
+                        <a asp-page-handler="DeleteBrand" asp-route-brandId="@item.Id" class="btn btn-primary btn-brand-delete">Delete</a>
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
-   
+
 </div>
 
-
-
 <div id="divCreateUpdateBrand" style="@Edit">
-    <form method="post" enctype="multipart/form-data" asp-page-handler="UploadFile">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <form id="brandform" method="post" enctype="multipart/form-data" asp-page-handler="Submit">
+        <H3>Brand</H3>
         @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
         {
             <input asp-for="objBrand.Id" type="hidden" class="form-control" id="txtBrandID">
@@ -90,16 +76,15 @@
         }
 
         <div class="mb-3">
-            <label for="txtProductName" class="form-label">Name</label>
+            <label for="lblBrand" class="form-label">Name</label>
             <input asp-for="objBrand.Name" type="text" class="form-control" id="txtBrand">
-            <span asp-validation-for="objBrand.Name" class="text-danger"></span>
         </div>
         <div class="mb-3">
-            <label for="txtBrand" class="form-label">Description</label>
+            <label for="lblDescription" class="form-label">Description</label>
             <input asp-for="objBrand.Description" type="text" class="form-control" id="txtDescription">
         </div>
         <div class="mb-3">
-            <label for="txtCost" class="form-label">IsActive</label>
+            <label for="lblIsActive" class="form-label">IsActive</label>
             <input asp-for="objBrand.IsActive" type="checkbox" id="txtIsActive">
         </div>
         <div class="mb-3">
@@ -121,7 +106,7 @@
         <a asp-page="/Brand" class="btn btn-light">Close</a>
     </form>
 </div>
- 
+
 @if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
 {
     <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
@@ -132,6 +117,5 @@
                 $("#success-alert").slideUp(3000);
             });
         });
-
     </script>
 }

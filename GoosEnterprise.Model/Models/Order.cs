@@ -24,8 +24,8 @@ namespace GoodsEnterprise.Model.Models
         public int? Createdby { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public int? Modifiedby { get; set; }
-        public bool? IsActive { get; set; }
-        public bool? IsDelete { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsDelete { get; set; }
 
         public virtual Customer Customer { get; set; }
         public virtual Status Status { get; set; }

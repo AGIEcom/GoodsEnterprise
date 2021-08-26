@@ -1,4 +1,14 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
+@using Newtonsoft.Json
+
+@{
+
+    byte[] value = null;
+    _httpContextAccessor.HttpContext.Session.TryGetValue("LoginSession", out value);
+    GoodsEnterprise.Model.Models.Admin admin = JsonConvert.DeserializeObject<GoodsEnterprise.Model.Models.Admin>(System.Text.Encoding.UTF8.GetString(value));
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -6,8 +16,11 @@
     <title>@ViewData["Title"] - GoodsEnterprise</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href=" https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css" />
-   
-    <link rel="stylesheet" href="~/css/site.css" />
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="~/css/site.css" />   
 </head>
 <body>
     <header>
@@ -19,42 +32,30 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Brand">Brand</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Category">Category</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/SubCategory">SubCategory</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/SubCategory">SubCategory</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/SubCategory">SubCategory</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/SubCategory">SubCategory</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/SubCategory">SubCategory</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/SubCategory">SubCategory</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/SubCategory">SubCategory</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/SubCategory">SubCategory</a>
-                        </li>
-                        
+                    <ul class="navbar-nav flex-grow-1 mainmenu" id="mainmenu">
                     </ul>
                 </div>
+                |<ul>
+                    <li class="dropdown">
+                        <a href="#" data-toggle="dropdown">
+                            <i class="glyphicon glyphicon-user"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <label class="form-label">@admin.FirstName</label>
+                            <hr style="border-top: 1px solid blue">
+                            <li><i class="icon-arrow-up"></i><a asp-page-handler="LogOut" asp-page="/Login">Logout</a></li>
+                            <li>
+                                <i class="icon-arrow-down"></i><a href="#">Update Profile</a>
+                            </li>
+
+                        </ul>
+                    </li>
+                </ul>
             </div>
         </nav>
+
+        <input type="hidden" id="hdnRoleId" value=@admin.RoleId>
+
     </header>
     <div class="container">
         <main role="main" class="pb-3">
@@ -76,3 +77,7 @@
     @RenderSection("Scripts", required: false)
 </body>
 </html>
+
+
+
+
