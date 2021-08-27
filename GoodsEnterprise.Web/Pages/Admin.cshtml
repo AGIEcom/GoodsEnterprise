@@ -1,0 +1,132 @@
+﻿@page "/all-admin"
+@model GoodsEnterprise.Web.Pages.AdminModel
+
+@{
+    ViewData["Title"] = "Admin";
+    var Edit = "";
+    var List = "";
+
+    if (Convert.ToString(ViewData["PageType"]) == "Edit")
+    {
+        Edit = "display:block;";
+        List = "display:none;";
+    }
+    else
+    {
+        Edit = "display:none;";
+        List = "display:block;";
+    }
+}
+
+<div class="alert alert-success" id="success-alert" style="display:none;">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    @ViewData["SuccessMsg"]
+</div>
+
+<div id="adminlist" style="@List">
+    <a asp-page-handler="Create" id="lnkCreateAdmin" class="btn btn-primary margin-bottom-15">Create New Admin</a>
+    <table class="display" style="width:100%" id="tblAdminMaster">
+        <thead>
+            <tr>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Status</th>
+                <th scope="col">Subcribed</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.lstadmin)
+            {
+            <tr>
+                <th scope="row">@item.FirstName </th>
+                <td>@item.LastName  </td>
+                <td>@item.Email  </td>
+                <td>@item.IsEmailSubscribed </td>
+                <td>@item.IsActive</td>
+                <td>
+                    <a asp-page-handler="Edit" asp-route-adminId="@item.Id" class="btn btn-primary">Edit</a> |
+                    <a asp-page-handler="DeleteAdmin" asp-route-adminId="@item.Id" class="btn btn-primary btn-admin-delete">Delete</a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+<div id="divCreateUpdateAdmin" style="@Edit">
+    <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
+        <H3>Admin</H3>
+        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+        {
+            <input asp-for="objAdmin.Id" type="hidden" class="form-control" id="txtAdminID">
+            <input asp-for="objAdmin.IsDelete" type="hidden" class="form-control" id="txtIsDelete">
+            <input asp-for="objAdmin.Createdby" type="hidden" class="form-control" id="txtCreatedby">
+            <input asp-for="objAdmin.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
+            <input asp-for="objAdmin.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
+            <input asp-for="objAdmin.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
+        }
+        <div class="mb-3">
+            <label for="lblAdminFirstName" class="form-label">FirstName</label>
+            <input asp-for="objAdmin.FirstName" type="text" class="form-control" id="txtAdminFirstName">
+        </div>
+        <div class="mb-3">
+            <label for="lblAdminLastName" class="form-label">LastName</label>
+            <input asp-for="objAdmin.LastName" type="text" class="form-control" id="txtAdminLastName">
+        </div>
+        <div class="mb-3">
+            <label for="lblAdminEmail" class="form-label">Email</label>
+            <input asp-for="objAdmin.Email" type="text" class="form-control" id="txtAdminEmail">
+        </div>
+        <div class="mb-3">
+            <label for="lblAdminPassword" class="form-label">Password</label>
+            <input asp-for="objAdmin.Password" type="text" class="form-control" id="txtAdminPassword">
+        </div>
+        <div class="mb-3">
+            <label for="lblDescription" class="form-label">Description</label>
+            <input asp-for="objAdmin.Description" type="text" class="form-control" id="txtDescription">
+        </div>
+        <div class="mb-3">
+            <label for="lblIsActive" class="form-label">IsActive</label>
+            <input asp-for="objAdmin.IsActive" type="checkbox" id="txtIsActive">
+        </div>
+        <div class="mb-3">
+            <label for="lblIsEmailSubscribed" class="form-label">IsEmailSubscribed</label>
+            <input asp-for="objAdmin.IsEmailSubscribed" type="checkbox" id="txtIsEmailSubscribed">
+        </div>
+        <div class="mb-3">
+            <label for="lblBrand" class="form-label">Role</label>
+            <select asp-for="objAdmin.RoleId" class="form-control"
+                    asp-items="Model.Roles" id="selectRole">
+                <option value="0">-- Select Role --</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary admin-submit">Submit</button>
+        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+        {
+            <a asp-page-handler="Reset" asp-route-adminId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="btn btn-light">Reset</a>
+        }
+        else
+        {
+            <a asp-page-handler="Clear" class="btn btn-light">Clear</a>
+        }
+        <a asp-page="/Admin" class="btn btn-light">Close</a>
+    </form>
+</div>
+
+@if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
+{
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#success-alert").show();
+            $("#success-alert").fadeTo(2000, 3000).slideUp(3000, function () {
+                $("#success-alert").slideUp(3000);
+            });
+        });
+
+    </script>
+}

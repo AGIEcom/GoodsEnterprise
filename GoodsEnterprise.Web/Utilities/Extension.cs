@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace GoodsEnterprise.Web.Utilities
 {
@@ -60,6 +61,44 @@ namespace GoodsEnterprise.Web.Utilities
             encoderParameters.Param[0] = new EncoderParameter(Encoder.Quality, quality);
 
             img.Save(OutputFilePath, jpegEncoder, encoderParameters);
+        }
+
+        /// <summary>
+        /// Encrypt
+        /// </summary>
+        /// <param name="toEncrypt"></param>
+        /// <param name="security"></param>
+        /// <returns></returns>
+        public static string Encrypt(this string toEncrypt, string security)
+        {
+            byte[] inputArray = System.Text.UTF8Encoding.UTF8.GetBytes(toEncrypt);
+            TripleDESCryptoServiceProvider tdspMyPro = new TripleDESCryptoServiceProvider();
+            tdspMyPro.Key = System.Text.UTF8Encoding.UTF8.GetBytes(security);
+            tdspMyPro.Mode = CipherMode.ECB;
+            tdspMyPro.Padding = PaddingMode.PKCS7;
+            ICryptoTransform ictMyPro = tdspMyPro.CreateEncryptor();
+            byte[] resultArray = ictMyPro.TransformFinalBlock(inputArray, 0, inputArray.Length);
+            tdspMyPro.Clear();
+            return Convert.ToBase64String(resultArray, 0, resultArray.Length);
+        }
+
+        /// <summary>
+        /// Decrypt
+        /// </summary>
+        /// <param name="toDecrypt"></param>
+        /// <param name="security"></param>
+        /// <returns></returns>
+        public static string Decrypt(this string toDecrypt, string security)
+        {
+            byte[] inputArray = Convert.FromBase64String(toDecrypt);
+            TripleDESCryptoServiceProvider tdspMyPro = new TripleDESCryptoServiceProvider();
+            tdspMyPro.Key = System.Text.UTF8Encoding.UTF8.GetBytes(security);
+            tdspMyPro.Mode = CipherMode.ECB;
+            tdspMyPro.Padding = PaddingMode.PKCS7;
+            ICryptoTransform ictMyPro = tdspMyPro.CreateDecryptor();
+            byte[] resultArray = ictMyPro.TransformFinalBlock(inputArray, 0, inputArray.Length);
+            tdspMyPro.Clear();
+            return System.Text.UTF8Encoding.UTF8.GetString(resultArray);
         }
     }
 }

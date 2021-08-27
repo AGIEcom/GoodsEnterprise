@@ -48,7 +48,7 @@ namespace GoodsEnterprise.Web.Pages
                 
                 if (existingAdmin != null)
                 {
-                    if(existingAdmin.Password== objAdmin.Password)
+                    if (existingAdmin.Password.Decrypt(Constants.EncryptDecryptSecurity) == objAdmin.Password)
                     {
                         HttpContext.Session.SetString(Constants.LoginSession, JsonConvert.SerializeObject(existingAdmin));
                         return RedirectToPage("Brand");

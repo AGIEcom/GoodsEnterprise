@@ -77,7 +77,32 @@ $(document).ready(function () {
         lengthMenu: [5, 10, 20, 50]
     });
 });
+
+$(document).ready(function () {
+    $('#tblAdminMaster').DataTable({
+        'columnDefs': [
+            { 'targets': [5], 'orderable': false },
+            { 'searchable': false, "targets": [1, 2, 3, 4, 5] }
+        ],
+        "order": [],
+        lengthMenu: [5, 10, 20, 50]
+    });
+});
+
+$(document).ready(function () {
+    $('#tblCustomerMaster').DataTable({
+        'columnDefs': [
+            { 'targets': [5], 'orderable': false },
+            { 'searchable': false, "targets": [1, 2, 3, 4, 5] }
+        ],
+        "order": [],
+        lengthMenu: [5, 10, 20, 50]
+    });
+});
 //end
+
+var emailReg = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+var passwordReg = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{5,25}$/;
 
 // Write your Javascript code.
 //brand master
@@ -321,9 +346,7 @@ $(".supplier-submit").click(function () {
         error = true;
     }
 
-    var reg = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
-
-    if (!email.match(reg)) {
+    if (!email.match(emailReg)) {
         $('#txtEmail').after('<span class="text-danger">Enter valid Email address</span>');
         error = true;
     }
@@ -379,6 +402,124 @@ $(".btn-role-delete").click(function () {
 });
 //End
 
+//admin master
+$("#lnkCreateAdmin").click(function () {
+    $("#divCreateUpdateAdmin").css("display", "block");
+    $("#adminlist").css("display", "none");
+    $("#txtIsActive").prop('checked', true);
+    $("#txtIsEmailSubscribed").prop('checked', true);
+});
+
+$(".admin-submit").click(function () {
+    var firstName = $('#txtAdminFirstName').val();
+    var LastName = $('#txtAdminLastName').val();
+    var password = $('#txtAdminPassword').val();
+    var email = $('#txtAdminEmail').val();
+    var roleId = $('#selectRole').val();
+    var error = false;
+    $(".text-danger").remove();
+
+    if (!email.match(emailReg)) {
+        $('#txtAdminEmail').after('<span class="text-danger">Enter valid Email address</span>');
+        error = true;
+    }
+
+    if (firstName.length < 1) {
+        $('#txtAdminFirstName').after('<span class="text-danger">First name is required</span>');
+        error = true;
+    }
+
+    if (LastName.length < 1) {
+        $('#txtAdminLastName').after('<span class="text-danger">Last name is required</span>');
+        error = true;
+    }
+
+    if (roleId < 1) {
+        $('#selectRole').after('<span class="text-danger">Role is required</span>');
+        error = true;
+    }
+
+    if (!password.match(passwordReg)) {
+        $('#txtAdminPassword').after('<span class="text-danger">Password must contain </br> 5 to 25 characters which contain at least one numeric digit and a special character</span>');
+        error = true;
+    }
+
+    if (error == true) {
+        return false;
+    }
+    else {
+        return true;
+    }
+});
+$(".btn-admin-delete").click(function () {
+    var result = confirm("Want to delete?");
+    if (result) {
+        return true;
+    }
+    else
+        return false;
+});
+//End
+
+//customer master
+$("#lnkCreateCustomer").click(function () {
+    $("#divCreateUpdateCustomer").css("display", "block");
+    $("#customerlist").css("display", "none");
+    $("#txtIsActive").prop('checked', true);
+    $("#txtEmailSubscribed").prop('checked', true);
+});
+
+$(".customer-submit").click(function () {
+    var firstName = $('#txtCustomerFirstName').val();
+    var LastName = $('#txtCustomerLastName').val();
+    var password = $('#txtCustomerPassword').val();
+    var email = $('#txtCustomerEmail').val();
+    var roleId = $('#selectRole').val();
+    var error = false;
+    $(".text-danger").remove();
+
+    if (!email.match(emailReg)) {
+        $('#txtCustomerEmail').after('<span class="text-danger">Enter valid Email address</span>');
+        error = true;
+    }
+
+    if (firstName.length < 1) {
+        $('#txtCustomerFirstName').after('<span class="text-danger">First name is required</span>');
+        error = true;
+    }
+
+    if (LastName.length < 1) {
+        $('#txtCustomerLastName').after('<span class="text-danger">Last name is required</span>');
+        error = true;
+    }
+
+    if (roleId < 1) {
+        $('#selectRole').after('<span class="text-danger">Role is required</span>');
+        error = true;
+    }
+
+    if (!password.match(passwordReg)) {
+        $('#txtCustomerPassword').after('<span class="text-danger">Password must contain </br> 5 to 25 characters which contain at least one numeric digit and a special character</span>');
+        error = true;
+    }
+
+    if (error == true) {
+        return false;
+    }
+    else {
+        return true;
+    }
+});
+$(".btn-customer-delete").click(function () {
+    var result = confirm("Want to delete?");
+    if (result) {
+        return true;
+    }
+    else
+        return false;
+});
+//End
+
 //Logout
 $('ul li.dropdown').hover(function () {
     $(this).find('.dropdown-menu').stop(true, true).delay(100).fadeIn(200);
@@ -419,6 +560,14 @@ var menuJSON = {
             {
                 name: 'Role',
                 link: '/all-role'
+            },
+            {
+                name: 'Admin',
+                link: '/all-admin'
+            },
+            {
+                name: 'Customer',
+                link: '/all-customer'
             }]
         },
         {

@@ -30,5 +30,6 @@ namespace GoodsEnterprise.Web.Utilities
         public const string LoginSession = "LoginSession";
         public const string UserNamePasswordincorrect = "Username and password incorrect";
         public const string UserNameNotavailable = "Username not available";
+        public const string EncryptDecryptSecurity = "mysmallkey123456";
     }
 }

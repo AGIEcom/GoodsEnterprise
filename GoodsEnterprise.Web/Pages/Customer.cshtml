@@ -1,0 +1,165 @@
+﻿@page "/all-customer"
+@model GoodsEnterprise.Web.Pages.CustomerModel
+
+@{
+    ViewData["Title"] = "Customer";
+    var Edit = "";
+    var List = "";
+
+    if (Convert.ToString(ViewData["PageType"]) == "Edit")
+    {
+        Edit = "display:block;";
+        List = "display:none;";
+    }
+    else
+    {
+        Edit = "display:none;";
+        List = "display:block;";
+    }
+}
+
+<div class="alert alert-success" id="success-alert" style="display:none;">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    @ViewData["SuccessMsg"]
+</div>
+
+<div id="customerlist" style="@List">
+    <a asp-page-handler="Create" id="lnkCreateCustomer" class="btn btn-primary margin-bottom-15">Create New Customer</a>
+    <table class="display" style="width:100%" id="tblCustomerMaster">
+        <thead>
+            <tr>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Status</th>
+                <th scope="col">Subcribed</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.lstcustomer)
+            {
+                <tr>
+                    <th scope="row">@item.FirstName </th>
+                    <td>@item.LastName  </td>
+                    <td>@item.Email  </td>
+                    <td>@item.EmailSubscribed</td>
+                    <td>@item.IsActive</td>
+                    <td>
+                        <a asp-page-handler="Edit" asp-route-customerId="@item.Id" class="btn btn-primary">Edit</a> |
+                        <a asp-page-handler="DeleteCustomer" asp-route-customerId="@item.Id" class="btn btn-primary btn-customer-delete">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<div id="divCreateUpdateCustomer" style="@Edit">
+    <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
+        <H3>Customer</H3>
+        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+        {
+            <input asp-for="objCustomer.Id" type="hidden" class="form-control" id="txtCustomerID">
+            <input asp-for="objCustomer.IsDelete" type="hidden" class="form-control" id="txtIsDelete">
+            <input asp-for="objCustomer.Createdby" type="hidden" class="form-control" id="txtCreatedby">
+            <input asp-for="objCustomer.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
+            <input asp-for="objCustomer.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
+            <input asp-for="objCustomer.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
+        }
+
+        <div class="mb-3">
+            <label for="lblCustomerFirstName" class="form-label">FirstName</label>
+            <input asp-for="objCustomer.FirstName" type="text" class="form-control" id="txtCustomerFirstName">
+        </div>
+        <div class="mb-3">
+            <label for="lblCustomerLastName" class="form-label">LastName</label>
+            <input asp-for="objCustomer.LastName" type="text" class="form-control" id="txtCustomerLastName">
+        </div>
+        <div class="mb-3">
+            <label for="lblAddress1" class="form-label">Address1</label>
+            <input asp-for="objCustomer.Address1" type="text" class="form-control" id="txtAddress1">
+        </div>
+        <div class="mb-3">
+            <label for="lblAddress2" class="form-label">Address2</label>
+            <input asp-for="objCustomer.Address2" type="text" class="form-control" id="txtAddress2">
+        </div>
+        <div class="mb-3">
+            <label for="lblCity" class="form-label">City</label>
+            <input asp-for="objCustomer.City" type="text" class="form-control" id="txtCity">
+        </div>
+        <div class="mb-3">
+            <label for="lblCounty" class="form-label">County</label>
+            <input asp-for="objCustomer.County" type="text" class="form-control" id="txtCounty">
+        </div>
+        <div class="mb-3">
+            <label for="lblPostalCode" class="form-label">PostalCode</label>
+            <input asp-for="objCustomer.PostalCode" type="text" class="form-control" id="txtPostalCode">
+        </div>
+        <div class="mb-3">
+            <label for="lblCountry" class="form-label">Country</label>
+            <input asp-for="objCustomer.Country" type="text" class="form-control" id="txtCountry">
+        </div>
+        <div class="mb-3">
+            <label for="lblMobilePhone" class="form-label">MobilePhone</label>
+            <input asp-for="objCustomer.MobilePhone" type="text" class="form-control" id="txtMobilePhone">
+        </div>
+        <div class="mb-3">
+            <label for="lblHomePhone" class="form-label">HomePhone</label>
+            <input asp-for="objCustomer.HomePhone" type="text" class="form-control" id="txtHomePhone">
+        </div>
+        <div class="mb-3">
+            <label for="lblCustomerEmail" class="form-label">Email</label>
+            <input asp-for="objCustomer.Email" type="text" class="form-control" id="txtCustomerEmail">
+        </div>
+        <div class="mb-3">
+            <label for="lblCustomerPassword" class="form-label">Password</label>
+            <input asp-for="objCustomer.Password" type="text" class="form-control" id="txtCustomerPassword">
+        </div>
+        <div class="mb-3">
+            <label for="lblDescription" class="form-label">Description</label>
+            <input asp-for="objCustomer.Description" type="text" class="form-control" id="txtDescription">
+        </div>
+        <div class="mb-3">
+            <label for="lblIsActive" class="form-label">IsActive</label>
+            <input asp-for="objCustomer.IsActive" type="checkbox" id="txtIsActive">
+        </div>
+        <div class="mb-3">
+            <label for="lblEmailSubscribed" class="form-label">IsEmailSubscribed</label>
+            <input asp-for="objCustomer.EmailSubscribed" type="checkbox" id="txtEmailSubscribed">
+        </div>
+        <div class="mb-3">
+            <label for="lblBrand" class="form-label">Role</label>
+            <select asp-for="objCustomer.RoleId" class="form-control"
+                    asp-items="Model.Roles" id="selectRole">
+                <option value="0">-- Select Role --</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary customer-submit">Submit</button>
+        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+        {
+            <a asp-page-handler="Reset" asp-route-customerId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="btn btn-light">Reset</a>
+        }
+        else
+        {
+            <a asp-page-handler="Clear" class="btn btn-light">Clear</a>
+        }
+        <a asp-page="/Customer" class="btn btn-light">Close</a>
+    </form>
+</div>
+
+@if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
+{
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#success-alert").show();
+            $("#success-alert").fadeTo(2000, 3000).slideUp(3000, function () {
+                $("#success-alert").slideUp(3000);
+            });
+        });
+
+    </script>
+}
+

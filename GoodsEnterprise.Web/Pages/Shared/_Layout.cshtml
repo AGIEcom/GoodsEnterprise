@@ -45,7 +45,7 @@
                             <hr style="border-top: 1px solid blue">
                             <li><i class="icon-arrow-up"></i><a asp-page-handler="LogOut" asp-page="/Login">Logout</a></li>
                             <li>
-                                <i class="icon-arrow-down"></i><a href="#">Update Profile</a>
+                                <i class="icon-arrow-down"></i><a asp-route-adminId="@admin.Id" asp-page-handler="Edit" asp-page="/Admin">Update Profile</a>
                             </li>
 
                         </ul>

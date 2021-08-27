@@ -14,7 +14,7 @@ namespace GoodsEnterprise.Model.Models
         public string Password { get; set; }
         public string Description { get; set; }
         public int RoleId { get; set; }
-        public bool? IsEmailSubscribed { get; set; }
+        public bool IsEmailSubscribed { get; set; }
         public DateTime? CreatedDate { get; set; }
         public int? Createdby { get; set; }
         public DateTime? ModifiedDate { get; set; }
