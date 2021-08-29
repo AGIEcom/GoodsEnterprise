@@ -217,6 +217,7 @@ namespace GoodsEnterprise.Web.Pages
                 {
                     if (objCustomer.Id == 0)
                     {
+                        objCustomer.PasswordExpiryDate = DateTime.UtcNow.AddDays(90);
                         await _customer.InsertAsync(objCustomer);
                         HttpContext.Session.SetString(Constants.StatusMessage, Constants.SaveMessage);
                     }

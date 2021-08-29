@@ -123,7 +123,7 @@ namespace GoodsEnterprise.DataAccess.Implementation
 
             entities.Add(entity);
             var dbEntityEntry = context.Entry(entity);
-            dbEntityEntry.Property("CreatedDate").CurrentValue = DateTime.Now;
+            dbEntityEntry.Property("CreatedDate").CurrentValue = DateTime.UtcNow;
             await context.SaveChangesAsync();
         }
         /// <summary>
@@ -138,7 +138,7 @@ namespace GoodsEnterprise.DataAccess.Implementation
                 throw new ArgumentNullException(entity.GetType().FullName);
             }
             var dbEntityEntry = context.Entry(entity);
-            dbEntityEntry.Property("ModifiedDate").CurrentValue = DateTime.Now;
+            dbEntityEntry.Property("ModifiedDate").CurrentValue = DateTime.UtcNow;
             context.Attach(entity).State = EntityState.Modified;
             await context.SaveChangesAsync();
         }
