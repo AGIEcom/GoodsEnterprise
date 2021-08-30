@@ -10,9 +10,7 @@ $(document).ready(function () {
         "order": [],
         lengthMenu: [5, 10, 20, 50]
     });
-});
 
-$(document).ready(function () {
     $('#tblCategoryMaster').DataTable({
         'columnDefs': [
             { 'targets': [3], 'orderable': false },
@@ -21,9 +19,7 @@ $(document).ready(function () {
         "order": [],
         lengthMenu: [5, 10, 20, 50]
     });
-});
 
-$(document).ready(function () {
     $('#tblSubCategoryMaster').DataTable({
         'columnDefs': [
             { 'targets': [3], 'orderable': false },
@@ -32,9 +28,7 @@ $(document).ready(function () {
         "order": [],
         lengthMenu: [5, 10, 20, 50]
     });
-});
 
-$(document).ready(function () {
     $('#tblProductMaster').DataTable({
         'columnDefs': [
             { 'targets': [3], 'orderable': false },
@@ -43,9 +37,7 @@ $(document).ready(function () {
         "order": [],
         lengthMenu: [5, 10, 20, 50]
     });
-});
 
-$(document).ready(function () {
     $('#tblTaxMaster').DataTable({
         'columnDefs': [
             { 'targets': [3], 'orderable': false },
@@ -54,9 +46,7 @@ $(document).ready(function () {
         "order": [],
         lengthMenu: [5, 10, 20, 50]
     });
-});
 
-$(document).ready(function () {
     $('#tblSupplierMaster').DataTable({
         'columnDefs': [
             { 'targets': [3], 'orderable': false },
@@ -65,9 +55,7 @@ $(document).ready(function () {
         "order": [],
         lengthMenu: [5, 10, 20, 50]
     });
-});
 
-$(document).ready(function () {
     $('#tblRoleMaster').DataTable({
         'columnDefs': [
             { 'targets': [2], 'orderable': false },
@@ -76,9 +64,7 @@ $(document).ready(function () {
         "order": [],
         lengthMenu: [5, 10, 20, 50]
     });
-});
 
-$(document).ready(function () {
     $('#tblAdminMaster').DataTable({
         'columnDefs': [
             { 'targets': [5], 'orderable': false },
@@ -87,9 +73,7 @@ $(document).ready(function () {
         "order": [],
         lengthMenu: [5, 10, 20, 50]
     });
-});
 
-$(document).ready(function () {
     $('#tblCustomerMaster').DataTable({
         'columnDefs': [
             { 'targets': [5], 'orderable': false },
@@ -99,6 +83,7 @@ $(document).ready(function () {
         lengthMenu: [5, 10, 20, 50]
     });
 });
+
 //end
 
 var emailReg = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
@@ -529,61 +514,7 @@ $('ul li.dropdown').hover(function () {
 //End
 
 //Load Menu
-var menuJSON = {
-    mainmenu: [
-        {
-            roleid: 1,
-            menu: [{
-                name: 'Brand',
-                link: '/all-brand'
-            },
-            {
-                name: 'Category',
-                link: '/all-category'
-            },
-            {
-                name: 'SubCategory',
-                link: '/all-subcategory'
-            },
-            {
-                name: 'Product',
-                link: '/all-product'
-            },
-            {
-                name: 'Tax',
-                link: '/all-tax'
-            },
-            {
-                name: 'Supplier',
-                link: '/all-supplier'
-            },
-            {
-                name: 'Role',
-                link: '/all-role'
-            },
-            {
-                name: 'Admin',
-                link: '/all-admin'
-            },
-            {
-                name: 'Customer',
-                link: '/all-customer'
-            }]
-        },
-        {
-            roleid: 2,
-            menu: [{
-                name: 'Brand1',
-                link: '/all-brand'
-            }, {
-                name: 'Category1',
-                link: '/all-category'
-            }]
-        }]
-};
-
 var getMenuItem = function (itemData) {
-
     var item = $("<li>", {
         class: 'nav-item',
         id: itemData.id
@@ -598,13 +529,15 @@ var getMenuItem = function (itemData) {
 };
 
 var $menu = $("#mainmenu");
-$.each(menuJSON.mainmenu, function (index, data) {
-    if (data.roleid == $("#hdnRoleId").val()) {
+$.getJSON("Menu/Menu.json", function (data) {
+    $.each(data.mainmenu, function (index, data) {
+        if (data.roleid == $("#hdnRoleId").val()) {
             $.each(data.menu, function (index, data) {
                 $menu.append(getMenuItem(data));
             });
         }
     });
+});
 //End
 
 //Cascade dropdown
@@ -658,4 +591,3 @@ function isDecimal(evt) {
     return true;
 }
 //End
-
