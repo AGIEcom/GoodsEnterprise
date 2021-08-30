@@ -166,7 +166,7 @@ $(".category-submit").click(function () {
         error = true;
     }
     if (brandId < 1) {
-        $('#selectBrand').after('<span class="text-danger">Brand is required</span>');
+        $('#divSelectBrand').after('<div class="select-margin"><span class="text-danger">Brand is required</span></div>');
         error = true;
     }
 

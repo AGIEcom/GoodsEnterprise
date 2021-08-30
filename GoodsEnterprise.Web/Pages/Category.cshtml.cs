@@ -119,12 +119,13 @@ namespace GoodsEnterprise.Web.Pages
         /// OnGetClear
         /// </summary>
         /// <returns></returns>
-        public IActionResult OnGetClear()
+        public async Task<IActionResult> OnGetClear()
         {
             try
             {
                 objCategory = new Category();
                 objCategory.IsActive = false;
+                await LoadBrand();
                 ViewData["PageType"] = "Edit";
             }
             catch (Exception ex)

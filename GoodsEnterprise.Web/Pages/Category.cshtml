@@ -78,9 +78,9 @@
             <label for="lblIsActive" class="form-label">IsActive</label>
             <input asp-for="objCategory.IsActive" type="checkbox" id="txtIsActive">
         </div>
-        <div class="mb-3">
+        <div class="mb-3" id="divSelectBrand">
             <label for="lblBrand" class="form-label">Brand</label>
-            <select asp-for="objCategory.BrandId" class="form-control"
+            <select asp-for="objCategory.BrandId" class="form-control selectpicker" data-live-search="true"
                     asp-items="Model.Brands" id="selectBrand">
                 <option value="0">-- Select Brand --</option>
             </select>

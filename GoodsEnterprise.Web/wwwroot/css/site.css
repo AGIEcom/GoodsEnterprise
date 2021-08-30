@@ -82,7 +82,7 @@ body {
 }
 
 .margin-bottom-15 {
-    margin-bottom: 15px;
+    margin-bottom: 15px !important;
 }
 .fileUpload {
     width: 100%;
@@ -102,11 +102,11 @@ body {
 
 .bootstrap-select .dropdown-toggle .filter-option {
     position: relative;
-    padding-left: 38px;
+    /*padding-left: 38px;*/
 }
 
     .bootstrap-select .dropdown-toggle .filter-option:before {
-        content: "Size:";
+        /*content: "Size:";*/
         font-size: 14px;
         font-weight: 700;
         position: absolute;
@@ -114,3 +114,11 @@ body {
         top: 0;
     }
 
+.caret {
+    display: none !important;
+}
+
+.select-margin {
+    margin-top: -10px;
+    padding-bottom: 10px;
+}
