@@ -16,9 +16,9 @@ namespace GoodsEnterprise.Model.Models
 
         public int Id { get; set; }
         public string Code { get; set; }
-        public int? BrandId { get; set; }
-        public int? CategoryId { get; set; }
-        public int? SubCategoryId { get; set; }
+        public int BrandId { get; set; }
+        public int CategoryId { get; set; }
+        public int SubCategoryId { get; set; }
         public string InnerEan { get; set; }
         public string OuterEan { get; set; }
         public string PackSize { get; set; }
@@ -38,6 +38,9 @@ namespace GoodsEnterprise.Model.Models
         public bool IsActive { get; set; }
         public bool IsDelete { get; set; }
 
+        public virtual Brand Brand { get; set; }
+        public virtual Category Category { get; set; }
+        public virtual SubCategory SubCategory { get; set; }
         public virtual ICollection<CustomerBasket> CustomerBaskets { get; set; }
         public virtual ICollection<CustomerFavourite> CustomerFavourites { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }

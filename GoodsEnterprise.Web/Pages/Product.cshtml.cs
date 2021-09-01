@@ -277,11 +277,11 @@ namespace GoodsEnterprise.Web.Pages
         /// </summary>
         /// <param name="brandId"></param>
         /// <returns></returns>
-        private async Task LoadCategoryByBrandId(int? brandId)
+        private async Task LoadCategoryByBrandId(int brandId)
         {
             try
             {
-                selectCategories = new SelectList(await _category.GetAllAsync(filter: x => x.IsDelete != true && x.BrandId == brandId),
+                selectCategories = new SelectList(await _category.GetAllAsync(filter: x => x.IsDelete != true),
                                           "Id", "Name", null);
             }
             catch (Exception ex)
@@ -296,7 +296,7 @@ namespace GoodsEnterprise.Web.Pages
         /// </summary>
         /// <param name="categoryId"></param>
         /// <returns></returns>
-        private async Task LoadSubCategoryByCategoryId(int? categoryId)
+        private async Task LoadSubCategoryByCategoryId(int categoryId)
         {
             try
             {
@@ -305,7 +305,7 @@ namespace GoodsEnterprise.Web.Pages
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"Error in LoadSubCategoryByCategoryId(), Product, categoryId: { categoryId }");
+                Log.Error(ex, $"Error in LoadSubCategoryByBrandId(), Product, categoryId: { categoryId }");
                 throw;
             }
         }
@@ -314,7 +314,7 @@ namespace GoodsEnterprise.Web.Pages
         /// </summary>
         /// <param name="categoryId"></param>
         /// <returns></returns>
-        public async Task<JsonResult> OnGetSubCategories(int? categoryId)
+        public async Task<JsonResult> OnGetSubCategories(int categoryId)
         {
             try
             {
@@ -332,11 +332,11 @@ namespace GoodsEnterprise.Web.Pages
         /// </summary>
         /// <param name="brandId"></param>
         /// <returns></returns>
-        public async Task<JsonResult> OnGetCategories(int? brandId)
+        public async Task<JsonResult> OnGetCategories(int brandId)
         {
             try
             {
-                return new JsonResult(await _category.GetAllAsync(filter: x => x.IsDelete != true && x.BrandId == brandId));
+                return new JsonResult(await _category.GetAllAsync(filter: x => x.IsDelete != true));
             }
             catch (Exception ex)
             {

@@ -74,25 +74,25 @@
             <label for="lblProductCode" class="form-label">Code</label>
             <input asp-for="objProduct.Code" type="text" class="form-control" id="txtProduct">
         </div>
-        <div class="mb-3" id="divselectProductBrand">
+        <div class="mb-3">
             <label for="lblBrand" class="form-label">Brand</label>
             <select asp-for="objProduct.BrandId" class="form-control"
                     asp-items="Model.selectBrands" id="selectProductBrand">
-                <option value="">-- Select Brand --</option>
+                <option value="0">-- Select Brand --</option>
             </select>
         </div>
-        <div class="mb-3" id="divselectProductCategory">
+        <div class="mb-3">
             <label for="lblCategory" class="form-label">Category</label>
             <select asp-for="objProduct.CategoryId" class="form-control"
                     asp-items="Model.selectCategories" id="selectProductCategory">
-                <option value="">-- Select Category --</option>
+                <option value="0">-- Select Category --</option>
             </select>
         </div>
-        <div class="mb-3" id="divselectProductSubCategory">
+        <div class="mb-3">
             <label for="lblSubCategory" class="form-label">SubCategory</label>
             <select asp-for="objProduct.SubCategoryId" class="form-control"
                     asp-items="Model.selectSubCategories" id="selectProductSubCategory">
-                <option value="">-- Select SubCategory --</option>
+                <option value="0">-- Select SubCategory --</option>
             </select>
         </div>
         <div class="mb-3">
