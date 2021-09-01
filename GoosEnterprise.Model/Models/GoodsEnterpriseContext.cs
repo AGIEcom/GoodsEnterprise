@@ -201,6 +201,7 @@ namespace GoodsEnterprise.Model.Models
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.Customers)
                     .HasForeignKey(d => d.RoleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Customer__RoleId__3E52440B");
             });
 
@@ -250,10 +251,10 @@ namespace GoodsEnterprise.Model.Models
             {
                 entity.ToTable("Order");
 
-                entity.Property(e => e.Cases).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Cases).HasColumnType("decimal(16, 2)");
 
                 entity.Property(e => e.Cbm)
-                    .HasColumnType("decimal(18, 0)")
+                    .HasColumnType("decimal(16, 2)")
                     .HasColumnName("CBM");
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
@@ -261,11 +262,11 @@ namespace GoodsEnterprise.Model.Models
                 entity.Property(e => e.DatePlaced).HasColumnType("datetime");
 
                 entity.Property(e => e.Gbp)
-                    .HasColumnType("decimal(18, 0)")
+                    .HasColumnType("decimal(16, 2)")
                     .HasColumnName("GBP");
 
                 entity.Property(e => e.Kg)
-                    .HasColumnType("decimal(18, 0)")
+                    .HasColumnType("decimal(16, 2)")
                     .HasColumnName("KG");
 
                 entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
@@ -291,7 +292,7 @@ namespace GoodsEnterprise.Model.Models
 
                 entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
 
-                entity.Property(e => e.TotalPrice).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.TotalPrice).HasColumnType("decimal(16, 2)");
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetails)
@@ -317,9 +318,9 @@ namespace GoodsEnterprise.Model.Models
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
-                entity.Property(e => e.Depth).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Depth).HasColumnType("decimal(16, 2)");
 
-                entity.Property(e => e.Height).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Height).HasColumnType("decimal(16, 2)");
 
                 entity.Property(e => e.Image)
                     .HasMaxLength(200)
@@ -330,11 +331,9 @@ namespace GoodsEnterprise.Model.Models
                     .IsUnicode(false)
                     .HasColumnName("InnerEAN");
 
-                entity.Property(e => e.IsDelete).HasDefaultValueSql("((0))");
-
                 entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
 
-                entity.Property(e => e.NetWeight).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.NetWeight).HasColumnType("decimal(16, 2)");
 
                 entity.Property(e => e.OuterEan)
                     .HasMaxLength(25)
@@ -347,27 +346,9 @@ namespace GoodsEnterprise.Model.Models
 
                 entity.Property(e => e.Upc).HasColumnName("UPC");
 
-                entity.Property(e => e.Weight).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Weight).HasColumnType("decimal(16, 2)");
 
-                entity.Property(e => e.Width).HasColumnType("decimal(18, 0)");
-
-                entity.HasOne(d => d.Brand)
-                    .WithMany(p => p.Products)
-                    .HasForeignKey(d => d.BrandId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Product__BrandId__403A8C7D");
-
-                entity.HasOne(d => d.Category)
-                    .WithMany(p => p.Products)
-                    .HasForeignKey(d => d.CategoryId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Product__Categor__412EB0B6");
-
-                entity.HasOne(d => d.SubCategory)
-                    .WithMany(p => p.Products)
-                    .HasForeignKey(d => d.SubCategoryId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Product__SubCate__4222D4EF");
+                entity.Property(e => e.Width).HasColumnType("decimal(16, 2)");
             });
 
             modelBuilder.Entity<Role>(entity =>
@@ -480,7 +461,7 @@ namespace GoodsEnterprise.Model.Models
                     .HasMaxLength(250)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Value).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Value).HasColumnType("decimal(16, 2)");
             });
 
             OnModelCreatingPartial(modelBuilder);

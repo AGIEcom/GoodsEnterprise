@@ -206,7 +206,7 @@ $(".subCategory-submit").click(function () {
         error = true;
     }
     if (categoryId < 1) {
-        $('#selectCategory').after('<span class="text-danger">Category is required</span>');
+        $('#divSelectCategory').after('<div class="select-margin"><span class="text-danger">Category is required</span></div>');
         error = true;
     }
 
@@ -247,18 +247,18 @@ $(".product-submit").click(function () {
         $('#txtProduct').after('<span class="text-danger">Product Code is required</span>');
         error = true;
     }
-    if (brandId < 1) {
-        $('#selectProductBrand').after('<span class="text-danger">Brand is required</span>');
-        error = true;
-    }
-    if (categoryId < 1) {
-        $('#selectProductCategory').after('<span class="text-danger">Category is required</span>');
-        error = true;
-    }
-    if (subCategoryId < 1) {
-        $('#selectProductSubCategory').after('<span class="text-danger">SubCategory is required</span>');
-        error = true;
-    }
+    //if (brandId < 1) {
+    //    $('#selectProductBrand').after('<span class="text-danger">Brand is required</span>');
+    //    error = true;
+    //}
+    //if (categoryId < 1) {
+    //    $('#selectProductCategory').after('<span class="text-danger">Category is required</span>');
+    //    error = true;
+    //}
+    //if (subCategoryId < 1) {
+    //    $('#selectProductSubCategory').after('<span class="text-danger">SubCategory is required</span>');
+    //    error = true;
+    //}
     if (error == true) {
         return false;
     }
