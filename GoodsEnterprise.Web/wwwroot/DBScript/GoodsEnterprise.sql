@@ -1,7 +1,7 @@
 
 USE [GoodsEnterprise]
 GO
-/****** Object:  Table [dbo].[Admin]    Script Date: 29-08-2021 18:23:25 ******/
+/****** Object:  Table [dbo].[Admin]    Script Date: 01-09-2021 18:12:02 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -27,7 +27,7 @@ CREATE TABLE [dbo].[Admin](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Brand]    Script Date: 29-08-2021 18:23:25 ******/
+/****** Object:  Table [dbo].[Brand]    Script Date: 01-09-2021 18:12:02 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -50,7 +50,7 @@ CREATE TABLE [dbo].[Brand](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Category]    Script Date: 29-08-2021 18:23:25 ******/
+/****** Object:  Table [dbo].[Category]    Script Date: 01-09-2021 18:12:02 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -72,7 +72,7 @@ CREATE TABLE [dbo].[Category](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Customer]    Script Date: 29-08-2021 18:23:25 ******/
+/****** Object:  Table [dbo].[Customer]    Script Date: 01-09-2021 18:12:02 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -107,7 +107,7 @@ CREATE TABLE [dbo].[Customer](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CustomerBasket]    Script Date: 29-08-2021 18:23:25 ******/
+/****** Object:  Table [dbo].[CustomerBasket]    Script Date: 01-09-2021 18:12:02 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -128,7 +128,7 @@ CREATE TABLE [dbo].[CustomerBasket](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CustomerFavourite]    Script Date: 29-08-2021 18:23:25 ******/
+/****** Object:  Table [dbo].[CustomerFavourite]    Script Date: 01-09-2021 18:12:02 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -149,7 +149,7 @@ CREATE TABLE [dbo].[CustomerFavourite](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Order]    Script Date: 29-08-2021 18:23:25 ******/
+/****** Object:  Table [dbo].[Order]    Script Date: 01-09-2021 18:12:02 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -175,7 +175,7 @@ CREATE TABLE [dbo].[Order](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[OrderDetail]    Script Date: 29-08-2021 18:23:25 ******/
+/****** Object:  Table [dbo].[OrderDetail]    Script Date: 01-09-2021 18:12:02 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -198,7 +198,7 @@ CREATE TABLE [dbo].[OrderDetail](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Product]    Script Date: 29-08-2021 18:23:25 ******/
+/****** Object:  Table [dbo].[Product]    Script Date: 01-09-2021 18:12:02 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -206,9 +206,9 @@ GO
 CREATE TABLE [dbo].[Product](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Code] [varchar](25) NOT NULL,
-	[BrandId] [int] NOT NULL,
-	[CategoryId] [int] NOT NULL,
-	[SubCategoryId] [int] NOT NULL,
+	[BrandId] [int] NULL,
+	[CategoryId] [int] NULL,
+	[SubCategoryId] [int] NULL,
 	[InnerEAN] [varchar](25) NULL,
 	[OuterEAN] [varchar](25) NULL,
 	[PackSize] [varchar](25) NULL,
@@ -233,7 +233,7 @@ CREATE TABLE [dbo].[Product](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Role]    Script Date: 29-08-2021 18:23:25 ******/
+/****** Object:  Table [dbo].[Role]    Script Date: 01-09-2021 18:12:02 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -253,7 +253,7 @@ CREATE TABLE [dbo].[Role](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Status]    Script Date: 29-08-2021 18:23:25 ******/
+/****** Object:  Table [dbo].[Status]    Script Date: 01-09-2021 18:12:02 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -273,7 +273,7 @@ CREATE TABLE [dbo].[Status](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[SubCategory]    Script Date: 29-08-2021 18:23:25 ******/
+/****** Object:  Table [dbo].[SubCategory]    Script Date: 01-09-2021 18:12:02 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -295,7 +295,7 @@ CREATE TABLE [dbo].[SubCategory](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Supplier]    Script Date: 29-08-2021 18:23:25 ******/
+/****** Object:  Table [dbo].[Supplier]    Script Date: 01-09-2021 18:12:02 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -323,7 +323,7 @@ CREATE TABLE [dbo].[Supplier](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Tax]    Script Date: 29-08-2021 18:23:25 ******/
+/****** Object:  Table [dbo].[Tax]    Script Date: 01-09-2021 18:12:02 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -434,22 +434,7 @@ REFERENCES [dbo].[Product] ([Id])
 GO
 ALTER TABLE [dbo].[OrderDetail] CHECK CONSTRAINT [FK__OrderDeta__Produ__5DCAEF64]
 GO
-ALTER TABLE [dbo].[Product]  WITH CHECK ADD  CONSTRAINT [FK__Product__BrandId__403A8C7D] FOREIGN KEY([BrandId])
-REFERENCES [dbo].[Brand] ([Id])
-GO
-ALTER TABLE [dbo].[Product] CHECK CONSTRAINT [FK__Product__BrandId__403A8C7D]
-GO
-ALTER TABLE [dbo].[Product]  WITH CHECK ADD  CONSTRAINT [FK__Product__Categor__412EB0B6] FOREIGN KEY([CategoryId])
-REFERENCES [dbo].[Category] ([Id])
-GO
-ALTER TABLE [dbo].[Product] CHECK CONSTRAINT [FK__Product__Categor__412EB0B6]
-GO
-ALTER TABLE [dbo].[Product]  WITH CHECK ADD  CONSTRAINT [FK__Product__SubCate__4222D4EF] FOREIGN KEY([SubCategoryId])
-REFERENCES [dbo].[SubCategory] ([Id])
-GO
-ALTER TABLE [dbo].[Product] CHECK CONSTRAINT [FK__Product__SubCate__4222D4EF]
-GO
-/****** Object:  StoredProcedure [dbo].[USP_GetBrands]    Script Date: 29-08-2021 18:23:25 ******/
+/****** Object:  StoredProcedure [dbo].[USP_GetBrands]    Script Date: 01-09-2021 18:12:02 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -498,7 +483,7 @@ SELECT @TotalRecords = COUNT(Id) FROM Brand WITH (NOLOCK)
 END
 
 GO
-/****** Object:  StoredProcedure [dbo].[USP_GetCategories]    Script Date: 29-08-2021 18:23:25 ******/
+/****** Object:  StoredProcedure [dbo].[USP_GetCategories]    Script Date: 01-09-2021 18:12:02 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -547,7 +532,7 @@ SELECT @TotalRecords = COUNT(Id) FROM Category WITH (NOLOCK)
 END
 
 GO
-/****** Object:  StoredProcedure [dbo].[USP_GetSubCategories]    Script Date: 29-08-2021 18:23:25 ******/
+/****** Object:  StoredProcedure [dbo].[USP_GetSubCategories]    Script Date: 01-09-2021 18:12:02 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
