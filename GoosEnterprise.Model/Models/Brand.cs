@@ -10,7 +10,6 @@ namespace GoodsEnterprise.Model.Models
         public Brand()
         {
             Categories = new HashSet<Category>();
-            Products = new HashSet<Product>();
         }
 
         public int Id { get; set; }
@@ -26,6 +25,5 @@ namespace GoodsEnterprise.Model.Models
         public bool IsDelete { get; set; }
 
         public virtual ICollection<Category> Categories { get; set; }
-        public virtual ICollection<Product> Products { get; set; }
     }
 }

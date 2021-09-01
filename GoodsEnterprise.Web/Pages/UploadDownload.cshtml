@@ -1,0 +1,37 @@
+﻿@page "/UploadDownload"
+@model GoodsEnterprise.Web.Pages.UploadDownloadModel
+@{
+}
+
+<div class="alert alert-success" id="success-alert" style="display:none;">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    @ViewData["SuccessMsg"]
+</div>
+
+<div id="divUploadDownload">
+    <form id="UploadDownloadform" method="post" enctype="multipart/form-data" asp-page-handler="Submit">
+        <H3>Bulk Import/Export Products</H3>
+        
+        <div class="mb-3">
+            <input type="file" id="fileUpload" class="fileUpload" asp-for="Upload">
+        </div>
+        <button type="submit" class="btn btn-primary brand-submit">Submit</button>
+
+        <a asp-page-handler="Clear" class="btn btn-light">Clear</a>
+
+        <a asp-page="/Brand" class="btn btn-light">Close</a>
+    </form>
+</div>
+
+@if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
+{
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#success-alert").show();
+            $("#success-alert").fadeTo(2000, 3000).slideUp(3000, function () {
+                $("#success-alert").slideUp(3000);
+            });
+        });
+    </script>
+}
