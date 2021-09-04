@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,5 +32,9 @@ namespace GoodsEnterprise.Web.Utilities
         public const string UserNamePasswordincorrect = "Username and password incorrect";
         public const string UserNameNotavailable = "Username not available";
         public const string EncryptDecryptSecurity = "mysmallkey123456";
+        public const string SuccessUpload = "Prodcuts uploaded sucessfully";
+        public const string FailureUpload = "Some problem occured while uploading the file, please contact Administrator";
+
+        public static readonly string[] ProductMandatoryFields = { "Product Code" , "Category", "Brand", "Inner EAN", "Outer EAN", "Product Description", "UPC", "Unit Size", "Lyr Qty", "Plt Qty", "Case Price", "Shelf Life" };
     }
 }

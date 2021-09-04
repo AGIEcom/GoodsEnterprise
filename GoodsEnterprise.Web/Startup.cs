@@ -1,6 +1,8 @@
+using AutoMapper;
 using GoodsEnterprise.DataAccess.Implementation;
 using GoodsEnterprise.DataAccess.Interface;
 using GoodsEnterprise.Model.Models;
+using GoodsEnterprise.Web.Maaper;
 using GoodsEnterprise.Web.Middleware;
 using GoodsEnterprise.Web.Utilities;
 using Microsoft.AspNetCore.Builder;
@@ -56,9 +58,14 @@ namespace GoodsEnterprise
             {
                 options.PageViewLocationFormats.Add("/Pages/Partials/{0}" + RazorViewEngine.ViewExtension);
             });
-            services.AddScoped<IBrandDA, BrandDA>();
+            services.AddScoped<IUploadDownloadDA, UploadDownloadDA>();
             services.AddScoped(typeof(IGeneralRepository<>), typeof(GeneralRepository<>));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            var autoMapconfig = new MapperConfiguration(c =>
+            {
+                c.AddProfile<MapObjects>();
+            });
+            services.AddSingleton(s => autoMapconfig.CreateMapper());
             services.AddControllersWithViews();   
         }
 

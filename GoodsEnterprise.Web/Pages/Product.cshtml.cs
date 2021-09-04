@@ -19,7 +19,7 @@ namespace GoodsEnterprise.Web.Pages
         /// ProductModel
         /// </summary>
         /// <param name="product"></param>
-        public ProductModel(IGeneralRepository<Product> product, IGeneralRepository<Category> category, 
+        public ProductModel(IGeneralRepository<Product> product, IGeneralRepository<Category> category,
             IGeneralRepository<SubCategory> subCategory, IGeneralRepository<Brand> brand)
         {
             _product = product;
@@ -86,6 +86,7 @@ namespace GoodsEnterprise.Web.Pages
             try
             {
                 await LoadBrand();
+                await LoadCategory();
                 ViewData["PageType"] = "Edit";
             }
             catch (Exception ex)
@@ -112,7 +113,7 @@ namespace GoodsEnterprise.Web.Pages
                     return Redirect("~/all-product");
                 }
                 await LoadBrand();
-                await LoadCategoryByBrandId(objProduct.BrandId);
+                await LoadCategory();
                 await LoadSubCategoryByCategoryId(objProduct.CategoryId);
                 ViewData["PageType"] = "Edit";
                 ViewData["PagePrimaryID"] = objProduct.Id;
@@ -155,6 +156,7 @@ namespace GoodsEnterprise.Web.Pages
             try
             {
                 await LoadBrand();
+                await LoadCategory();
                 objProduct = await _product.GetAsync(filter: x => x.Id == productId && x.IsDelete != true);
                 ViewData["PageType"] = "Edit";
                 ViewData["PagePrimaryID"] = objProduct.Id;
@@ -244,6 +246,7 @@ namespace GoodsEnterprise.Web.Pages
                 {
                     ViewData["PageType"] = "Edit";
                     await LoadBrand();
+                    await LoadCategory();
                     return Page();
                 }
             }
@@ -269,24 +272,23 @@ namespace GoodsEnterprise.Web.Pages
             {
                 Log.Error(ex, $"Error in LoadBrand()");
                 throw;
-            }          
+            }
         }
 
         /// <summary>
-        /// LoadCategoryByBrandId
+        /// LoadCategory
         /// </summary>
-        /// <param name="brandId"></param>
         /// <returns></returns>
-        private async Task LoadCategoryByBrandId(int? brandId)
+        private async Task LoadCategory()
         {
             try
             {
-                selectCategories = new SelectList(await _category.GetAllAsync(filter: x => x.IsDelete != true && x.BrandId == brandId),
+                selectCategories = new SelectList(await _category.GetAllAsync(filter: x => x.IsDelete != true),
                                           "Id", "Name", null);
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"Error in LoadCategoryByBrandId(), Product, brandId: { brandId }");
+                Log.Error(ex, $"Error in LoadCategoryByBrandId(), Product");
                 throw;
             }
         }
@@ -324,26 +326,26 @@ namespace GoodsEnterprise.Web.Pages
             {
                 Log.Error(ex, $"Error in OnGetSubCategories(), Product, categoryId: { categoryId }");
                 throw;
-            }            
+            }
         }
 
-        /// <summary>
-        /// OnGetCategories
-        /// </summary>
-        /// <param name="brandId"></param>
-        /// <returns></returns>
-        public async Task<JsonResult> OnGetCategories(int? brandId)
-        {
-            try
-            {
-                return new JsonResult(await _category.GetAllAsync(filter: x => x.IsDelete != true && x.BrandId == brandId));
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, $"Error in OnGetCategories(), Product, brandId: { brandId }");
-                throw;
-            }           
-        }
+        ///// <summary>
+        ///// OnGetCategories
+        ///// </summary>
+        ///// <param name="brandId"></param>
+        ///// <returns></returns>
+        //public async Task<JsonResult> OnGetCategories(int? brandId)
+        //{
+        //    try
+        //    {
+        //        return new JsonResult(await _category.GetAllAsync(filter: x => x.IsDelete != true));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Error(ex, $"Error in OnGetCategories(), Product, brandId: { brandId }");
+        //        throw;
+        //    }           
+        //}
     }
 }
 

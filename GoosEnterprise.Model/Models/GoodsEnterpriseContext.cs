@@ -126,12 +126,6 @@ namespace GoodsEnterprise.Model.Models
                     .IsRequired()
                     .HasMaxLength(250)
                     .IsUnicode(false);
-
-                entity.HasOne(d => d.Brand)
-                    .WithMany(p => p.Categories)
-                    .HasForeignKey(d => d.BrandId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Brand_ID");
             });
 
             modelBuilder.Entity<Customer>(entity =>

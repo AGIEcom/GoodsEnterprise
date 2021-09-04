@@ -83,7 +83,6 @@ $(document).ready(function () {
         lengthMenu: [5, 10, 20, 50]
     });
 });
-
 //end
 
 var emailReg = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
@@ -146,6 +145,28 @@ function fileValidation() {
         $("#imgPath").css("display", "none");
     }
 }
+
+function productFileValidation() {
+    var fileInput =
+        document.getElementById('productFileUpload');
+
+    var filePath = fileInput.value;
+    if (filePath == '') {
+        return true;
+    }
+    // Allowing file type
+    var allowedExtensions =
+        /(\.xls|\.xlsx)$/i;
+
+    if (!allowedExtensions.exec(filePath)) {
+        alert('Invalid file type, Only xls, xlsx are allowed');
+        fileInput.value = '';
+        return false;
+    }
+    else {
+        return true;
+    }
+}
 //End
 
 //category master
@@ -157,16 +178,11 @@ $("#lnkCreateCategory").click(function () {
 
 $(".category-submit").click(function () {
     var categoryName = $('#txtCategory').val();
-    var brandId = $('#selectBrand').val();
     var error = false;
     $(".text-danger").remove();
 
     if (categoryName.length < 1) {
         $('#txtCategory').after('<span class="text-danger">Category name is required</span>');
-        error = true;
-    }
-    if (brandId < 1) {
-        $('#divSelectBrand').after('<div class="select-margin"><span class="text-danger">Brand is required</span></div>');
         error = true;
     }
 
@@ -504,7 +520,25 @@ $(".btn-customer-delete").click(function () {
         return false;
 });
 //End
+//UploadDownload
+$(".UploadDownload-submit").click(function () {
+    var fileInput = $('#productFileUpload').val();
+    var error = false;
+    $(".text-danger").remove();
 
+    if (fileInput.length < 1) {
+        $('#productFileUpload').after('<span class="text-danger">Select the file to upload, Only xls, xlsx are allowed</span>');
+        error = true;
+    }
+
+    if (error == true) {
+        return false;
+    }
+    else {
+        return true;
+    }
+});
+//End
 //Logout
 $('ul li.dropdown').hover(function () {
     $(this).find('.dropdown-menu').stop(true, true).delay(100).fadeIn(200);
@@ -541,20 +575,20 @@ $.getJSON("Menu/Menu.json", function (data) {
 //End
 
 //Cascade dropdown
-$(function () {
-    $("#selectProductBrand").on("change", function () {
-        var brandId = $(this).val();
-        $("#selectProductCategory").empty();
-        $("#selectProductSubCategory").empty();
-        $("#selectProductCategory").append("<option value=''>-- Select Category --</option>");
-        $("#selectProductSubCategory").append("<option value=''>-- Select SubCategory --</option>");
-        $.getJSON(`?handler=Categories&brandId=${brandId}`, (data) => {
-            $.each(data, function (i, item) {
-                $("#selectProductCategory").append(`<option value="${item.id}">${item.name}</option>`);
-            });
-        });
-    });
-});
+//$(function () {
+//    $("#selectProductBrand").on("change", function () {
+//        var brandId = $(this).val();
+//        $("#selectProductCategory").empty();
+//        $("#selectProductSubCategory").empty();
+//        $("#selectProductCategory").append("<option value=''>-- Select Category --</option>");
+//        $("#selectProductSubCategory").append("<option value=''>-- Select SubCategory --</option>");
+//        $.getJSON(`?handler=Categories&brandId=${brandId}`, (data) => {
+//            $.each(data, function (i, item) {
+//                $("#selectProductCategory").append(`<option value="${item.id}">${item.name}</option>`);
+//            });
+//        });
+//    });
+//});
 
 $(function () {
     $("#selectProductCategory").on("change", function () {
@@ -591,3 +625,4 @@ function isDecimal(evt) {
     return true;
 }
 //End
+

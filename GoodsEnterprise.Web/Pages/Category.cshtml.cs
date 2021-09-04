@@ -39,7 +39,6 @@ namespace GoodsEnterprise.Web.Pages
         public List<Category> lstcategory = new List<Category>();
 
         public Pagination PaginationModel { get; set; } = new Pagination();
-        public SelectList Brands { get; set; } = new SelectList("");
 
         /// <summary>
         /// OnGetAsync
@@ -70,25 +69,6 @@ namespace GoodsEnterprise.Web.Pages
         }
 
         /// <summary>
-        /// OnGetCreateAsync
-        /// </summary>
-        /// <returns></returns>
-        public async Task<IActionResult> OnGetCreateAsync()
-        {
-            try
-            {
-                await LoadBrand();
-                ViewData["PageType"] = "Edit";
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, $"Error in OnGetCreateAsync(), Category");
-                throw;
-            }
-            return Page();
-        }
-
-        /// <summary>
         /// OnGetEditAsync
         /// </summary>
         /// <param name="id"></param>
@@ -103,7 +83,6 @@ namespace GoodsEnterprise.Web.Pages
                 {
                     return Redirect("~/all-category");
                 }
-                await LoadBrand();
                 ViewData["PageType"] = "Edit";
                 ViewData["PagePrimaryID"] = objCategory.Id;
             }
@@ -125,7 +104,6 @@ namespace GoodsEnterprise.Web.Pages
             {
                 objCategory = new Category();
                 objCategory.IsActive = false;
-                await LoadBrand();
                 ViewData["PageType"] = "Edit";
             }
             catch (Exception ex)
@@ -144,7 +122,6 @@ namespace GoodsEnterprise.Web.Pages
         {
             try
             {
-                await LoadBrand();
                 objCategory = await _category.GetAsync(filter: x => x.Id == categoryId && x.IsDelete != true);
                 ViewData["PageType"] = "Edit";
                 ViewData["PagePrimaryID"] = objCategory.Id;
@@ -223,7 +200,6 @@ namespace GoodsEnterprise.Web.Pages
                 }
                 else
                 {
-                    await LoadBrand();
                     ViewData["PageType"] = "Edit";
                     return Page();
                 }
@@ -233,16 +209,6 @@ namespace GoodsEnterprise.Web.Pages
                 Log.Error(ex, $"Error in OnPostSubmitAsync(), Category, CategoryId: { objCategory?.Id }");
                 throw;
             }
-        }
-
-        /// <summary>
-        /// LoadBrand
-        /// </summary>
-        /// <returns></returns>
-        private async Task LoadBrand()
-        {
-            Brands = new SelectList(await _brand.GetAllAsync(filter: x => x.IsDelete != true),
-                           "Id", "Name", null);
         }
     }
 }

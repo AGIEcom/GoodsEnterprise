@@ -7,11 +7,6 @@ namespace GoodsEnterprise.Model.Models
 {
     public partial class Brand
     {
-        public Brand()
-        {
-            Categories = new HashSet<Category>();
-        }
-
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -23,7 +18,5 @@ namespace GoodsEnterprise.Model.Models
         public int? Modifiedby { get; set; }
         public bool IsActive { get; set; }
         public bool IsDelete { get; set; }
-
-        public virtual ICollection<Category> Categories { get; set; }
     }
 }

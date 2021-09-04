@@ -76,7 +76,7 @@
         </div>
         <div class="mb-3" id="divselectProductBrand">
             <label for="lblBrand" class="form-label">Brand</label>
-            <select asp-for="objProduct.BrandId" class="form-control"
+            <select asp-for="objProduct.BrandId" class="form-control selectpicker" data-live-search="true"
                     asp-items="Model.selectBrands" id="selectProductBrand">
                 <option value="">-- Select Brand --</option>
             </select>
@@ -90,7 +90,7 @@
         </div>
         <div class="mb-3" id="divselectProductSubCategory">
             <label for="lblSubCategory" class="form-label">SubCategory</label>
-            <select asp-for="objProduct.SubCategoryId" class="form-control"
+            <select asp-for="objProduct.SubCategoryId" class="form-control selectpicker" data-live-search="true"
                     asp-items="Model.selectSubCategories" id="selectProductSubCategory">
                 <option value="">-- Select SubCategory --</option>
             </select>

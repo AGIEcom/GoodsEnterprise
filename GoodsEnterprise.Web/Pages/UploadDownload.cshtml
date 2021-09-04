@@ -1,8 +1,8 @@
 ﻿@page "/UploadDownload"
 @model GoodsEnterprise.Web.Pages.UploadDownloadModel
-@{
+@{ 
+    ViewData["Title"] = "UploadDownload";
 }
-
 <div class="alert alert-success" id="success-alert" style="display:none;">
     <button type="button" class="close" data-dismiss="alert">x</button>
     @ViewData["SuccessMsg"]
@@ -13,13 +13,13 @@
         <H3>Bulk Import/Export Products</H3>
         
         <div class="mb-3">
-            <input type="file" id="fileUpload" class="fileUpload" asp-for="Upload">
+            <input type="file" id="productFileUpload" class="fileUpload" asp-for="Upload" accept=".xls, .xlsx" onchange="productFileValidation()">
         </div>
-        <button type="submit" class="btn btn-primary brand-submit">Submit</button>
+        <button type="submit" class="btn btn-primary UploadDownload-submit">Submit</button>
 
-        <a asp-page-handler="Clear" class="btn btn-light">Clear</a>
+        <a class="btn btn-light" href="/UploadDownload">Clear</a>
 
-        <a asp-page="/Brand" class="btn btn-light">Close</a>
+        <a asp-page="/UploadDownload" class="btn btn-light">Close</a>
     </form>
 </div>
 

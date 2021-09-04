@@ -2,41 +2,46 @@
     "mainmenu": [
         {
             "roleid": 1,
-            "menu": [{
-                "name": "Brand",
-                "link": "/all-brand"
+          "menu": [
+            {
+              "name": "Brand",
+              "link": "/all-brand"
             },
             {
-                "name": "Category",
-                "link": "/all-category"
+              "name": "Category",
+              "link": "/all-category"
             },
             {
-                "name": "SubCategory",
-                "link": "/all-subcategory"
+              "name": "SubCategory",
+              "link": "/all-subcategory"
             },
             {
-                "name": "Product",
-                "link": "/all-product"
+              "name": "Product",
+              "link": "/all-product"
             },
             {
-                "name": "Tax",
-                "link": "/all-tax"
+              "name": "Tax",
+              "link": "/all-tax"
             },
             {
-                "name": "Supplier",
-                "link": "/all-supplier"
+              "name": "Supplier",
+              "link": "/all-supplier"
             },
             {
-                "name": "Role",
-                "link": "/all-role"
+              "name": "Role",
+              "link": "/all-role"
             },
             {
-                "name": "Admin",
-                "link": "/all-admin"
+              "name": "Admin",
+              "link": "/all-admin"
             },
             {
-                "name": "Customer",
-                "link": "/all-customer"
+              "name": "Customer",
+              "link": "/all-customer"
+            },
+            {
+              "name": "UploadDownload",
+              "link": "/UploadDownload"
             }]
         },
         {

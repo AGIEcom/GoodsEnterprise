@@ -1,6 +1,7 @@
 ﻿using GoodsEnterprise.Model.Models;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
@@ -12,6 +13,9 @@ namespace GoodsEnterprise.Web.Utilities
     /// </summary>
     public static class Common
     {
+        public static List<Brand> UploadBrands { get; set; }    
+        public static List<Category> UploadCategories { get; set; }
+        public static List<SubCategory> UploadSubCategories { get; set; }
         /// <summary>
         /// UploadImages
         /// </summary>

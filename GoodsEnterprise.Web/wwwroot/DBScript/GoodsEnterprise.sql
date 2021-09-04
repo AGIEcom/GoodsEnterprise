@@ -1,7 +1,237 @@
-
 USE [GoodsEnterprise]
 GO
-/****** Object:  Table [dbo].[Admin]    Script Date: 01-09-2021 18:12:02 ******/
+/****** Object:  StoredProcedure [dbo].[USP_GetSubCategories]    Script Date: 02-09-2021 23:43:27 ******/
+DROP PROCEDURE IF EXISTS [dbo].[USP_GetSubCategories]
+GO
+/****** Object:  StoredProcedure [dbo].[USP_GetCategories]    Script Date: 02-09-2021 23:43:27 ******/
+DROP PROCEDURE IF EXISTS [dbo].[USP_GetCategories]
+GO
+/****** Object:  StoredProcedure [dbo].[USP_GetBrands]    Script Date: 02-09-2021 23:43:27 ******/
+DROP PROCEDURE IF EXISTS [dbo].[USP_GetBrands]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[OrderDetail]') AND type in (N'U'))
+ALTER TABLE [dbo].[OrderDetail] DROP CONSTRAINT IF EXISTS [FK__OrderDeta__Produ__5DCAEF64]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[OrderDetail]') AND type in (N'U'))
+ALTER TABLE [dbo].[OrderDetail] DROP CONSTRAINT IF EXISTS [FK__OrderDeta__Order__5CD6CB2B]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Order]') AND type in (N'U'))
+ALTER TABLE [dbo].[Order] DROP CONSTRAINT IF EXISTS [FK__Order__Status]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Order]') AND type in (N'U'))
+ALTER TABLE [dbo].[Order] DROP CONSTRAINT IF EXISTS [FK__Order__CustomerI__59FA5E80]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CustomerFavourite]') AND type in (N'U'))
+ALTER TABLE [dbo].[CustomerFavourite] DROP CONSTRAINT IF EXISTS [FK__CustomerF__Produ__5629CD9C]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CustomerFavourite]') AND type in (N'U'))
+ALTER TABLE [dbo].[CustomerFavourite] DROP CONSTRAINT IF EXISTS [FK__CustomerF__Custo__412EB0B6]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CustomerBasket]') AND type in (N'U'))
+ALTER TABLE [dbo].[CustomerBasket] DROP CONSTRAINT IF EXISTS [FK__CustomerB__Produ__52593CB8]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CustomerBasket]') AND type in (N'U'))
+ALTER TABLE [dbo].[CustomerBasket] DROP CONSTRAINT IF EXISTS [FK__CustomerB__Custo__3F466844]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND type in (N'U'))
+ALTER TABLE [dbo].[Customer] DROP CONSTRAINT IF EXISTS [FK__Customer__RoleId__3E52440B]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Admin]') AND type in (N'U'))
+ALTER TABLE [dbo].[Admin] DROP CONSTRAINT IF EXISTS [FK__Admin__RoleId__3D5E1FD2]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Tax]') AND type in (N'U'))
+ALTER TABLE [dbo].[Tax] DROP CONSTRAINT IF EXISTS [DF_Tax_IsDelete]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Tax]') AND type in (N'U'))
+ALTER TABLE [dbo].[Tax] DROP CONSTRAINT IF EXISTS [DF_Tax_IsActive]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Supplier]') AND type in (N'U'))
+ALTER TABLE [dbo].[Supplier] DROP CONSTRAINT IF EXISTS [DF_Supplier_IsDelete]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Supplier]') AND type in (N'U'))
+ALTER TABLE [dbo].[Supplier] DROP CONSTRAINT IF EXISTS [DF_Supplier_IsActive]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Status]') AND type in (N'U'))
+ALTER TABLE [dbo].[Status] DROP CONSTRAINT IF EXISTS [DF_Status_IsDelete]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Status]') AND type in (N'U'))
+ALTER TABLE [dbo].[Status] DROP CONSTRAINT IF EXISTS [DF_Status_IsActive]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Product]') AND type in (N'U'))
+ALTER TABLE [dbo].[Product] DROP CONSTRAINT IF EXISTS [Default_IsDelete]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Product]') AND type in (N'U'))
+ALTER TABLE [dbo].[Product] DROP CONSTRAINT IF EXISTS [Default_IsActive]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Order]') AND type in (N'U'))
+ALTER TABLE [dbo].[Order] DROP CONSTRAINT IF EXISTS [DF_Order_IsDelete]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Order]') AND type in (N'U'))
+ALTER TABLE [dbo].[Order] DROP CONSTRAINT IF EXISTS [DF_Order_IsActive]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CustomerBasket]') AND type in (N'U'))
+ALTER TABLE [dbo].[CustomerBasket] DROP CONSTRAINT IF EXISTS [DF_CustomerBasket_IsDelete]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CustomerBasket]') AND type in (N'U'))
+ALTER TABLE [dbo].[CustomerBasket] DROP CONSTRAINT IF EXISTS [DF_CustomerBasket_IsActive]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND type in (N'U'))
+ALTER TABLE [dbo].[Customer] DROP CONSTRAINT IF EXISTS [DF_Customer_IsDelete]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND type in (N'U'))
+ALTER TABLE [dbo].[Customer] DROP CONSTRAINT IF EXISTS [DF_Customer_IsActive]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Category]') AND type in (N'U'))
+ALTER TABLE [dbo].[Category] DROP CONSTRAINT IF EXISTS [DF_Category_IsDelete]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Category]') AND type in (N'U'))
+ALTER TABLE [dbo].[Category] DROP CONSTRAINT IF EXISTS [DF_Category_IsActive]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Brand]') AND type in (N'U'))
+ALTER TABLE [dbo].[Brand] DROP CONSTRAINT IF EXISTS [DF_Brand_IsDelete]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Brand]') AND type in (N'U'))
+ALTER TABLE [dbo].[Brand] DROP CONSTRAINT IF EXISTS [DF_Brand_IsActive]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Admin]') AND type in (N'U'))
+ALTER TABLE [dbo].[Admin] DROP CONSTRAINT IF EXISTS [DF_Admin_IsDelete]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Admin]') AND type in (N'U'))
+ALTER TABLE [dbo].[Admin] DROP CONSTRAINT IF EXISTS [DF_Admin_IsActive]
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Admin]') AND type in (N'U'))
+ALTER TABLE [dbo].[Admin] DROP CONSTRAINT IF EXISTS [Default_Admin_EmailSubscribed]
+GO
+/****** Object:  Table [dbo].[Tax]    Script Date: 02-09-2021 23:43:27 ******/
+DROP TABLE IF EXISTS [dbo].[Tax]
+GO
+/****** Object:  Table [dbo].[Supplier]    Script Date: 02-09-2021 23:43:27 ******/
+DROP TABLE IF EXISTS [dbo].[Supplier]
+GO
+/****** Object:  Table [dbo].[SubCategory]    Script Date: 02-09-2021 23:43:27 ******/
+DROP TABLE IF EXISTS [dbo].[SubCategory]
+GO
+/****** Object:  Table [dbo].[Status]    Script Date: 02-09-2021 23:43:27 ******/
+DROP TABLE IF EXISTS [dbo].[Status]
+GO
+/****** Object:  Table [dbo].[Role]    Script Date: 02-09-2021 23:43:27 ******/
+DROP TABLE IF EXISTS [dbo].[Role]
+GO
+/****** Object:  Table [dbo].[Product]    Script Date: 02-09-2021 23:43:27 ******/
+DROP TABLE IF EXISTS [dbo].[Product]
+GO
+/****** Object:  Table [dbo].[OrderDetail]    Script Date: 02-09-2021 23:43:27 ******/
+DROP TABLE IF EXISTS [dbo].[OrderDetail]
+GO
+/****** Object:  Table [dbo].[Order]    Script Date: 02-09-2021 23:43:27 ******/
+DROP TABLE IF EXISTS [dbo].[Order]
+GO
+/****** Object:  Table [dbo].[CustomerFavourite]    Script Date: 02-09-2021 23:43:27 ******/
+DROP TABLE IF EXISTS [dbo].[CustomerFavourite]
+GO
+/****** Object:  Table [dbo].[CustomerBasket]    Script Date: 02-09-2021 23:43:27 ******/
+DROP TABLE IF EXISTS [dbo].[CustomerBasket]
+GO
+/****** Object:  Table [dbo].[Customer]    Script Date: 02-09-2021 23:43:27 ******/
+DROP TABLE IF EXISTS [dbo].[Customer]
+GO
+/****** Object:  Table [dbo].[Category]    Script Date: 02-09-2021 23:43:27 ******/
+DROP TABLE IF EXISTS [dbo].[Category]
+GO
+/****** Object:  Table [dbo].[Brand]    Script Date: 02-09-2021 23:43:27 ******/
+DROP TABLE IF EXISTS [dbo].[Brand]
+GO
+/****** Object:  Table [dbo].[Admin]    Script Date: 02-09-2021 23:43:27 ******/
+DROP TABLE IF EXISTS [dbo].[Admin]
+GO
+USE [master]
+GO
+/****** Object:  Database [GoodsEnterprise]    Script Date: 02-09-2021 23:43:27 ******/
+DROP DATABASE IF EXISTS [GoodsEnterprise]
+GO
+/****** Object:  Database [GoodsEnterprise]    Script Date: 02-09-2021 23:43:27 ******/
+CREATE DATABASE [GoodsEnterprise]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'GoodsEnterprise', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\GoodsEnterprise.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'GoodsEnterprise_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\GoodsEnterprise_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT
+GO
+ALTER DATABASE [GoodsEnterprise] SET COMPATIBILITY_LEVEL = 150
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [GoodsEnterprise].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [GoodsEnterprise] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [GoodsEnterprise] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [GoodsEnterprise] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [GoodsEnterprise] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [GoodsEnterprise] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [GoodsEnterprise] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [GoodsEnterprise] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [GoodsEnterprise] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [GoodsEnterprise] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [GoodsEnterprise] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [GoodsEnterprise] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [GoodsEnterprise] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [GoodsEnterprise] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [GoodsEnterprise] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [GoodsEnterprise] SET  DISABLE_BROKER 
+GO
+ALTER DATABASE [GoodsEnterprise] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [GoodsEnterprise] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [GoodsEnterprise] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [GoodsEnterprise] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [GoodsEnterprise] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [GoodsEnterprise] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [GoodsEnterprise] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [GoodsEnterprise] SET RECOVERY FULL 
+GO
+ALTER DATABASE [GoodsEnterprise] SET  MULTI_USER 
+GO
+ALTER DATABASE [GoodsEnterprise] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [GoodsEnterprise] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [GoodsEnterprise] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [GoodsEnterprise] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [GoodsEnterprise] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [GoodsEnterprise] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+EXEC sys.sp_db_vardecimal_storage_format N'GoodsEnterprise', N'ON'
+GO
+ALTER DATABASE [GoodsEnterprise] SET QUERY_STORE = OFF
+GO
+USE [GoodsEnterprise]
+GO
+/****** Object:  Table [dbo].[Admin]    Script Date: 02-09-2021 23:43:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -27,7 +257,7 @@ CREATE TABLE [dbo].[Admin](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Brand]    Script Date: 01-09-2021 18:12:02 ******/
+/****** Object:  Table [dbo].[Brand]    Script Date: 02-09-2021 23:43:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -50,7 +280,7 @@ CREATE TABLE [dbo].[Brand](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Category]    Script Date: 01-09-2021 18:12:02 ******/
+/****** Object:  Table [dbo].[Category]    Script Date: 02-09-2021 23:43:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -65,14 +295,13 @@ CREATE TABLE [dbo].[Category](
 	[Modifiedby] [int] NULL,
 	[IsActive] [bit] NOT NULL,
 	[IsDelete] [bit] NOT NULL,
-	[BrandId] [int] NOT NULL,
  CONSTRAINT [PK_Category] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Customer]    Script Date: 01-09-2021 18:12:02 ******/
+/****** Object:  Table [dbo].[Customer]    Script Date: 02-09-2021 23:43:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -107,7 +336,7 @@ CREATE TABLE [dbo].[Customer](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CustomerBasket]    Script Date: 01-09-2021 18:12:02 ******/
+/****** Object:  Table [dbo].[CustomerBasket]    Script Date: 02-09-2021 23:43:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -128,7 +357,7 @@ CREATE TABLE [dbo].[CustomerBasket](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CustomerFavourite]    Script Date: 01-09-2021 18:12:02 ******/
+/****** Object:  Table [dbo].[CustomerFavourite]    Script Date: 02-09-2021 23:43:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -149,7 +378,7 @@ CREATE TABLE [dbo].[CustomerFavourite](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Order]    Script Date: 01-09-2021 18:12:02 ******/
+/****** Object:  Table [dbo].[Order]    Script Date: 02-09-2021 23:43:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -175,7 +404,7 @@ CREATE TABLE [dbo].[Order](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[OrderDetail]    Script Date: 01-09-2021 18:12:02 ******/
+/****** Object:  Table [dbo].[OrderDetail]    Script Date: 02-09-2021 23:43:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -198,7 +427,7 @@ CREATE TABLE [dbo].[OrderDetail](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Product]    Script Date: 01-09-2021 18:12:02 ******/
+/****** Object:  Table [dbo].[Product]    Script Date: 02-09-2021 23:43:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -233,7 +462,7 @@ CREATE TABLE [dbo].[Product](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Role]    Script Date: 01-09-2021 18:12:02 ******/
+/****** Object:  Table [dbo].[Role]    Script Date: 02-09-2021 23:43:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -253,7 +482,7 @@ CREATE TABLE [dbo].[Role](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Status]    Script Date: 01-09-2021 18:12:02 ******/
+/****** Object:  Table [dbo].[Status]    Script Date: 02-09-2021 23:43:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -273,7 +502,7 @@ CREATE TABLE [dbo].[Status](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[SubCategory]    Script Date: 01-09-2021 18:12:02 ******/
+/****** Object:  Table [dbo].[SubCategory]    Script Date: 02-09-2021 23:43:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -295,7 +524,7 @@ CREATE TABLE [dbo].[SubCategory](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Supplier]    Script Date: 01-09-2021 18:12:02 ******/
+/****** Object:  Table [dbo].[Supplier]    Script Date: 02-09-2021 23:43:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -323,7 +552,7 @@ CREATE TABLE [dbo].[Supplier](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Tax]    Script Date: 01-09-2021 18:12:02 ******/
+/****** Object:  Table [dbo].[Tax]    Script Date: 02-09-2021 23:43:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -390,11 +619,6 @@ GO
 ALTER TABLE [dbo].[Admin]  WITH CHECK ADD FOREIGN KEY([RoleId])
 REFERENCES [dbo].[Role] ([Id])
 GO
-ALTER TABLE [dbo].[Category]  WITH CHECK ADD  CONSTRAINT [FK_Brand_ID] FOREIGN KEY([BrandId])
-REFERENCES [dbo].[Brand] ([Id])
-GO
-ALTER TABLE [dbo].[Category] CHECK CONSTRAINT [FK_Brand_ID]
-GO
 ALTER TABLE [dbo].[Customer]  WITH CHECK ADD FOREIGN KEY([RoleId])
 REFERENCES [dbo].[Role] ([Id])
 GO
@@ -434,7 +658,7 @@ REFERENCES [dbo].[Product] ([Id])
 GO
 ALTER TABLE [dbo].[OrderDetail] CHECK CONSTRAINT [FK__OrderDeta__Produ__5DCAEF64]
 GO
-/****** Object:  StoredProcedure [dbo].[USP_GetBrands]    Script Date: 01-09-2021 18:12:02 ******/
+/****** Object:  StoredProcedure [dbo].[USP_GetBrands]    Script Date: 02-09-2021 23:43:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -483,7 +707,7 @@ SELECT @TotalRecords = COUNT(Id) FROM Brand WITH (NOLOCK)
 END
 
 GO
-/****** Object:  StoredProcedure [dbo].[USP_GetCategories]    Script Date: 01-09-2021 18:12:02 ******/
+/****** Object:  StoredProcedure [dbo].[USP_GetCategories]    Script Date: 02-09-2021 23:43:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -532,7 +756,7 @@ SELECT @TotalRecords = COUNT(Id) FROM Category WITH (NOLOCK)
 END
 
 GO
-/****** Object:  StoredProcedure [dbo].[USP_GetSubCategories]    Script Date: 01-09-2021 18:12:02 ******/
+/****** Object:  StoredProcedure [dbo].[USP_GetSubCategories]    Script Date: 02-09-2021 23:43:30 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON

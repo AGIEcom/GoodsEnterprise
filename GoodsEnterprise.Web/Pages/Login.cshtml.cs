@@ -51,7 +51,7 @@ namespace GoodsEnterprise.Web.Pages
                     if (existingAdmin.Password.Decrypt(Constants.EncryptDecryptSecurity) == objAdmin.Password)
                     {
                         HttpContext.Session.SetString(Constants.LoginSession, JsonConvert.SerializeObject(existingAdmin));
-                        return RedirectToPage("Brand");
+                        return RedirectToPage("UploadDownload");
                     }
                     else
                     {
