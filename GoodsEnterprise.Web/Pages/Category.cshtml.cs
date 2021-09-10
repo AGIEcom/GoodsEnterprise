@@ -24,14 +24,12 @@ namespace GoodsEnterprise.Web.Pages
         /// CategoryModel
         /// </summary>
         /// <param name="category"></param>
-        public CategoryModel(IGeneralRepository<Category> category, IGeneralRepository<Brand> brand)
+        public CategoryModel(IGeneralRepository<Category> category)
         {
             _category = category;
-            _brand = brand;
         }
 
         private readonly IGeneralRepository<Category> _category;
-        private readonly IGeneralRepository<Brand> _brand;
 
         [BindProperty()]
         public Category objCategory { get; set; }

@@ -314,6 +314,8 @@ namespace GoodsEnterprise.Model.Models
 
                 entity.Property(e => e.Depth).HasColumnType("decimal(16, 2)");
 
+                entity.Property(e => e.ExpriyDate).HasColumnType("datetime");
+
                 entity.Property(e => e.Height).HasColumnType("decimal(16, 2)");
 
                 entity.Property(e => e.Image)
@@ -330,6 +332,7 @@ namespace GoodsEnterprise.Model.Models
                 entity.Property(e => e.NetWeight).HasColumnType("decimal(16, 2)");
 
                 entity.Property(e => e.OuterEan)
+                    .IsRequired()
                     .HasMaxLength(25)
                     .IsUnicode(false)
                     .HasColumnName("OuterEAN");

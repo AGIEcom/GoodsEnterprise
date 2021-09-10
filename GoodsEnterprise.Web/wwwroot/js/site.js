@@ -590,18 +590,18 @@ $.getJSON("Menu/Menu.json", function (data) {
 //    });
 //});
 
-$(function () {
-    $("#selectProductCategory").on("change", function () {
-        var categoryId = $(this).val();
-        $("#selectProductSubCategory").empty();
-        $("#selectProductSubCategory").append("<option value=''>-- Select SubCategory --</option>");
-        $.getJSON(`?handler=SubCategories&categoryId=${categoryId}`, (data) => {
-            $.each(data, function (i, item) {
-                $("#selectProductSubCategory").append(`<option value="${item.id}">${item.name}</option>`);
-            });
-        });
-    });
-});
+//$(function () {
+//    $("#selectProductCategory").on("change", function () {
+//        var categoryId = $(this).val();
+//        $("#selectProductSubCategory").empty();
+//        $("#selectProductSubCategory").append("<option value=''>-- Select SubCategory --</option>");
+//        $.getJSON(`?handler=SubCategories&categoryId=${categoryId}`, (data) => {
+//            $.each(data, function (i, item) {
+//                $("#selectProductSubCategory").append(`<option value="${item.id}">${item.name}</option>`);
+//            });
+//        });
+//    });
+//});
 //End
 
 //Number only

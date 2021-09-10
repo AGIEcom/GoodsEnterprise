@@ -87,6 +87,8 @@ namespace GoodsEnterprise.Web.Pages
             {
                 await LoadBrand();
                 await LoadCategory();
+                await LoadSubCategoryByCategoryId();
+                objProduct.IsActive = true;
                 ViewData["PageType"] = "Edit";
             }
             catch (Exception ex)
@@ -114,7 +116,7 @@ namespace GoodsEnterprise.Web.Pages
                 }
                 await LoadBrand();
                 await LoadCategory();
-                await LoadSubCategoryByCategoryId(objProduct.CategoryId);
+                await LoadSubCategoryByCategoryId();
                 ViewData["PageType"] = "Edit";
                 ViewData["PagePrimaryID"] = objProduct.Id;
                 ViewData["ImagePath"] = objProduct.Image;
@@ -157,6 +159,7 @@ namespace GoodsEnterprise.Web.Pages
             {
                 await LoadBrand();
                 await LoadCategory();
+                await LoadSubCategoryByCategoryId();
                 objProduct = await _product.GetAsync(filter: x => x.Id == productId && x.IsDelete != true);
                 ViewData["PageType"] = "Edit";
                 ViewData["PagePrimaryID"] = objProduct.Id;
@@ -247,6 +250,7 @@ namespace GoodsEnterprise.Web.Pages
                     ViewData["PageType"] = "Edit";
                     await LoadBrand();
                     await LoadCategory();
+                    await LoadSubCategoryByCategoryId();
                     return Page();
                 }
             }
@@ -294,40 +298,39 @@ namespace GoodsEnterprise.Web.Pages
         }
 
         /// <summary>
-        /// LoadCategoryByBrandId
+        /// LoadSubCategoryByCategoryId
         /// </summary>
-        /// <param name="categoryId"></param>
         /// <returns></returns>
-        private async Task LoadSubCategoryByCategoryId(int? categoryId)
+        private async Task LoadSubCategoryByCategoryId()
         {
             try
             {
-                selectSubCategories = new SelectList(await _subCategory.GetAllAsync(filter: x => x.IsDelete != true && x.CategoryId == categoryId),
+                selectSubCategories = new SelectList(await _subCategory.GetAllAsync(filter: x => x.IsDelete != true),
                                           "Id", "Name", null);
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"Error in LoadSubCategoryByCategoryId(), Product, categoryId: { categoryId }");
+                Log.Error(ex, $"Error in LoadSubCategoryByCategoryId(), Product");
                 throw;
             }
         }
-        /// <summary>
-        /// OnGetSubCategories
-        /// </summary>
-        /// <param name="categoryId"></param>
-        /// <returns></returns>
-        public async Task<JsonResult> OnGetSubCategories(int? categoryId)
-        {
-            try
-            {
-                return new JsonResult(await _subCategory.GetAllAsync(filter: x => x.IsDelete != true && x.CategoryId == categoryId));
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, $"Error in OnGetSubCategories(), Product, categoryId: { categoryId }");
-                throw;
-            }
-        }
+        ///// <summary>
+        ///// OnGetSubCategories
+        ///// </summary>
+        ///// <param name="categoryId"></param>
+        ///// <returns></returns>
+        //public async Task<JsonResult> OnGetSubCategories(int? categoryId)
+        //{
+        //    try
+        //    {
+        //        return new JsonResult(await _subCategory.GetAllAsync(filter: x => x.IsDelete != true && x.CategoryId == categoryId));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Error(ex, $"Error in OnGetSubCategories(), Product, categoryId: { categoryId }");
+        //        throw;
+        //    }
+        //}
 
         ///// <summary>
         ///// OnGetCategories

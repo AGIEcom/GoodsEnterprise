@@ -40,6 +40,17 @@ namespace GoodsEnterprise.DataAccess.Implementation
         }
 
         /// <summary>
+        /// BulkInsertSubCategoryAsync
+        /// </summary>
+        /// <param name="subCategories"></param>
+        /// <returns></returns>
+        public async Task BulkInsertSubCategoryAsync(List<SubCategory> subCategories)
+        {
+            var bulkConfig = new BulkConfig { SetOutputIdentity = true, BatchSize = 1000 };
+            await _goodsEnterpriseContext.BulkInsertAsync(subCategories, bulkConfig);
+        }
+
+        /// <summary>
         /// BulkInsertProductAsync
         /// </summary>
         /// <param name="products"></param>

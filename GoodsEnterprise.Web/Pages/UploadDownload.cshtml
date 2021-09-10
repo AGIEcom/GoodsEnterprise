@@ -1,6 +1,6 @@
 ﻿@page "/UploadDownload"
 @model GoodsEnterprise.Web.Pages.UploadDownloadModel
-@{ 
+@{
     ViewData["Title"] = "UploadDownload";
 }
 <div class="alert alert-success" id="success-alert" style="display:none;">
@@ -8,10 +8,15 @@
     @ViewData["SuccessMsg"]
 </div>
 
+<div id="validation-alert" style="display:none;">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    @ViewData["ValidationMsg"]
+</div>
+
 <div id="divUploadDownload">
     <form id="UploadDownloadform" method="post" enctype="multipart/form-data" asp-page-handler="Submit">
         <H3>Bulk Import/Export Products</H3>
-        
+
         <div class="mb-3">
             <input type="file" id="productFileUpload" class="fileUpload" asp-for="Upload" accept=".xls, .xlsx" onchange="productFileValidation()">
         </div>
@@ -34,4 +39,17 @@
             });
         });
     </script>
+}
+
+@if (ViewData["ValidationMsg"] != null && ViewData["ValidationMsg"] != "")
+{
+<script type="text/javascript">
+
+        $(document).ready(function () {
+            $.alert({
+            title: 'Alert!',
+            content: @ViewData["ValidationMsg"],
+        });
+        });
+</script>
 }

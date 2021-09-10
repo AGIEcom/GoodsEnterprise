@@ -83,7 +83,7 @@
         </div>
         <div class="mb-3" id="divselectProductCategory">
             <label for="lblCategory" class="form-label">Category</label>
-            <select asp-for="objProduct.CategoryId" class="form-control"
+            <select asp-for="objProduct.CategoryId" class="form-control selectpicker" data-live-search="true"
                     asp-items="Model.selectCategories" id="selectProductCategory">
                 <option value="">-- Select Category --</option>
             </select>

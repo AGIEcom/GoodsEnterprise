@@ -24,7 +24,7 @@
 </div>
 
 <div id="subCategorylist" style="@List">
-    <a asp-page-handler="Create" id="lnkCreateSubCategory" class="btn btn-primary margin-bottom-15">Create New SubCategory</a>
+    <a id="lnkCreateSubCategory" class="btn btn-primary margin-bottom-15">Create New SubCategory</a>
     <table class="display" style="width:100%" id="tblSubCategoryMaster">
         <thead>
             <tr>
@@ -78,13 +78,6 @@
         <div class="mb-3">
             <label for="lblIsActive" class="form-label">IsActive</label>
             <input asp-for="objSubCategory.IsActive" type="checkbox" id="txtIsActive">
-        </div>
-        <div class="mb-3" id="divSelectCategory">
-            <label for="lblCategory" class="form-label">Category</label>
-            <select asp-for="objSubCategory.CategoryId" class="form-control selectpicker" data-live-search="true"
-                    asp-items="Model.Categories" id="selectCategory">
-                <option value="0">-- Select Category --</option>
-            </select>
         </div>
         <button type="submit" class="btn btn-primary subCategory-submit">Submit</button>
         @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)

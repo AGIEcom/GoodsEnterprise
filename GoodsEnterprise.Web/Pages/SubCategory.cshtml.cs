@@ -22,14 +22,12 @@ namespace GoodsEnterprise.Web.Pages
         /// SubCategoryModel
         /// </summary>
         /// <param name="subCategory"></param>
-        public SubCategoryModel(IGeneralRepository<SubCategory> subCategory, IGeneralRepository<Category> category)
+        public SubCategoryModel(IGeneralRepository<SubCategory> subCategory)
         {
             _subCategory = subCategory;
-            _category = category;
         }
 
         private readonly IGeneralRepository<SubCategory> _subCategory;
-        private readonly IGeneralRepository<Category> _category;
 
         [BindProperty()]
         public SubCategory objSubCategory { get; set; }
@@ -78,7 +76,6 @@ namespace GoodsEnterprise.Web.Pages
         {
             try
             {
-                await LoadCategory();
                 ViewData["PageType"] = "Edit";
             }
             catch (Exception ex)
@@ -104,7 +101,6 @@ namespace GoodsEnterprise.Web.Pages
                 {
                     return Redirect("~/all-subCategory");
                 }
-                await LoadCategory();
                 ViewData["PageType"] = "Edit";
                 ViewData["PagePrimaryID"] = objSubCategory.Id;
             }
@@ -144,7 +140,6 @@ namespace GoodsEnterprise.Web.Pages
         {
             try
             {
-                await LoadCategory();
                 objSubCategory = await _subCategory.GetAsync(filter: x => x.Id == subCategoryId && x.IsDelete != true);
                 ViewData["PageType"] = "Edit";
                 ViewData["PagePrimaryID"] = objSubCategory.Id;
@@ -224,7 +219,6 @@ namespace GoodsEnterprise.Web.Pages
                 else
                 {
                     ViewData["PageType"] = "Edit";
-                    await LoadCategory();
                     return Page();
                 }
             }
@@ -233,15 +227,6 @@ namespace GoodsEnterprise.Web.Pages
                 Log.Error(ex, $"Error in OnPostSubmitAsync(), SubCategory, SubCategoryId: { objSubCategory?.Id }");
                 throw;
             }
-        }
-        /// <summary>
-        /// LoadCategory
-        /// </summary>
-        /// <returns></returns>
-        private async Task LoadCategory()
-        {
-            Categories = new SelectList(await _category.GetAllAsync(filter: x => x.IsDelete != true),
-                           "Id", "Name", null);
         }
     }
 }

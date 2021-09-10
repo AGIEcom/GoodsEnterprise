@@ -10,6 +10,7 @@ using GoodsEnterprise.DataAccess.Interface;
 using GoodsEnterprise.Model.Models;
 using GoodsEnterprise.Web.Maaper;
 using GoodsEnterprise.Web.Utilities;
+using LinqKit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -20,11 +21,12 @@ namespace GoodsEnterprise.Web.Pages
     public class UploadDownloadModel : PageModel
     {
         public UploadDownloadModel(IGeneralRepository<Brand> brand, IGeneralRepository<Category> category,
-            IGeneralRepository<SubCategory> subCategory, IUploadDownloadDA uploadDownloadDA, IMapper mapper)
+            IGeneralRepository<SubCategory> subCategory, IGeneralRepository<Product> product, IUploadDownloadDA uploadDownloadDA, IMapper mapper)
         {
             _brand = brand;
             _category = category;
             _subCategory = subCategory;
+            _product = product;
             _uploadDownloadDA = uploadDownloadDA;
             _mapper = mapper;
         }
@@ -35,9 +37,15 @@ namespace GoodsEnterprise.Web.Pages
         private readonly IGeneralRepository<Brand> _brand;
         private readonly IGeneralRepository<Category> _category;
         private readonly IGeneralRepository<SubCategory> _subCategory;
+        private readonly IGeneralRepository<Product> _product;
         private readonly IUploadDownloadDA _uploadDownloadDA;
         private readonly IMapper _mapper;
+        public List<Product> products { get; set; }
 
+        /// <summary>
+        /// OnPostSubmitAsync
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> OnPostSubmitAsync()
         {
             DataTable productUpload;
@@ -56,6 +64,7 @@ namespace GoodsEnterprise.Web.Pages
                             {
                                 UseHeaderRow = true
                             }
+                            
                         }).Tables[0];
                     }
                 }
@@ -68,11 +77,67 @@ namespace GoodsEnterprise.Web.Pages
                     }
                 }
 
-                if (uploadFileFields.Any(x => x.Value == false))
+                string[] missingColumns = uploadFileFields.Where(x => x.Value == false).Select(x => x.Key).ToArray() ;
+
+                if (missingColumns.Count() > 1)
                 {
                     ViewData["SuccessMsg"] = "Invalid file format (Product file format is not valid)";
                     return Page();
                 }
+
+                //if (uploadFileFields.Any(x => x.Value == false))
+                //{
+                //    ViewData["SuccessMsg"] = "Invalid file format (Product file format is not valid)";
+                //    return Page();
+                //}
+
+                string[] duplicates = productUpload.AsEnumerable()
+                   .Select(dr => Convert.ToString(dr["Outer EAN"]))
+                   .GroupBy(x => x)
+                   .Where(g => g.Count() > 1)
+                   .Select(g => g.Key)
+                   .ToArray();
+
+                if (duplicates!= null && duplicates.Count() > 1)
+                {
+                    ViewData["ValidationMsg"] = "Invalid file format (Product file format is not valid)";
+                    return Page();
+                }
+
+               
+
+                var predicate = PredicateBuilder.New<DataRow>();
+
+                foreach (string field in Constants.ProductMandatoryFields)
+                {
+                    predicate = predicate.Or(a => string.IsNullOrEmpty(Convert.ToString(a[field]).Trim()));
+                }
+
+                int[] missingMandatoryFields = productUpload.AsEnumerable().Where(predicate).Select(r => productUpload.Rows.IndexOf(r)+2).ToArray();
+
+
+                if (missingMandatoryFields != null && missingMandatoryFields.Count() > 1)
+                {
+                    ViewData["SuccessMsg"] = "Invalid file format (Product file format is not valid)";
+                    return Page();
+                }
+
+
+                await LoadProducts();
+
+                if (products != null && products.Count > 1)
+                {
+                    string[] existingProducts = productUpload.AsEnumerable().Where(a => products.Select(b => b.Code).Contains(a.Field<string>("Outer EAN")))
+                                              .GroupBy(product => product.Field<string>("Outer EAN").Trim())
+                                              .Select(group => group.First().Field<string>("Outer EAN")).ToArray();
+
+                    if (existingProducts.Count() > 1)
+                    {
+                        ViewData["SuccessMsg"] = "Invalid file format (Product file format is not valid)";
+                        return Page();
+                    }
+                }
+
 
                 await LoadBrands();
                 await LoadCategories();
@@ -80,6 +145,7 @@ namespace GoodsEnterprise.Web.Pages
 
                 await InsertNewBrands(productUpload);
                 await InsertNewCategories(productUpload);
+                await InsertNewSubCategories(productUpload);
 
                 List<Product> bulkInsertProducts = _mapper.Map<List<DataRow>, List<Product>>(new List<DataRow>(productUpload.Rows.OfType<DataRow>()));
                 
@@ -116,7 +182,7 @@ namespace GoodsEnterprise.Web.Pages
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"Error in LoadFields");
+                Log.Error(ex, $"Error in LoadFields(), UploadDownload");
                 throw;
             }
         }
@@ -133,7 +199,7 @@ namespace GoodsEnterprise.Web.Pages
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"LoadBrands");
+                Log.Error(ex, $"LoadBrands(), UploadDownload");
                 throw;
             }         
         }
@@ -150,7 +216,7 @@ namespace GoodsEnterprise.Web.Pages
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"LoadCategories");
+                Log.Error(ex, $"LoadCategories(), UploadDownload");
                 throw;
             }      
         }
@@ -167,9 +233,26 @@ namespace GoodsEnterprise.Web.Pages
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"LoadSubCategories");
+                Log.Error(ex, $"LoadSubCategories(), UploadDownload");
                 throw;
             }            
+        }
+
+        /// <summary>
+        /// LoadProducts
+        /// </summary>
+        /// <returns></returns>
+        public async Task LoadProducts()
+        {
+            try
+            {
+                products = await _product.GetAllAsync(filter: x => x.IsDelete != true);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"LoadProducts(), UploadDownload");
+                throw;
+            }
         }
 
         /// <summary>
@@ -204,7 +287,7 @@ namespace GoodsEnterprise.Web.Pages
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"Error in InsertNewBrands");
+                Log.Error(ex, $"Error in InsertNewBrands(), UploadDownload");
                 throw;
             }
         }
@@ -241,7 +324,44 @@ namespace GoodsEnterprise.Web.Pages
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"Error in InsertNewCategories");
+                Log.Error(ex, $"Error in InsertNewCategories(), UploadDownload");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// InsertNewSubCategories
+        /// </summary>
+        /// <param name="productUploadForCategories"></param>
+        /// <returns></returns>
+        private async Task InsertNewSubCategories(DataTable productUploadForSubCategories)
+        {
+            try
+            {
+                var newSubCategories = productUploadForSubCategories.AsEnumerable().Where(a => !Common.UploadCategories.Select(c => c.Name).Contains(a.Field<string>("SubCategory")))
+                              .GroupBy(subCategory => subCategory.Field<string>("SubCategory"))
+                              .Select(group => group.First()).ToList();
+
+                List<SubCategory> bulkInsertSubCategories = new List<SubCategory>();
+                foreach (var subCategory in newSubCategories)
+                {
+                    var bulkInsertSubCategory = new SubCategory()
+                    {
+                        Name = subCategory.Field<string>("SubCategory"),
+                        CreatedDate = DateTime.UtcNow,
+                        IsActive = true,
+                        IsDelete = false
+                    };
+                    bulkInsertSubCategories.Add(bulkInsertSubCategory);
+                }
+
+                await _uploadDownloadDA.BulkInsertSubCategoryAsync(bulkInsertSubCategories);
+
+                Common.UploadSubCategories.AddRange(bulkInsertSubCategories);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Error in InsertNewSubCategories(), UploadDownload");
                 throw;
             }
         }
