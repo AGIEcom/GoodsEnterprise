@@ -36,5 +36,8 @@ namespace GoodsEnterprise.Web.Utilities
         public const string FailureUpload = "Some problem occured while uploading the file, please contact Administrator";
 
         public static readonly string[] ProductMandatoryFields = { "Product Code" , "Category", "Brand", "Inner EAN", "Outer EAN", "Product Description", "UPC", "Unit Size", "Lyr Qty", "Plt Qty", "Case Price"};
+
+        public static readonly string[] ProductFieldsDownload = { "Code", "Brand", "Category", "SubCategory", "Supplier", "InnerEan", "OuterEan", "PackSize", "Upc", "LayerQuantity", "PalletQuantity", "Height", "Weight",
+        "Width", "NetWeight", "Depth", "IsActive", "ExpriyDate"};
     }
 }

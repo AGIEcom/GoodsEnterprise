@@ -5,15 +5,15 @@
 }
 <div class="alert alert-success" id="success-alert" style="display:none;">
     <button type="button" class="close" data-dismiss="alert">x</button>
-    @ViewData["SuccessMsg"]
 </div>
 
-<div id="validation-alert" style="display:none;">
+<div class="alert-ValidationSummary" id="validation-alert" style="display:none;">
     <button type="button" class="close" data-dismiss="alert">x</button>
-    @ViewData["ValidationMsg"]
+    @Html.Raw(ViewData["ValidationMsg"])
 </div>
 
 <div id="divUploadDownload">
+    @ViewData["SuccessMsg"]
     <form id="UploadDownloadform" method="post" enctype="multipart/form-data" asp-page-handler="Submit">
         <H3>Bulk Import/Export Products</H3>
 
@@ -43,13 +43,18 @@
 
 @if (ViewData["ValidationMsg"] != null && ViewData["ValidationMsg"] != "")
 {
-<script type="text/javascript">
-
-        $(document).ready(function () {
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $("#validation-alert").show();
+        //$("#validation-alert").fadeTo(2000, 6000).slideUp(6000, function () {
+        //    $("#validation-alert").slideUp(6000);
+        //    });
+    });
+        @*$(document).ready(function () {
             $.alert({
             title: 'Alert!',
             content: @ViewData["ValidationMsg"],
         });
-        });
-</script>
+        });*@
+    </script>
 }
