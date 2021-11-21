@@ -20,12 +20,13 @@ namespace GoodsEnterprise.Web.Pages
     public class UploadDownloadModel : PageModel
     {
         public UploadDownloadModel(IGeneralRepository<Brand> brand, IGeneralRepository<Category> category,
-            IGeneralRepository<SubCategory> subCategory, IGeneralRepository<Product> product, IUploadDownloadDA uploadDownloadDA, IMapper mapper)
+            IGeneralRepository<SubCategory> subCategory, IGeneralRepository<Product> product, IGeneralRepository<Supplier> supplier, IUploadDownloadDA uploadDownloadDA, IMapper mapper)
         {
             _brand = brand;
             _category = category;
             _subCategory = subCategory;
             _product = product;
+            _supplier = supplier;
             _uploadDownloadDA = uploadDownloadDA;
             _mapper = mapper;
         }
@@ -68,6 +69,10 @@ namespace GoodsEnterprise.Web.Pages
                         }).Tables[0];
                     }
                 }
+
+                productUpload = productUpload.Rows.Cast<DataRow>().Where(row => !row.ItemArray.All(field => field is DBNull ||
+                                     string.IsNullOrWhiteSpace(field as string))).CopyToDataTable();
+
                 LoadFields();
                 foreach (DataColumn column in productUpload.Columns)
                 {

@@ -104,8 +104,8 @@
             <input asp-for="objProduct.OuterEan" type="text" class="form-control" id="txtOuterEan">
         </div>
         <div class="mb-3">
-            <label for="lblPackSize" class="form-label">PackSize</label>
-            <input asp-for="objProduct.PackSize" type="text" class="form-control" id="txtPackSize">
+            <label for="lblPackSize" class="form-label">UnitSize</label>
+            <input asp-for="objProduct.UnitSize" type="text" class="form-control" id="txtPackSize">
         </div>
         <div class="mb-3">
             <label for="lblUpc" class="form-label">Upc</label>
@@ -120,28 +120,57 @@
             <input asp-for="objProduct.PalletQuantity" type="text" class="form-control" id="txtPalletQuantity" onkeypress="return isNumber(event)">
         </div>
         <div class="mb-3">
-            <label for="lblHeight" class="form-label">Height</label>
-            <input asp-for="objProduct.Height" type="text" class="form-control" id="txtHeight" onkeypress="return isDecimal(event)">
+            <label for="lblCasePrice" class="form-label">Case Price</label>
+            <input asp-for="objProduct.CasePrice" type="text" class="form-control" id="txtCasePrice" onkeypress="return isDecimal(event)">
         </div>
         <div class="mb-3">
-            <label for="lblHeight" class="form-label">Height</label>
-            <input asp-for="objProduct.Height" type="text" class="form-control" id="txtHeight" onkeypress="return isDecimal(event)">
+            <label for="lblShelfLifeInWeeks" class="form-label">Shelf Life In Weeks</label>
+            <input asp-for="objProduct.ShelfLifeInWeeks" type="text" class="form-control" id="txtShelfLifeInWeeks" onkeypress="return isNumber(event)">
+        </div>
+
+        <div class="mb-3">
+            <label for="lblPackHeight" class="form-label">Pack Height</label>
+            <input asp-for="objProduct.PackHeight" type="text" class="form-control" id="txtPackHeight" onkeypress="return isDecimal(event)">
         </div>
         <div class="mb-3">
-            <label for="lblWeight" class="form-label">Weight</label>
-            <input asp-for="objProduct.Weight" type="text" class="form-control" id="txtWeight" onkeypress="return isDecimal(event)">
+            <label for="lblPackDepth" class="form-label">Pack Depth</label>
+            <input asp-for="objProduct.PackDepth" type="text" class="form-control" id="txtPackDeptht" onkeypress="return isDecimal(event)">
         </div>
         <div class="mb-3">
-            <label for="lblWidth" class="form-label">Width</label>
-            <input asp-for="objProduct.Width" type="text" class="form-control" id="txtWidth" onkeypress="return isDecimal(event)">
+            <label for="lblNetCaseWeightKg" class="form-label">Net Case Weight(Kg)</label>
+            <input asp-for="objProduct.NetCaseWeightKg" type="text" class="form-control" id="txtNetCaseWeightKg" onkeypress="return isDecimal(event)">
         </div>
         <div class="mb-3">
-            <label for="lblNetWeight" class="form-label">NetWeight</label>
-            <input asp-for="objProduct.NetWeight" type="text" class="form-control" id="txtNetWeight" onkeypress="return isDecimal(event)">
+            <label for="lblGrossCaseWeightKg" class="form-label">Gross Case Weight(Kg)</label>
+            <input asp-for="objProduct.GrossCaseWeightKg" type="text" class="form-control" id="txtGrossCaseWeightKg" onkeypress="return isDecimal(event)">
         </div>
         <div class="mb-3">
-            <label for="lblDepth" class="form-label">Depth</label>
-            <input asp-for="objProduct.Depth" type="text" class="form-control" id="txtDepth" onkeypress="return isDecimal(event)">
+            <label for="lblCaseWidthMm" class="form-label">Case Width(mm)</label>
+            <input asp-for="objProduct.CaseWidthMm" type="text" class="form-control" id="txtCaseWidthMm" onkeypress="return isDecimal(event)">
+        </div>
+        <div class="mb-3">
+            <label for="lblCaseHeightMm" class="form-label">Case Height(mm)</label>
+            <input asp-for="objProduct.CaseHeightMm" type="text" class="form-control" id="txtCaseHeightMm" onkeypress="return isDecimal(event)">
+        </div>
+        <div class="mb-3">
+            <label for="lblCaseDepthMm" class="form-label">Case Depth(mm)</label>
+            <input asp-for="objProduct.CaseDepthMm" type="text" class="form-control" id="txtCaseDepthMm" onkeypress="return isDecimal(event)">
+        </div>
+        <div class="mb-3">
+            <label for="lblPalletWeightKg" class="form-label">Pallet Weight(Kg)</label>
+            <input asp-for="objProduct.PalletWeightKg" type="text" class="form-control" id="txtPalletWeightKg" onkeypress="return isDecimal(event)">
+        </div>
+        <div class="mb-3">
+            <label for="lblPalletWidthMeter" class="form-label">Pallet Width(Meter)</label>
+            <input asp-for="objProduct.PalletWidthMeter" type="text" class="form-control" id="txtPalletWidthMeter" onkeypress="return isDecimal(event)">
+        </div>
+        <div class="mb-3">
+            <label for="lblPalletHeightMeter" class="form-label">Pallet Height(Meter)</label>
+            <input asp-for="objProduct.PalletHeightMeter" type="text" class="form-control" id="txtPalletHeightMeter" onkeypress="return isDecimal(event)">
+        </div>
+        <div class="mb-3">
+            <label for="lblPalletDepthMeter" class="form-label">Pallet Depth(Meter)</label>
+            <input asp-for="objProduct.PalletDepthMeter" type="text" class="form-control" id="txtPalletDepthMeter" onkeypress="return isDecimal(event)">
         </div>
         <div class="mb-3">
             <label for="lblIsActive" class="form-label">IsActive</label>
