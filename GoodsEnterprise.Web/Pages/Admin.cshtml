@@ -47,7 +47,7 @@
                 <td>@item.IsActive</td>
                 <td>
                     <a asp-page-handler="Edit" asp-route-adminId="@item.Id" class="btn btn-primary">Edit</a> |
-                    <a asp-page-handler="DeleteAdmin" asp-route-adminId="@item.Id" class="btn btn-primary btn-admin-delete">Delete</a>
+                    <a asp-page-handler="DeleteAdmin" asp-route-adminId="@item.Id" asp-route-firstName="@item.FirstName" class="btn btn-primary btn-admin-delete">Delete</a>
                 </td>
             </tr>
             }

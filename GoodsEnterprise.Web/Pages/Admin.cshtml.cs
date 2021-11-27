@@ -166,7 +166,7 @@ namespace GoodsEnterprise.Web.Pages
         /// </summary>
         /// <param name="adminId"></param>
         /// <returns></returns>
-        public async Task<IActionResult> OnGetDeleteAdminAsync(int adminId)
+        public async Task<IActionResult> OnGetDeleteAdminAsync(int adminId,string firstName)
         {
             try
             {

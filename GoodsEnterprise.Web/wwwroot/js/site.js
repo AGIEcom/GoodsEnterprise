@@ -2,14 +2,14 @@
 // for details on configuring this project to bundle and minify static web assets.
 //datatable initilaze
 $(document).ready(function () {
-    $('#tblBrandMaster').DataTable({
-        'columnDefs': [
-            {'targets': [3], 'orderable': false},
-            {'searchable': false, "targets": [1, 2, 3]}
-        ],
-        "order": [],
-        lengthMenu: [5, 10, 20, 50]
-    });
+    //$('#tblBrandMaster').DataTable({
+    //    'columnDefs': [
+    //        {'targets': [3], 'orderable': false},
+    //        {'searchable': false, "targets": [1, 2, 3]}
+    //    ],
+    //    "order": [],
+    //    lengthMenu: [5, 10, 20, 50]
+    //});
 
     $('#tblCategoryMaster').DataTable({
         'columnDefs': [
