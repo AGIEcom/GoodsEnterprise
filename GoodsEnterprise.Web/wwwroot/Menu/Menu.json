@@ -42,7 +42,12 @@
             {
               "name": "UploadDownload",
               "link": "/UploadDownload"
-            }]
+            },
+            {
+              "name": "Download",
+              "link": "/Download"
+            }
+          ]
         },
         {
             "roleid": 2,

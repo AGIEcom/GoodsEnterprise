@@ -16,6 +16,7 @@ namespace GoodsEnterprise.Web.Utilities
         public static List<Brand> UploadBrands { get; set; }    
         public static List<Category> UploadCategories { get; set; }
         public static List<SubCategory> UploadSubCategories { get; set; }
+        public static List<Supplier> UploadSuppliers { get; set; }
         /// <summary>
         /// UploadImages
         /// </summary>

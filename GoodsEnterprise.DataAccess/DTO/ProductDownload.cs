@@ -5,20 +5,12 @@ using System.Collections.Generic;
 
 namespace GoodsEnterprise.Model.Models
 {
-    public partial class Product
+    public partial class ProductDownload
     {
-        public Product()
-        {
-            CustomerBaskets = new HashSet<CustomerBasket>();
-            CustomerFavourites = new HashSet<CustomerFavourite>();
-            OrderDetails = new HashSet<OrderDetail>();
-        }
-
-        public int Id { get; set; }
         public string Code { get; set; }
-        public int? BrandId { get; set; }
-        public int? CategoryId { get; set; }
-        public int? SubCategoryId { get; set; }
+        public string Brand { get; set; }
+        public string Category { get; set; }
+        public string SubCategory { get; set; }
         public string InnerEan { get; set; }
         public string OuterEan { get; set; }
         public string UnitSize { get; set; }
@@ -46,11 +38,8 @@ namespace GoodsEnterprise.Model.Models
         public int? Modifiedby { get; set; }
         public bool IsActive { get; set; }
         public bool IsDelete { get; set; }
-        public int? SupplierId { get; set; }
+        public string Supplier { get; set; }
         public DateTime? ExpriyDate { get; set; }
 
-        public virtual ICollection<CustomerBasket> CustomerBaskets { get; set; }
-        public virtual ICollection<CustomerFavourite> CustomerFavourites { get; set; }
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

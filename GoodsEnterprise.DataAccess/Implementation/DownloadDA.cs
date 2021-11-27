@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 namespace GoodsEnterprise.DataAccess.Implementation
 {
     /// <summary>
-    /// UploadDownloadDA
+    /// DownloadDA
     /// </summary>
-    public class UploadDownloadDA : IUploadDownloadDA
+    public class DownloadDA : IDownloadDA
     {
         private readonly GoodsEnterpriseContext _goodsEnterpriseContext;
-        public UploadDownloadDA(GoodsEnterpriseContext goodsEnterpriseContext)
+        public DownloadDA(GoodsEnterpriseContext goodsEnterpriseContext)
         {
             _goodsEnterpriseContext = goodsEnterpriseContext;
         }
@@ -59,17 +59,6 @@ namespace GoodsEnterprise.DataAccess.Implementation
         {
             var bulkConfig = new BulkConfig { SetOutputIdentity = true, BatchSize = 1000 };
             await _goodsEnterpriseContext.BulkInsertAsync(products, bulkConfig);
-        }
-
-        /// <summary>
-        /// BulkInsertSupplierAsync
-        /// </summary>
-        /// <param name="suppliers"></param>
-        /// <returns></returns>
-        public async Task BulkInsertSupplierAsync(List<Supplier> suppliers)
-        {
-            var bulkConfig = new BulkConfig { SetOutputIdentity = true, BatchSize = 1000 };
-            await _goodsEnterpriseContext.BulkInsertAsync(suppliers, bulkConfig);
         }
     }
 }

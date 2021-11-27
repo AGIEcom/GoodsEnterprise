@@ -1,32 +1,32 @@
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using ExcelDataReader;
 using GoodsEnterprise.DataAccess.Interface;
 using GoodsEnterprise.Model.Models;
-using GoodsEnterprise.Web.Maaper;
 using GoodsEnterprise.Web.Utilities;
 using LinqKit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Serilog;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GoodsEnterprise.Web.Pages
 {
     public class UploadDownloadModel : PageModel
     {
         public UploadDownloadModel(IGeneralRepository<Brand> brand, IGeneralRepository<Category> category,
-            IGeneralRepository<SubCategory> subCategory, IGeneralRepository<Product> product, IUploadDownloadDA uploadDownloadDA, IMapper mapper)
+            IGeneralRepository<SubCategory> subCategory, IGeneralRepository<Product> product, IGeneralRepository<Supplier> supplier, IUploadDownloadDA uploadDownloadDA, IMapper mapper)
         {
             _brand = brand;
             _category = category;
             _subCategory = subCategory;
             _product = product;
+            _supplier = supplier;
             _uploadDownloadDA = uploadDownloadDA;
             _mapper = mapper;
         }
@@ -38,6 +38,7 @@ namespace GoodsEnterprise.Web.Pages
         private readonly IGeneralRepository<Category> _category;
         private readonly IGeneralRepository<SubCategory> _subCategory;
         private readonly IGeneralRepository<Product> _product;
+        private readonly IGeneralRepository<Supplier> _supplier;
         private readonly IUploadDownloadDA _uploadDownloadDA;
         private readonly IMapper _mapper;
         public List<Product> products { get; set; }
@@ -68,6 +69,10 @@ namespace GoodsEnterprise.Web.Pages
                         }).Tables[0];
                     }
                 }
+
+                productUpload = productUpload.Rows.Cast<DataRow>().Where(row => !row.ItemArray.All(field => field is DBNull ||
+                                     string.IsNullOrWhiteSpace(field as string))).CopyToDataTable();
+
                 LoadFields();
                 foreach (DataColumn column in productUpload.Columns)
                 {
@@ -79,17 +84,16 @@ namespace GoodsEnterprise.Web.Pages
 
                 string[] missingColumns = uploadFileFields.Where(x => x.Value == false).Select(x => x.Key).ToArray() ;
 
-                if (missingColumns.Count() > 1)
+                if (missingColumns.Count() > 0)
                 {
-                    ViewData["SuccessMsg"] = "Invalid file format (Product file format is not valid)";
+                    string messages = string.Empty;
+                    foreach (string msg in missingColumns)
+                    {
+                        messages += msg + "<br />";
+                    }
+                    ViewData["ValidationMsg"] = "Below Mandatory columns are missing" + "<br />" + messages;
                     return Page();
                 }
-
-                //if (uploadFileFields.Any(x => x.Value == false))
-                //{
-                //    ViewData["SuccessMsg"] = "Invalid file format (Product file format is not valid)";
-                //    return Page();
-                //}
 
                 string[] duplicates = productUpload.AsEnumerable()
                    .Select(dr => Convert.ToString(dr["Outer EAN"]))
@@ -98,13 +102,16 @@ namespace GoodsEnterprise.Web.Pages
                    .Select(g => g.Key)
                    .ToArray();
 
-                if (duplicates!= null && duplicates.Count() > 1)
+                if (duplicates!= null && duplicates.Count() > 0)
                 {
-                    ViewData["ValidationMsg"] = "Invalid file format (Product file format is not valid)";
+                    string messages = string.Empty;
+                    foreach (string msg in duplicates)
+                    {
+                        messages += msg + "<br />";
+                    }
+                    ViewData["ValidationMsg"] = "Below Outer EAN has duplicate values, please correct it and retry" + "<br />" + messages;
                     return Page();
-                }
-
-               
+                }               
 
                 var predicate = PredicateBuilder.New<DataRow>();
 
@@ -116,16 +123,20 @@ namespace GoodsEnterprise.Web.Pages
                 int[] missingMandatoryFields = productUpload.AsEnumerable().Where(predicate).Select(r => productUpload.Rows.IndexOf(r)+2).ToArray();
 
 
-                if (missingMandatoryFields != null && missingMandatoryFields.Count() > 1)
+                if (missingMandatoryFields != null && missingMandatoryFields.Count() > 0)
                 {
-                    ViewData["SuccessMsg"] = "Invalid file format (Product file format is not valid)";
+                    string messages = string.Empty;
+                    foreach (int msg in missingMandatoryFields)
+                    {
+                        messages += msg + "<br />";
+                    }
+                    ViewData["ValidationMsg"] = "Mandatory fields are missing in the below Row number, please correct it and retry" + "<br />" + messages;
                     return Page();
                 }
 
-
                 await LoadProducts();
 
-                if (products != null && products.Count > 1)
+                if (products != null && products.Count > 0)
                 {
                     string[] existingProducts = productUpload.AsEnumerable().Where(a => products.Select(b => b.Code).Contains(a.Field<string>("Outer EAN")))
                                               .GroupBy(product => product.Field<string>("Outer EAN").Trim())
@@ -133,11 +144,15 @@ namespace GoodsEnterprise.Web.Pages
 
                     if (existingProducts.Count() > 1)
                     {
-                        ViewData["SuccessMsg"] = "Invalid file format (Product file format is not valid)";
+                        string messages = string.Empty;
+                        foreach (string msg in existingProducts)
+                        {
+                            messages += msg + "<br />";
+                        }
+                        ViewData["ValidationMsg"] = "Below Outer EAN are already exists, please correct it and retry" + "<br />" + messages;
                         return Page();
                     }
                 }
-
 
                 await LoadBrands();
                 await LoadCategories();
@@ -146,6 +161,10 @@ namespace GoodsEnterprise.Web.Pages
                 await InsertNewBrands(productUpload);
                 await InsertNewCategories(productUpload);
                 await InsertNewSubCategories(productUpload);
+
+                await LoadSuppliers();
+
+                await InsertNewSuppliers(productUpload);
 
                 List<Product> bulkInsertProducts = _mapper.Map<List<DataRow>, List<Product>>(new List<DataRow>(productUpload.Rows.OfType<DataRow>()));
                 
@@ -165,6 +184,7 @@ namespace GoodsEnterprise.Web.Pages
                 Common.UploadBrands = null;
                 Common.UploadCategories = null;
                 Common.UploadSubCategories = null;
+                Common.UploadSuppliers = null;
             }
         }
 
@@ -256,6 +276,24 @@ namespace GoodsEnterprise.Web.Pages
         }
 
         /// <summary>
+        /// LoadSuppliers
+        /// </summary>
+        /// <returns></returns>
+        public async Task LoadSuppliers()
+        {
+            try
+            {
+                Common.UploadSuppliers = await _supplier.GetAllAsync(filter: x => x.IsDelete != true);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"LoadSuppliers(), UploadDownload");
+                throw;
+            }
+        }
+
+
+        /// <summary>
         /// InsertNewBrands
         /// </summary>
         /// <param name="productUploadForBrands"></param>
@@ -264,6 +302,10 @@ namespace GoodsEnterprise.Web.Pages
         {
             try
             {
+                if (!productUploadForBrands.Columns.Contains("Brand"))
+                {
+                    return; 
+                }
                 var newBrands = productUploadForBrands.AsEnumerable().Where(a => !Common.UploadBrands.Select(b => b.Name).Contains(a.Field<string>("Brand")))
                                               .GroupBy(brand => brand.Field<string>("Brand").Trim())
                                               .Select(group => group.First()).ToList();
@@ -301,6 +343,10 @@ namespace GoodsEnterprise.Web.Pages
         {
             try
             {
+                if (!productUploadForCategories.Columns.Contains("Category"))
+                {
+                    return;
+                }
                 var newCategories = productUploadForCategories.AsEnumerable().Where(a => !Common.UploadCategories.Select(c => c.Name).Contains(a.Field<string>("Category")))
                               .GroupBy(category => category.Field<string>("Category"))
                               .Select(group => group.First()).ToList();
@@ -338,7 +384,11 @@ namespace GoodsEnterprise.Web.Pages
         {
             try
             {
-                var newSubCategories = productUploadForSubCategories.AsEnumerable().Where(a => !Common.UploadCategories.Select(c => c.Name).Contains(a.Field<string>("SubCategory")))
+                if (!productUploadForSubCategories.Columns.Contains("SubCategory"))
+                {
+                    return;
+                }
+                var newSubCategories = productUploadForSubCategories.AsEnumerable().Where(a => !Common.UploadSubCategories.Select(c => c.Name).Contains(a.Field<string>("SubCategory")))
                               .GroupBy(subCategory => subCategory.Field<string>("SubCategory"))
                               .Select(group => group.First()).ToList();
 
@@ -362,6 +412,47 @@ namespace GoodsEnterprise.Web.Pages
             catch (Exception ex)
             {
                 Log.Error(ex, $"Error in InsertNewSubCategories(), UploadDownload");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// InsertNewSuppliers
+        /// </summary>
+        /// <param name="productUploadForCategories"></param>
+        /// <returns></returns>
+        private async Task InsertNewSuppliers(DataTable productUploadForSuppliers)
+        {
+            try
+            {
+                if (!productUploadForSuppliers.Columns.Contains("Supplier"))
+                {
+                    return;
+                }
+                var newSuppliers = productUploadForSuppliers.AsEnumerable().Where(a => !Common.UploadSuppliers.Select(c => c.Name).Contains(a.Field<string>("Supplier")))
+                              .GroupBy(supplier => supplier.Field<string>("Supplier"))
+                              .Select(group => group.First()).ToList();
+
+                List<Supplier> bulkInsertSuppliers = new List<Supplier>();
+                foreach (var supplier in newSuppliers)
+                {
+                    var bulkInsertSupplier = new Supplier()
+                    {
+                        Name = supplier.Field<string>("Supplier"),
+                        CreatedDate = DateTime.UtcNow,
+                        IsActive = true,
+                        IsDelete = false
+                    };
+                    bulkInsertSuppliers.Add(bulkInsertSupplier);
+                }
+
+                await _uploadDownloadDA.BulkInsertSupplierAsync(bulkInsertSuppliers);
+
+                Common.UploadSuppliers.AddRange(bulkInsertSuppliers);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Error in InsertNewSuppliers(), UploadDownload");
                 throw;
             }
         }

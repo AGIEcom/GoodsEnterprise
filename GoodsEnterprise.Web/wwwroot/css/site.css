@@ -122,3 +122,9 @@ body {
     margin-top: -10px;
     padding-bottom: 10px;
 }
+
+.alert-ValidationSummary {
+    color: #FFFFFF;
+    background-color: #ff0000;
+    border-color: #c3e6cb;
+}
