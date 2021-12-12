@@ -1,4 +1,5 @@
 ﻿using GoodsEnterprise.DataAccess.Interface;
+using GoodsEnterprise.Model;
 using GoodsEnterprise.Model.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -88,24 +89,33 @@ namespace GoodsEnterprise.DataAccess.Implementation
         /// </summary>
         /// <param name="pagination"></param>
         /// <returns></returns>
-        public async Task<List<T>> GetAllWithPaginationAsync(Pagination pagination)
+        public async Task<List<T>> GetAllWithPaginationAsync(DBPaginationParams pagination)
         {
-            Dictionary<string, SqlParameter> sqlParameters = new Dictionary<string, SqlParameter>();
-            sqlParameters.Add("@PageNumber", new SqlParameter("@PageNumber", pagination.PageNumber == 0 ? 1 : pagination.PageNumber));
-            sqlParameters.Add("@PageSize", new SqlParameter("@PageSize", pagination.PageSize == 0 ? 5 : pagination.PageSize));
-            sqlParameters.Add("@OrderByDescending", new SqlParameter("@OrderByDescending", 1));
-            sqlParameters.Add("@OrderBy", new SqlParameter("@OrderBy", "DATE"));
-            sqlParameters.Add("@SearchBy", new SqlParameter("@SearchBy", pagination.CurrentFilter == null ? string.Empty : pagination.CurrentFilter));
-            SqlParameter totalRecordsParam = new SqlParameter
+            try
             {
-                ParameterName = "@TotalRecords",
-                SqlDbType = SqlDbType.Int,
-                Direction = ParameterDirection.Output,
-            };
-            sqlParameters.Add("@TotalRecords OUTPUT", totalRecordsParam);
-            var result = await entities.FromSqlRaw($"{pagination.StoreProcedure} {string.Join(",", sqlParameters?.Keys)}", sqlParameters?.Values.ToArray()).ToListAsync();
-            pagination.TotalRecords = Convert.ToInt32(totalRecordsParam.Value);
-            return result;
+                Dictionary<string, SqlParameter> sqlParameters = new Dictionary<string, SqlParameter>();
+                sqlParameters.Add("@OffsetValue", new SqlParameter("@OffsetValue", pagination.OffsetValue == 0 ? 1 : pagination.OffsetValue));
+                sqlParameters.Add("@PagingSize", new SqlParameter("@PagingSize", pagination.PagingSize == 0 ? 10 : pagination.PagingSize));
+                sqlParameters.Add("@sortOrder", new SqlParameter("@sortOrder", pagination.sortOrder));
+                sqlParameters.Add("@sortColumn", new SqlParameter("@sortColumn", pagination.sortColumn));
+                sqlParameters.Add("@SearchText", new SqlParameter("@SearchText", pagination.SearchText == null ? string.Empty : pagination.SearchText));
+                //SqlParameter totalRecordsParam = new SqlParameter
+                //{
+                //    ParameterName = "@TotalRecords",
+                //    SqlDbType = SqlDbType.Int,
+                //    Direction = ParameterDirection.Output,
+                //};
+                //sqlParameters.Add("@TotalRecords OUTPUT", totalRecordsParam);
+
+                var result = await entities.FromSqlRaw($"{pagination.StoredProcuder} {string.Join(",", sqlParameters?.Keys)}", sqlParameters?.Values.ToArray()).ToListAsync();
+                //pagination.TotalRecords = Convert.ToInt32(totalRecordsParam.Value);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
 
         }
 

@@ -23,6 +23,7 @@
 
     }
 }
+@Html.AntiForgeryToken()
 
 <div class="alert alert-success" id="success-alert" style="display:none;">
     <button type="button" class="close" data-dismiss="alert">x</button>
@@ -31,169 +32,164 @@
 
 <div id="productlist" style="@List">
     <a asp-page-handler="Create" id="lnkCreateProduct" class="btn btn-primary margin-bottom-15">Create New Product</a>
-    <table class="display" style="width:100%" id="tblProductMaster">
-        <thead>
-            <tr>
-                <th scope="col">Product Code</th>
-                <th scope="col">OuterEan</th>
-                <th scope="col">Status</th>
-                <th scope="col">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.lstproduct)
-            {
-            <tr>
-                <th scope="row">@item.Code</th>
-                <td>@item.OuterEan </td>
-                <td>@item.IsActive</td>
-                <td>
-                    <a asp-page-handler="Edit" asp-route-productId="@item.Id" class="btn btn-primary">Edit</a> |
-                    <a asp-page-handler="DeleteProduct" asp-route-productId="@item.Id" class="btn btn-primary btn-product-delete">Delete</a>
-                </td>
-            </tr>
-            }
-        </tbody>
-    </table>
+    <div style="max-height: 500px; overflow-y: auto; overflow-x: hidden;">
+        <table class="display" style="width:100%" id="tblProductMaster">
+            <thead>
+                <tr>
+                    <th scope="col">Product Code</th>
+                    <th scope="col">OuterEan</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+           
+        </table>
+    </div>
 </div>
 
 <div id="divCreateUpdateProduct" style="@Edit">
-    <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
-        <H3>Product</H3>
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
-        {
-            <input asp-for="objProduct.Id" type="hidden" class="form-control" id="txtProductID">
-            <input asp-for="objProduct.IsDelete" type="hidden" class="form-control" id="txtIsDelete">
-            <input asp-for="objProduct.Createdby" type="hidden" class="form-control" id="txtCreatedby">
-            <input asp-for="objProduct.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
-            <input asp-for="objProduct.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
-            <input asp-for="objProduct.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
-        }
-        <div class="mb-3">
-            <label for="lblProductCode" class="form-label">Code</label>
-            <input asp-for="objProduct.Code" type="text" class="form-control" id="txtProduct">
-        </div>
-        <div class="mb-3" id="divselectProductBrand">
-            <label for="lblBrand" class="form-label">Brand</label>
-            <select asp-for="objProduct.BrandId" class="form-control selectpicker" data-live-search="true"
-                    asp-items="Model.selectBrands" id="selectProductBrand">
-                <option value="">-- Select Brand --</option>
-            </select>
-        </div>
-        <div class="mb-3" id="divselectProductCategory">
-            <label for="lblCategory" class="form-label">Category</label>
-            <select asp-for="objProduct.CategoryId" class="form-control selectpicker" data-live-search="true"
-                    asp-items="Model.selectCategories" id="selectProductCategory">
-                <option value="">-- Select Category --</option>
-            </select>
-        </div>
-        <div class="mb-3" id="divselectProductSubCategory">
-            <label for="lblSubCategory" class="form-label">SubCategory</label>
-            <select asp-for="objProduct.SubCategoryId" class="form-control selectpicker" data-live-search="true"
-                    asp-items="Model.selectSubCategories" id="selectProductSubCategory">
-                <option value="">-- Select SubCategory --</option>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label for="lblInnerEan" class="form-label">InnerEan</label>
-            <input asp-for="objProduct.InnerEan" type="text" class="form-control" id="txtInnerEan">
-        </div>
-        <div class="mb-3">
-            <label for="lblOuterEan" class="form-label">OuterEan</label>
-            <input asp-for="objProduct.OuterEan" type="text" class="form-control" id="txtOuterEan">
-        </div>
-        <div class="mb-3">
-            <label for="lblPackSize" class="form-label">UnitSize</label>
-            <input asp-for="objProduct.UnitSize" type="text" class="form-control" id="txtPackSize">
-        </div>
-        <div class="mb-3">
-            <label for="lblUpc" class="form-label">Upc</label>
-            <input asp-for="objProduct.Upc" type="text" class="form-control" id="txtUpc" onkeypress="return isNumber(event)">
-        </div>
-        <div class="mb-3">
-            <label for="lblLayerQuantity" class="form-label">LayerQuantity</label>
-            <input asp-for="objProduct.LayerQuantity" type="text" class="form-control" id="txtLayerQuantity" onkeypress="return isNumber(event)">
-        </div>
-        <div class="mb-3">
-            <label for="lblPalletQuantity" class="form-label">PalletQuantity</label>
-            <input asp-for="objProduct.PalletQuantity" type="text" class="form-control" id="txtPalletQuantity" onkeypress="return isNumber(event)">
-        </div>
-        <div class="mb-3">
-            <label for="lblCasePrice" class="form-label">Case Price</label>
-            <input asp-for="objProduct.CasePrice" type="text" class="form-control" id="txtCasePrice" onkeypress="return isDecimal(event)">
-        </div>
-        <div class="mb-3">
-            <label for="lblShelfLifeInWeeks" class="form-label">Shelf Life In Weeks</label>
-            <input asp-for="objProduct.ShelfLifeInWeeks" type="text" class="form-control" id="txtShelfLifeInWeeks" onkeypress="return isNumber(event)">
-        </div>
+    <div class="row">
+        <div class="col-md-12">
+            <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
+                <H3>Product</H3>
 
-        <div class="mb-3">
-            <label for="lblPackHeight" class="form-label">Pack Height</label>
-            <input asp-for="objProduct.PackHeight" type="text" class="form-control" id="txtPackHeight" onkeypress="return isDecimal(event)">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+                {
+                    <input asp-for="objProduct.Id" type="hidden" class="form-control" id="txtProductID">
+                    <input asp-for="objProduct.IsDelete" type="hidden" class="form-control" id="txtIsDelete">
+                    <input asp-for="objProduct.Createdby" type="hidden" class="form-control" id="txtCreatedby">
+                    <input asp-for="objProduct.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
+                    <input asp-for="objProduct.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
+                    <input asp-for="objProduct.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
+                }
+                <div class="col-md-3">
+                    <label for="lblProductCode" class="form-label">Code</label>
+                    <input asp-for="objProduct.Code" type="text" class="form-control" id="txtProduct">
+                </div>
+                <div class="col-md-3" id="divselectProductBrand">
+                    <label for="lblBrand" class="form-label">Brand</label>
+                    <select asp-for="objProduct.BrandId" class="form-control selectpicker" data-live-search="true"
+                            asp-items="Model.selectBrands" id="selectProductBrand">
+                        <option value="">-- Select Brand --</option>
+                    </select>
+                </div>
+                <div class="col-md-3" id="divselectProductCategory">
+                    <label for="lblCategory" class="form-label">Category</label>
+                    <select asp-for="objProduct.CategoryId" class="form-control selectpicker" data-live-search="true"
+                            asp-items="Model.selectCategories" id="selectProductCategory">
+                        <option value="">-- Select Category --</option>
+                    </select>
+                </div>
+                <div class="col-md-3" id="divselectProductSubCategory">
+                    <label for="lblSubCategory" class="form-label">SubCategory</label>
+                    <select asp-for="objProduct.SubCategoryId" class="form-control selectpicker" data-live-search="true"
+                            asp-items="Model.selectSubCategories" id="selectProductSubCategory">
+                        <option value="">-- Select SubCategory --</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="lblInnerEan" class="form-label">InnerEan</label>
+                    <input asp-for="objProduct.InnerEan" type="text" class="form-control" id="txtInnerEan">
+                </div>
+                <div class="col-md-3">
+                    <label for="lblOuterEan" class="form-label">OuterEan</label>
+                    <input asp-for="objProduct.OuterEan" type="text" class="form-control" id="txtOuterEan">
+                </div>
+                <div class="col-md-3">
+                    <label for="lblPackSize" class="form-label">UnitSize</label>
+                    <input asp-for="objProduct.UnitSize" type="text" class="form-control" id="txtPackSize">
+                </div>
+                <div class="col-md-3">
+                    <label for="lblUpc" class="form-label">Upc</label>
+                    <input asp-for="objProduct.Upc" type="text" class="form-control" id="txtUpc" onkeypress="return isNumber(event)">
+                </div>
+                <div class="col-md-3">
+                    <label for="lblLayerQuantity" class="form-label">LayerQuantity</label>
+                    <input asp-for="objProduct.LayerQuantity" type="text" class="form-control" id="txtLayerQuantity" onkeypress="return isNumber(event)">
+                </div>
+                <div class="col-md-3">
+                    <label for="lblPalletQuantity" class="form-label">PalletQuantity</label>
+                    <input asp-for="objProduct.PalletQuantity" type="text" class="form-control" id="txtPalletQuantity" onkeypress="return isNumber(event)">
+                </div>
+                <div class="col-md-3">
+                    <label for="lblCasePrice" class="form-label">Case Price</label>
+                    <input asp-for="objProduct.CasePrice" type="text" class="form-control" id="txtCasePrice" onkeypress="return isDecimal(event)">
+                </div>
+                <div class="col-md-3">
+                    <label for="lblShelfLifeInWeeks" class="form-label">Shelf Life In Weeks</label>
+                    <input asp-for="objProduct.ShelfLifeInWeeks" type="text" class="form-control" id="txtShelfLifeInWeeks" onkeypress="return isNumber(event)">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="lblPackHeight" class="form-label">Pack Height</label>
+                    <input asp-for="objProduct.PackHeight" type="text" class="form-control" id="txtPackHeight" onkeypress="return isDecimal(event)">
+                </div>
+                <div class="col-md-3">
+                    <label for="lblPackDepth" class="form-label">Pack Depth</label>
+                    <input asp-for="objProduct.PackDepth" type="text" class="form-control" id="txtPackDeptht" onkeypress="return isDecimal(event)">
+                </div>
+                <div class="col-md-3">
+                    <label for="lblNetCaseWeightKg" class="form-label">Net Case Weight(Kg)</label>
+                    <input asp-for="objProduct.NetCaseWeightKg" type="text" class="form-control" id="txtNetCaseWeightKg" onkeypress="return isDecimal(event)">
+                </div>
+                <div class="col-md-3">
+                    <label for="lblGrossCaseWeightKg" class="form-label">Gross Case Weight(Kg)</label>
+                    <input asp-for="objProduct.GrossCaseWeightKg" type="text" class="form-control" id="txtGrossCaseWeightKg" onkeypress="return isDecimal(event)">
+                </div>
+                <div class="col-md-3">
+                    <label for="lblCaseWidthMm" class="form-label">Case Width(mm)</label>
+                    <input asp-for="objProduct.CaseWidthMm" type="text" class="form-control" id="txtCaseWidthMm" onkeypress="return isDecimal(event)">
+                </div>
+                <div class="col-md-3">
+                    <label for="lblCaseHeightMm" class="form-label">Case Height(mm)</label>
+                    <input asp-for="objProduct.CaseHeightMm" type="text" class="form-control" id="txtCaseHeightMm" onkeypress="return isDecimal(event)">
+                </div>
+                <div class="col-md-3">
+                    <label for="lblCaseDepthMm" class="form-label">Case Depth(mm)</label>
+                    <input asp-for="objProduct.CaseDepthMm" type="text" class="form-control" id="txtCaseDepthMm" onkeypress="return isDecimal(event)">
+                </div>
+                <div class="col-md-3">
+                    <label for="lblPalletWeightKg" class="form-label">Pallet Weight(Kg)</label>
+                    <input asp-for="objProduct.PalletWeightKg" type="text" class="form-control" id="txtPalletWeightKg" onkeypress="return isDecimal(event)">
+                </div>
+                <div class="col-md-3">
+                    <label for="lblPalletWidthMeter" class="form-label">Pallet Width(Meter)</label>
+                    <input asp-for="objProduct.PalletWidthMeter" type="text" class="form-control" id="txtPalletWidthMeter" onkeypress="return isDecimal(event)">
+                </div>
+                <div class="col-md-3">
+                    <label for="lblPalletHeightMeter" class="form-label">Pallet Height(Meter)</label>
+                    <input asp-for="objProduct.PalletHeightMeter" type="text" class="form-control" id="txtPalletHeightMeter" onkeypress="return isDecimal(event)">
+                </div>
+                <div class="col-md-3">
+                    <label for="lblPalletDepthMeter" class="form-label">Pallet Depth(Meter)</label>
+                    <input asp-for="objProduct.PalletDepthMeter" type="text" class="form-control" id="txtPalletDepthMeter" onkeypress="return isDecimal(event)">
+                </div>
+                <div class="col-md-3">
+                    <label for="lblIsActive" class="form-label">IsActive</label>
+                    <input asp-for="objProduct.IsActive" type="checkbox" id="txtIsActive">
+                </div>
+                <div class="col-md-3">
+                    <input type="file" id="fileUpload" class="fileUpload" asp-for="Upload" accept="image/*" onchange="fileValidation()">
+                    @if (imagePath != "")
+                    {
+                        <img src="@imagePath" id="imgPath" alt="Sample Image" width="250" height="250" />
+                    }
+                </div>
+                <button type="submit" class="btn btn-primary product-submit">Submit</button>
+                @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+                {
+                    <a asp-page-handler="Reset" asp-route-productId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="btn btn-light">Reset</a>
+                }
+                else
+                {
+                    <a asp-page-handler="Clear" class="btn btn-light">Clear</a>
+                }
+                <a asp-page="/Product" class="btn btn-light">Close</a>
+            </form>
         </div>
-        <div class="mb-3">
-            <label for="lblPackDepth" class="form-label">Pack Depth</label>
-            <input asp-for="objProduct.PackDepth" type="text" class="form-control" id="txtPackDeptht" onkeypress="return isDecimal(event)">
-        </div>
-        <div class="mb-3">
-            <label for="lblNetCaseWeightKg" class="form-label">Net Case Weight(Kg)</label>
-            <input asp-for="objProduct.NetCaseWeightKg" type="text" class="form-control" id="txtNetCaseWeightKg" onkeypress="return isDecimal(event)">
-        </div>
-        <div class="mb-3">
-            <label for="lblGrossCaseWeightKg" class="form-label">Gross Case Weight(Kg)</label>
-            <input asp-for="objProduct.GrossCaseWeightKg" type="text" class="form-control" id="txtGrossCaseWeightKg" onkeypress="return isDecimal(event)">
-        </div>
-        <div class="mb-3">
-            <label for="lblCaseWidthMm" class="form-label">Case Width(mm)</label>
-            <input asp-for="objProduct.CaseWidthMm" type="text" class="form-control" id="txtCaseWidthMm" onkeypress="return isDecimal(event)">
-        </div>
-        <div class="mb-3">
-            <label for="lblCaseHeightMm" class="form-label">Case Height(mm)</label>
-            <input asp-for="objProduct.CaseHeightMm" type="text" class="form-control" id="txtCaseHeightMm" onkeypress="return isDecimal(event)">
-        </div>
-        <div class="mb-3">
-            <label for="lblCaseDepthMm" class="form-label">Case Depth(mm)</label>
-            <input asp-for="objProduct.CaseDepthMm" type="text" class="form-control" id="txtCaseDepthMm" onkeypress="return isDecimal(event)">
-        </div>
-        <div class="mb-3">
-            <label for="lblPalletWeightKg" class="form-label">Pallet Weight(Kg)</label>
-            <input asp-for="objProduct.PalletWeightKg" type="text" class="form-control" id="txtPalletWeightKg" onkeypress="return isDecimal(event)">
-        </div>
-        <div class="mb-3">
-            <label for="lblPalletWidthMeter" class="form-label">Pallet Width(Meter)</label>
-            <input asp-for="objProduct.PalletWidthMeter" type="text" class="form-control" id="txtPalletWidthMeter" onkeypress="return isDecimal(event)">
-        </div>
-        <div class="mb-3">
-            <label for="lblPalletHeightMeter" class="form-label">Pallet Height(Meter)</label>
-            <input asp-for="objProduct.PalletHeightMeter" type="text" class="form-control" id="txtPalletHeightMeter" onkeypress="return isDecimal(event)">
-        </div>
-        <div class="mb-3">
-            <label for="lblPalletDepthMeter" class="form-label">Pallet Depth(Meter)</label>
-            <input asp-for="objProduct.PalletDepthMeter" type="text" class="form-control" id="txtPalletDepthMeter" onkeypress="return isDecimal(event)">
-        </div>
-        <div class="mb-3">
-            <label for="lblIsActive" class="form-label">IsActive</label>
-            <input asp-for="objProduct.IsActive" type="checkbox" id="txtIsActive">
-        </div>
-        <div class="mb-3">
-            <input type="file" id="fileUpload" class="fileUpload" asp-for="Upload" accept="image/*" onchange="fileValidation()">
-            @if (imagePath != "")
-            {
-                <img src="@imagePath" id="imgPath" alt="Sample Image" width="250" height="250" />
-            }
-        </div>
-        <button type="submit" class="btn btn-primary product-submit">Submit</button>
-        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
-        {
-            <a asp-page-handler="Reset" asp-route-productId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="btn btn-light">Reset</a>
-        }
-        else
-        {
-            <a asp-page-handler="Clear" class="btn btn-light">Clear</a>
-        }
-        <a asp-page="/Product" class="btn btn-light">Close</a>
-    </form>
+    </div>
+    
 </div>
 
 @if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
@@ -208,4 +204,6 @@
         });
 
     </script>
+
 }
+<script src="~/js/ServerSidePagination.js"></script>

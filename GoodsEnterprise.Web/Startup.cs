@@ -19,6 +19,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace GoodsEnterprise
@@ -35,12 +36,13 @@ namespace GoodsEnterprise
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            
             services.AddMvc().AddRazorOptions(options =>
             {
                 options.PageViewLocationFormats
                        .Add("/Pages/Shared/{0}.cshtml");
             });
+            services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
             services.AddMvc().AddRazorPagesOptions(options =>
             {
                 options.Conventions.AddPageRoute("/Login", "");
@@ -110,6 +112,7 @@ namespace GoodsEnterprise
             });
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute("default", "{controller=DataBasePagination}/{action=LoadProductTable}/{id?}");
                 endpoints.MapRazorPages();
             });
         }

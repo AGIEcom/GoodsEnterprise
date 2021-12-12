@@ -49,6 +49,7 @@ namespace GoodsEnterprise.Model.Models
         public int? SupplierId { get; set; }
         public DateTime? ExpriyDate { get; set; }
 
+       
         public virtual ICollection<CustomerBasket> CustomerBaskets { get; set; }
         public virtual ICollection<CustomerFavourite> CustomerFavourites { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }

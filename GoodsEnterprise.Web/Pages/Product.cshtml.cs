@@ -1,6 +1,7 @@
 using GoodsEnterprise.DataAccess.Interface;
 using GoodsEnterprise.Model.Models;
 using GoodsEnterprise.Web.Utilities;
+using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -51,31 +52,7 @@ namespace GoodsEnterprise.Web.Pages
         /// OnGetAsync
         /// </summary>
         /// <returns></returns>
-        public async Task OnGetAsync()
-        {
-            try
-            {
-                ViewData["PageType"] = "List";
-                if (!string.IsNullOrEmpty(HttpContext.Session.GetString(Constants.StatusMessage)))
-                {
-                    ViewData["SuccessMsg"] = HttpContext.Session.GetString(Constants.StatusMessage);
-                    HttpContext.Session.SetString(Constants.StatusMessage, "");
-                }
-                ViewData["PagePrimaryID"] = 0;
-
-                lstproduct = await _product.GetAllAsync(filter: x => x.IsDelete != true, orderBy: mt => mt.OrderByDescending(m => m.ModifiedDate == null ? m.CreatedDate : m.ModifiedDate));
-
-                if (lstproduct == null || lstproduct?.Count == 0)
-                {
-                    ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, $"Error in OnGetAsync(), Product");
-                throw;
-            }
-        }
+        
 
         /// <summary>
         /// OnGetCreateAsync
@@ -109,7 +86,7 @@ namespace GoodsEnterprise.Web.Pages
             try
             {
                 objProduct = await _product.GetAsync(filter: x => x.Id == productId && x.IsDelete != true);
-
+                
                 if (objProduct == null)
                 {
                     return Redirect("~/all-product");

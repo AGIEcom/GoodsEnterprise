@@ -1,0 +1,62 @@
+{
+    "mainmenu": [
+        {
+            "roleid": 3,
+          "menu": [
+            {
+              "name": "Brand",
+              "link": "/all-brand"
+            },
+            {
+              "name": "Category",
+              "link": "/all-category"
+            },
+            {
+              "name": "SubCategory",
+              "link": "/all-subcategory"
+            },
+            {
+              "name": "Product",
+              "link": "/all-product"
+            },
+            {
+              "name": "Tax",
+              "link": "/all-tax"
+            },
+            {
+              "name": "Supplier",
+              "link": "/all-supplier"
+            },
+            {
+              "name": "Role",
+              "link": "/all-role"
+            },
+            {
+              "name": "Admin",
+              "link": "/all-admin"
+            },
+            {
+              "name": "Customer",
+              "link": "/all-customer"
+            },
+            {
+              "name": "UploadDownload",
+              "link": "/UploadDownload"
+            },
+            {
+              "name": "Download",
+              "link": "/Download"
+            }
+          ]
+        },
+        {
+            "roleid": 2,
+            "menu": [{
+                "name": "Brand1",
+                "link": "/all-brand"
+            }, {
+                "name": "Category1",
+                "link": "/all-category"
+            }]
+        }]
+}

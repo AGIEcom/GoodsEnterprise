@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodsEnterprise.DataAccess"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodsEnterprise.Model", "GoosEnterprise.Model\GoodsEnterprise.Model.csproj", "{EDB85129-DCDE-4FC6-B953-6930AB191BFB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodsEnterprise.Web.Customer", "GoodsEnterprise.Web.Customer\GoodsEnterprise.Web.Customer.csproj", "{13478448-50BF-4CFB-AA6A-8BCD184F5003}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{EDB85129-DCDE-4FC6-B953-6930AB191BFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDB85129-DCDE-4FC6-B953-6930AB191BFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDB85129-DCDE-4FC6-B953-6930AB191BFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13478448-50BF-4CFB-AA6A-8BCD184F5003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13478448-50BF-4CFB-AA6A-8BCD184F5003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13478448-50BF-4CFB-AA6A-8BCD184F5003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13478448-50BF-4CFB-AA6A-8BCD184F5003}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
