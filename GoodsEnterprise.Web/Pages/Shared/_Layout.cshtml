@@ -21,8 +21,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
     <link rel="stylesheet" href="~/css/site.css" />
-
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/LeftMenu.css" rel="stylesheet" />
+    @*<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">*@
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
@@ -33,21 +34,122 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
 
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+
+
 </head>
 <body>
+
+
+
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">GoodsEnterprise</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+        <div class="wrapper">
+            <nav id="sidebar">
+                <div class="sidebar-header">
+                    <a class="navbar-brand" asp-area="" asp-page="/Index">GoodsEnterprise</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                </div>
+
+                <ul class="list-unstyled components" id="mainmenu">
+                </ul>
+
+                @*<ul class="list-unstyled components">
+                    <p>Dummy Heading</p>
+                    <li class="active">
+                        <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
+                        <ul class="collapse list-unstyled" id="homeSubmenu">
+                            <li>
+                                <a href="#">Home 1</a>
+                            </li>
+                            <li>
+                                <a href="#">Home 2</a>
+                            </li>
+                            <li>
+                                <a href="#">Home 3</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">About</a>
+                        <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pages</a>
+                        <ul class="collapse list-unstyled" id="pageSubmenu">
+                            <li>
+                                <a href="#">Page 1</a>
+                            </li>
+                            <li>
+                                <a href="#">Page 2</a>
+                            </li>
+                            <li>
+                                <a href="#">Page 3</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">Portfolio</a>
+                    </li>
+                    <li>
+                        <a href="#">Contact</a>
+                    </li>
+                </ul>*@
+
+                @*<ul class="list-unstyled CTAs">
+                    <li>
+                        <a href="https://bootstrapious.com/tutorial/files/sidebar.zip" class="download">Download source</a>
+                    </li>
+                    <li>
+                        <a href="https://bootstrapious.com/p/bootstrap-sidebar" class="article">Back to article</a>
+                    </li>
+                </ul>*@
+            </nav>
+            <div id="content">
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                    <div class="container">
+
+                        <button type="button" id="sidebarCollapse" class="navbar-btn">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
+                        <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <i class="fas fa-align-justify"></i>
+                        </button>
+
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="nav navbar-nav ml-auto">
+                                <li class="dropdown">
+                                    <a href="#" data-toggle="dropdown">
+                                        <i class="glyphicon glyphicon-user"></i>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <span class="form-label">@admin.FirstName</span>
+                                        <hr style="border-top: 1px solid blue">
+                                        <li><i class="icon-arrow-up"></i><a asp-page-handler="LogOut" asp-page="/Login">Logout</a></li>
+                                        <li>
+                                            <i class="icon-arrow-down"></i><a asp-route-adminId="@admin.Id" asp-page-handler="Edit" asp-page="/Admin">Update Profile</a>
+                                        </li>
+
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+                <div class="container">
+                    <main role="main" class="pb-3">
+                        @RenderBody()
+                    </main>
+                </div>
+            </div>
+            @*<div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1 mainmenu" id="mainmenu">
                     </ul>
-                </div>
-                |<ul>
+                </div>*@
+            @*<ul>
                     <li class="dropdown">
                         <a href="#" data-toggle="dropdown">
                             <i class="glyphicon glyphicon-user"></i>
@@ -62,30 +164,30 @@
 
                         </ul>
                     </li>
-                </ul>
-            </div>
-        </nav>
+                </ul>*@
+        </div>
+
 
         <input type="hidden" id="hdnRoleId" value=@admin.RoleId>
 
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
+
+    <footer id="footer" class="border-top footer text-muted">
         <div class="container">
             &copy; 2021 - GoodsEnterprise - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>
     </footer>
-
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     @*<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>*@
+    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
     <script src="~/datatables/js/jquery.dataTables.min.js"></script>
+
     <script src="~/datatables/js/dataTables.bootstrap4.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @RenderSection("Scripts", required: false)

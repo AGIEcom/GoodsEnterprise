@@ -15,10 +15,10 @@
                     <h2>Login to your account</h2>
                     <form id="frmLogin" method="post" enctype="multipart/form-data" asp-page-handler="ValidateLogin">
                         @*<label for="txtEmail" class="form-label">Email</label>*@
-                        <input asp-for="objRegister.Email" type="text" placeholder="Emaill Address" class="form-control" id="txtEmail">
+                        <input asp-for="objCustomer.Email" type="text" placeholder="Emaill Address" class="form-control" id="txtEmail">
 
                         @*<label for="txtPassword" class="form-label">PassWord</label>*@
-                        <input asp-for="objRegister.Password" type="password" placeholder="Password" class="form-control" id="txtPassword">
+                        <input asp-for="objCustomer.Password" type="password" placeholder="Password" class="form-control" id="txtPassword">
 
                         @*<input type="text" placeholder="Name" />
                             <input type="email" placeholder="Email Address" />*@
@@ -38,9 +38,9 @@
                     <!--sign up form-->
                     <h2>New User Signup!</h2>
                     <form id="frmRegister" method="post" enctype="multipart/form-data" asp-page-handler="Register">
-                        <input id="txtFirstName" type="text" asp-for="objRegister.FirstName" placeholder="Name" />
-                        <input id="txtEmailRegister" type="email" asp-for="objRegister.Email" placeholder="Email Address" />
-                        <input id="txtPassWordRegister" type="password" asp-for="objRegister.Password" placeholder="Password" />
+                        <input id="txtFirstName" type="text" asp-for="objCustomer.FirstName" placeholder="Name" />
+                        <input id="txtEmailRegister" type="email" asp-for="objCustomer.Email" placeholder="Email Address" />
+                        <input id="txtPassWordRegister" type="password" asp-for="objCustomer.Password" placeholder="Password" />
                         <input id="txtConfirmPassWordRegister" name="ConfirmPassWordRegister" type="password" placeholder="Confirm Password"  />
                         <button type="submit" id="btRegister" class="btn btn-default">Signup</button>
                     </form>

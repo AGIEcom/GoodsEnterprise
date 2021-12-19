@@ -1,9 +1,12 @@
 ﻿using GoodsEnterprise.Model.Models;
+using GoodsEnterprise.Model.Models.CustomerModel;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 
 namespace GoodsEnterprise.Web.Utilities
@@ -65,6 +68,26 @@ namespace GoodsEnterprise.Web.Utilities
                 }
             }
             return Tuple.Create(saveImage500, saveImage200);
-        }        
+        }
+
+
+        public static void SendEmail(EmailSettings emailSettings,string ToAddress,string subject,string body)
+        {
+            using (MailMessage mail = new MailMessage())
+            {
+                mail.From = new MailAddress(emailSettings.emailFromAddress);
+                mail.To.Add(ToAddress);
+                mail.Subject = subject;
+                mail.Body = body;
+                mail.IsBodyHtml = true;
+                //mail.Attachments.Add(new Attachment("D:\\TestFile.txt"));//--Uncomment this to send any attachment  
+                using (SmtpClient smtp = new SmtpClient(emailSettings.smtpAddress, emailSettings.portNumber))
+                {
+                    smtp.Credentials = new NetworkCredential(emailSettings.emailFromAddress, emailSettings.password);
+                    smtp.EnableSsl = emailSettings.enableSSL;
+                    smtp.Send(mail);
+                }
+            }
+        }
     }
 }

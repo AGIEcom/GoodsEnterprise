@@ -6,18 +6,19 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace GoodsEnterprise.Model.Models
 {
-    public partial class GoodsEnterpriseNewContext : DbContext
+    public partial class GoodsEnterpriseContext : DbContext
     {
-        public GoodsEnterpriseNewContext()
+        public GoodsEnterpriseContext()
         {
         }
 
-        public GoodsEnterpriseNewContext(DbContextOptions<GoodsEnterpriseNewContext> options)
+        public GoodsEnterpriseContext(DbContextOptions<GoodsEnterpriseContext> options)
             : base(options)
         {
         }
 
         public virtual DbSet<Admin> Admins { get; set; }
+        public virtual DbSet<BaseCost> BaseCosts { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
@@ -26,18 +27,20 @@ namespace GoodsEnterprise.Model.Models
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<PromotionCost> PromotionCosts { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Status> Statuses { get; set; }
         public virtual DbSet<SubCategory> SubCategories { get; set; }
         public virtual DbSet<Supplier> Suppliers { get; set; }
         public virtual DbSet<Tax> Taxes { get; set; }
+        public virtual DbSet<ProductList> ProductLists { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=DESKTOP-FVJMKLK;Initial Catalog=GoodsEnterprise;Integrated Security=True");
+                optionsBuilder.UseSqlServer("Server=.;Database=GoodsEnterprise;Integrated Security=True;");
             }
         }
 
@@ -79,7 +82,37 @@ namespace GoodsEnterprise.Model.Models
                     .WithMany(p => p.Admins)
                     .HasForeignKey(d => d.RoleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Admin__RoleId__3D5E1FD2");
+                    .HasConstraintName("FK__Admin__RoleId__59063A47");
+            });
+
+            modelBuilder.Entity<BaseCost>(entity =>
+            {
+                entity.ToTable("BaseCost");
+
+                entity.Property(e => e.BaseCostId).HasColumnName("BaseCostID");
+
+                entity.Property(e => e.BaseCost1)
+                    .HasColumnType("numeric(18, 2)")
+                    .HasColumnName("BaseCost");
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.EndDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ProductId).HasColumnName("ProductID");
+
+                entity.Property(e => e.Remark)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.StartDate).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.BaseCosts)
+                    .HasForeignKey(d => d.ProductId)
+                    .HasConstraintName("FK_BaseCost_Product");
             });
 
             modelBuilder.Entity<Brand>(entity =>
@@ -144,6 +177,26 @@ namespace GoodsEnterprise.Model.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.CompanyEmail)
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CompanyFax)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CompanyName)
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CompanyPhone)
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ContactPerson)
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Country)
                     .HasMaxLength(50)
                     .IsUnicode(false);
@@ -196,7 +249,7 @@ namespace GoodsEnterprise.Model.Models
                     .WithMany(p => p.Customers)
                     .HasForeignKey(d => d.RoleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Customer__RoleId__3E52440B");
+                    .HasConstraintName("FK__Customer__RoleId__59FA5E80");
             });
 
             modelBuilder.Entity<CustomerBasket>(entity =>
@@ -211,7 +264,7 @@ namespace GoodsEnterprise.Model.Models
                     .WithMany(p => p.CustomerBaskets)
                     .HasForeignKey(d => d.CustomerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CustomerB__Custo__3F466844");
+                    .HasConstraintName("FK__CustomerB__Custo__5AEE82B9");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.CustomerBaskets)
@@ -232,7 +285,7 @@ namespace GoodsEnterprise.Model.Models
                     .WithMany(p => p.CustomerFavourites)
                     .HasForeignKey(d => d.CustomerId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__CustomerF__Custo__412EB0B6");
+                    .HasConstraintName("FK__CustomerF__Custo__5CD6CB2B");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.CustomerFavourites)
@@ -305,6 +358,14 @@ namespace GoodsEnterprise.Model.Models
             {
                 entity.ToTable("Product");
 
+                entity.Property(e => e.CaseDepthMm).HasColumnType("decimal(16, 2)");
+
+                entity.Property(e => e.CaseHeightMm).HasColumnType("decimal(16, 2)");
+
+                entity.Property(e => e.CasePrice).HasColumnType("decimal(16, 2)");
+
+                entity.Property(e => e.CaseWidthMm).HasColumnType("decimal(16, 2)");
+
                 entity.Property(e => e.Code)
                     .IsRequired()
                     .HasMaxLength(25)
@@ -312,11 +373,9 @@ namespace GoodsEnterprise.Model.Models
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
-                entity.Property(e => e.Depth).HasColumnType("decimal(16, 2)");
-
                 entity.Property(e => e.ExpriyDate).HasColumnType("datetime");
 
-                entity.Property(e => e.Height).HasColumnType("decimal(16, 2)");
+                entity.Property(e => e.GrossCaseWeightKg).HasColumnType("decimal(16, 2)");
 
                 entity.Property(e => e.Image)
                     .HasMaxLength(200)
@@ -329,7 +388,7 @@ namespace GoodsEnterprise.Model.Models
 
                 entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
 
-                entity.Property(e => e.NetWeight).HasColumnType("decimal(16, 2)");
+                entity.Property(e => e.NetCaseWeightKg).HasColumnType("decimal(16, 2)");
 
                 entity.Property(e => e.OuterEan)
                     .IsRequired()
@@ -337,15 +396,70 @@ namespace GoodsEnterprise.Model.Models
                     .IsUnicode(false)
                     .HasColumnName("OuterEAN");
 
-                entity.Property(e => e.PackSize)
+                entity.Property(e => e.PackDepth).HasColumnType("decimal(16, 2)");
+
+                entity.Property(e => e.PackHeight).HasColumnType("decimal(16, 2)");
+
+                entity.Property(e => e.PackWidth).HasColumnType("decimal(16, 2)");
+
+                entity.Property(e => e.PalletDepthMeter).HasColumnType("decimal(16, 2)");
+
+                entity.Property(e => e.PalletHeightMeter).HasColumnType("decimal(16, 2)");
+
+                entity.Property(e => e.PalletWeightKg).HasColumnType("decimal(16, 2)");
+
+                entity.Property(e => e.PalletWidthMeter).HasColumnType("decimal(16, 2)");
+
+                entity.Property(e => e.ProductDescription)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ProductName)
+                    .HasMaxLength(250)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TaxslabId).HasColumnName("TaxslabID");
+
+                entity.Property(e => e.UnitSize)
                     .HasMaxLength(25)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Upc).HasColumnName("UPC");
 
-                entity.Property(e => e.Weight).HasColumnType("decimal(16, 2)");
+                entity.HasOne(d => d.Taxslab)
+                    .WithMany(p => p.Products)
+                    .HasForeignKey(d => d.TaxslabId)
+                    .HasConstraintName("FK_Product_Tax");
+            });
 
-                entity.Property(e => e.Width).HasColumnType("decimal(16, 2)");
+            modelBuilder.Entity<PromotionCost>(entity =>
+            {
+                entity.ToTable("PromotionCost");
+
+                entity.Property(e => e.PromotionCostId).HasColumnName("PromotionCostID");
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.EndDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ProductId).HasColumnName("ProductID");
+
+                entity.Property(e => e.PromotionCost1)
+                    .HasColumnType("numeric(18, 2)")
+                    .HasColumnName("PromotionCost");
+
+                entity.Property(e => e.Remark)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.StartDate).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.PromotionCosts)
+                    .HasForeignKey(d => d.ProductId)
+                    .HasConstraintName("FK_PromotionCost_PromotionCost");
             });
 
             modelBuilder.Entity<Role>(entity =>

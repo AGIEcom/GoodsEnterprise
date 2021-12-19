@@ -21,17 +21,19 @@ namespace GoodsEnterprise.Web.Pages
         /// </summary>
         /// <param name="product"></param>
         public ProductModel(IGeneralRepository<Product> product, IGeneralRepository<Category> category,
-            IGeneralRepository<SubCategory> subCategory, IGeneralRepository<Brand> brand)
+            IGeneralRepository<SubCategory> subCategory, IGeneralRepository<Brand> brand,IGeneralRepository<Tax> tax)
         {
             _product = product;
             _category = category;
             _subCategory = subCategory;
             _brand = brand;
+            _tax = tax;
         }
 
         private readonly IGeneralRepository<Product> _product;
         private readonly IGeneralRepository<Category> _category;
         private readonly IGeneralRepository<SubCategory> _subCategory;
+        private readonly IGeneralRepository<Tax> _tax;
         private readonly IGeneralRepository<Brand> _brand;
 
         [BindProperty()]
@@ -47,12 +49,13 @@ namespace GoodsEnterprise.Web.Pages
         public SelectList selectBrands { get; set; } = new SelectList("");
         public SelectList selectCategories { get; set; } = new SelectList("");
         public SelectList selectSubCategories { get; set; } = new SelectList("");
+        public SelectList selectTaxSlab { get; set; } = new SelectList("");
 
         /// <summary>
         /// OnGetAsync
         /// </summary>
         /// <returns></returns>
-        
+
 
         /// <summary>
         /// OnGetCreateAsync
@@ -65,7 +68,13 @@ namespace GoodsEnterprise.Web.Pages
                 await LoadBrand();
                 await LoadCategory();
                 await LoadSubCategoryByCategoryId();
+                await LoadTaxSlab();
+                if (objProduct == null)
+                {
+                    objProduct = new Product();
+                }
                 objProduct.IsActive = true;
+                ViewData["IsTaxable"] = false;
                 ViewData["PageType"] = "Edit";
             }
             catch (Exception ex)
@@ -86,7 +95,7 @@ namespace GoodsEnterprise.Web.Pages
             try
             {
                 objProduct = await _product.GetAsync(filter: x => x.Id == productId && x.IsDelete != true);
-                
+
                 if (objProduct == null)
                 {
                     return Redirect("~/all-product");
@@ -97,6 +106,10 @@ namespace GoodsEnterprise.Web.Pages
                 ViewData["PageType"] = "Edit";
                 ViewData["PagePrimaryID"] = objProduct.Id;
                 ViewData["ImagePath"] = objProduct.Image;
+                if (objProduct.TaxslabId == 0)
+                    ViewData["IsTaxable"] = false;
+                else
+                    ViewData["IsTaxable"] = true;
             }
             catch (Exception ex)
             {
@@ -288,6 +301,19 @@ namespace GoodsEnterprise.Web.Pages
             catch (Exception ex)
             {
                 Log.Error(ex, $"Error in LoadSubCategoryByCategoryId(), Product");
+                throw;
+            }
+        }
+        private async Task LoadTaxSlab()
+        {
+            try
+            {
+                selectTaxSlab = new SelectList(await _tax.GetAllAsync(filter: x => x.IsDelete != true),
+                                          "Id", "Name", null);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Error in LoadTaxSlab(), Product");
                 throw;
             }
         }

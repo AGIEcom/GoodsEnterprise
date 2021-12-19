@@ -549,18 +549,47 @@ $('ul li.dropdown').hover(function () {
 
 //Load Menu
 var getMenuItem = function (itemData) {
-    var item = $("<li>", {
-        class: 'nav-item',
-        id: itemData.id
-    }).append(
-        $("<a>", {
-            href: itemData.link,
-            class: 'nav-link text-dark',
-            html: itemData.name,
-            id: itemData.id + '-links',
-        }));
+    var item = "";
+    if (itemData.SubMenu) {
+        item = $("<li>", {
+            class: 'nav-item',
+            id: itemData.id
+        }).append(
+            $("<a>", {
+                href: itemData.link,
+                class: 'dropdown-toggle',
+                html: itemData.name,
+                id: itemData.id + '-links',
+                "data-toggle": "collapse",
+                "aria-expanded":"false"
+            }));
+    }
+    else {
+        item = $("<li>", {
+            class: 'nav-item',
+            id: itemData.id
+        }).append(
+            $("<a>", {
+                href: itemData.link,
+                class: 'nav-link text-dark',
+                html: itemData.name,
+                id: itemData.id + '-links',
+            }));
+    }   
+    if (itemData.SubMenu) {
+        var subList = $("<ul>", {
+            class: 'collapse list-unstyled',
+            id: "ProductSubMenu"
+        });
+        $.each(itemData.SubMenu, function () {
+            subList.append(getMenuItem(this));
+        });
+        item.append(subList);
+    }
     return item;
 };
+
+ 
 
 var $menu = $("#mainmenu");
 $.getJSON("Menu/Menu.json", function (data) {
@@ -573,7 +602,12 @@ $.getJSON("Menu/Menu.json", function (data) {
     });
 });
 //End
-
+$(document).ready(function () {
+    $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+        $(this).toggleClass('active');
+    });
+});
 //Cascade dropdown
 //$(function () {
 //    $("#selectProductBrand").on("change", function () {

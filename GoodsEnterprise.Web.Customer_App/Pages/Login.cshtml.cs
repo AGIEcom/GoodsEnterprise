@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GoodsEnterprise.DataAccess.Interface;
-using GoodsEnterprise.Model.Models.UserModel;
+using GoodsEnterprise.Model.Models.CustomerModel;
 using GoodsEnterprise.Web.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Serilog;
 
@@ -15,19 +16,22 @@ namespace GoodsEnterprise.Web.Customer.Pages
 {
     public class LoginModel : PageModel
     {
-        private readonly IGeneralRepository<Register> _register;
+        private readonly IGeneralRepository<GoodsEnterprise.Model.Models.Customer> _customer;
+
+        private readonly IOptions<EmailSettings> _options;
 
         [BindProperty()]
-        public Register objRegister { get; set; }
+        public GoodsEnterprise.Model.Models.Customer objCustomer { get; set; }
 
         [BindProperty]
         public IFormFile Upload { get; set; }
 
-        public List<Register> lstRegister = new List<Register>();
+        public List<GoodsEnterprise.Model.Models.Customer> lstCustomer = new List<GoodsEnterprise.Model.Models.Customer>();
 
-        public LoginModel(IGeneralRepository<Register> register)
+        public LoginModel(IGeneralRepository<GoodsEnterprise.Model.Models.Customer> customer, IOptions<EmailSettings> options)
         {
-            _register = register;
+            _customer = customer;
+            _options = options;
         }
 
         public IActionResult OnGetUserLogin()
@@ -39,10 +43,10 @@ namespace GoodsEnterprise.Web.Customer.Pages
             try
             {
 
-                Register existingLogin = await _register.GetAsync(filter: x => x.Email == objRegister.Email && x.Password == objRegister.Password);
+                GoodsEnterprise.Model.Models.Customer existingLogin = await _customer.GetAsync(filter: x => x.Email == objCustomer.Email && x.Password == objCustomer.Password);
                 if (existingLogin != null)
                 {
-                    if (existingLogin.Password.Decrypt(Constants.EncryptDecryptSecurity) == objRegister.Password)
+                    if (existingLogin.Password.Decrypt(Constants.EncryptDecryptSecurity) == objCustomer.Password)
                     {
                         HttpContext.Session.SetString(Constants.LoginSession, JsonConvert.SerializeObject(existingLogin));
                         return RedirectToPage("UploadDownload");
@@ -73,10 +77,10 @@ namespace GoodsEnterprise.Web.Customer.Pages
             try
             {
 
-                Register existingLogin = await _register.GetAsync(filter: x => x.Email == objRegister.Email && x.Password == objRegister.Password);
+                GoodsEnterprise.Model.Models.Customer existingLogin = await _customer.GetAsync(filter: x => x.Email == objCustomer.Email && x.Password == objCustomer.Password);
                 if (existingLogin != null)
                 {
-                    if (existingLogin.Password.Decrypt(Constants.EncryptDecryptSecurity) == objRegister.Password)
+                    if (existingLogin.Password.Decrypt(Constants.EncryptDecryptSecurity) == objCustomer.Password)
                     {
                         HttpContext.Session.SetString(Constants.LoginSession, JsonConvert.SerializeObject(existingLogin));
                         return RedirectToPage("UploadDownload");
@@ -90,14 +94,16 @@ namespace GoodsEnterprise.Web.Customer.Pages
                 }
                 else
                 {
-                    objRegister.Password = objRegister.Password.Encrypt(Constants.EncryptDecryptSecurity);
-
+                    objCustomer.Password = objCustomer.Password.Encrypt(Constants.EncryptDecryptSecurity);
+                    objCustomer.RoleId = 5;
                     if (ModelState.IsValid)
                     {
 
-                        await _register.InsertAsync(objRegister);
+                        await _customer.InsertAsync(objCustomer);
                         HttpContext.Session.SetString(Constants.StatusMessage, Constants.SaveMessage);
+                        string SubJect = "Confirmation: your account has been created";
 
+                        Common.SendEmail(_options.Value, objCustomer.Email, SubJect, "");
                         return Redirect("user-index");
                     }
                     else
@@ -113,6 +119,11 @@ namespace GoodsEnterprise.Web.Customer.Pages
                 Log.Error(ex, $"Error in OnPostValidateLoginAsync()");
                 throw;
             }
+        }
+        private string RegisterBodyContent(string FirstName)
+        {
+            string rtrnMsg = "";
+            return "";
         }
 
     }

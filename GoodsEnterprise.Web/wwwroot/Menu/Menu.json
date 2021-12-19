@@ -17,7 +17,21 @@
             },
             {
               "name": "Product",
-              "link": "/all-product"
+              "link": "#ProductSubMenu",
+              "SubMenu": [
+                {
+                  "name": "Product",
+                  "link": "/all-product"
+                },
+                {
+                  "name": "Base Cost",
+                  "link": "/all-product"
+                },
+                {
+                  "name": "Promotion Cost",
+                  "link": "/all-product"
+                }
+              ]
             },
             {
               "name": "Tax",

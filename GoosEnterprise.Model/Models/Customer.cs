@@ -19,6 +19,11 @@ namespace GoodsEnterprise.Model.Models
         public string LastName { get; set; }
         public string Address1 { get; set; }
         public string Address2 { get; set; }
+        public string CompanyName { get; set; }
+        public string CompanyEmail { get; set; }
+        public string CompanyPhone { get; set; }
+        public string CompanyFax { get; set; }
+        public string ContactPerson { get; set; }
         public string City { get; set; }
         public string County { get; set; }
         public string PostalCode { get; set; }

@@ -1,5 +1,4 @@
 ﻿using System;
-using GoodsEnterprise.Model.Models.UserModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -33,8 +32,7 @@ namespace GoodsEnterprise.Model.Models
         public virtual DbSet<Supplier> Suppliers { get; set; }
         public virtual DbSet<Tax> Taxes { get; set; }
 
-        public virtual DbSet<ProductList> ProductLists { get; set; }
-        public virtual DbSet<Register> Registers { get; set; }
+        public virtual DbSet<ProductList> ProductLists { get; set; } 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -7,6 +7,11 @@ namespace GoodsEnterprise.Model.Models
 {
     public partial class Tax
     {
+        public Tax()
+        {
+            Products = new HashSet<Product>();
+        }
+
         public int Id { get; set; }
         public string Name { get; set; }
         public decimal? Value { get; set; }
@@ -17,5 +22,7 @@ namespace GoodsEnterprise.Model.Models
         public int? Modifiedby { get; set; }
         public bool IsActive { get; set; }
         public bool IsDelete { get; set; }
+
+        public virtual ICollection<Product> Products { get; set; }
     }
 }

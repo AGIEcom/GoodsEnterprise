@@ -2,6 +2,7 @@ using AutoMapper;
 using GoodsEnterprise.DataAccess.Implementation;
 using GoodsEnterprise.DataAccess.Interface;
 using GoodsEnterprise.Model.Models;
+using GoodsEnterprise.Model.Models.CustomerModel;
 using GoodsEnterprise.Web.Maaper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -58,8 +59,8 @@ namespace GoodsEnterprise.Web.Customer
             services.AddScoped<IUploadDownloadDA, UploadDownloadDA>();
             services.AddScoped(typeof(IGeneralRepository<>), typeof(GeneralRepository<>));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-             
-           
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+
             services.AddControllersWithViews();
         }
 

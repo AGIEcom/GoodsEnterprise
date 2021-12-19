@@ -9,9 +9,11 @@ namespace GoodsEnterprise.Model.Models
     {
         public Product()
         {
+            BaseCosts = new HashSet<BaseCost>();
             CustomerBaskets = new HashSet<CustomerBasket>();
             CustomerFavourites = new HashSet<CustomerFavourite>();
             OrderDetails = new HashSet<OrderDetail>();
+            PromotionCosts = new HashSet<PromotionCost>();
         }
 
         public int Id { get; set; }
@@ -48,10 +50,15 @@ namespace GoodsEnterprise.Model.Models
         public bool IsDelete { get; set; }
         public int? SupplierId { get; set; }
         public DateTime? ExpriyDate { get; set; }
+        public string ProductName { get; set; }
+        public string ProductDescription { get; set; }
+        public int? TaxslabId { get; set; }
 
-       
+        public virtual Tax Taxslab { get; set; }
+        public virtual ICollection<BaseCost> BaseCosts { get; set; }
         public virtual ICollection<CustomerBasket> CustomerBaskets { get; set; }
         public virtual ICollection<CustomerFavourite> CustomerFavourites { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+        public virtual ICollection<PromotionCost> PromotionCosts { get; set; }
     }
 }
