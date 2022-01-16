@@ -58,6 +58,7 @@ namespace GoodsEnterprise.Web.Customer
             });
             services.AddScoped<IUploadDownloadDA, UploadDownloadDA>();
             services.AddScoped(typeof(IGeneralRepository<>), typeof(GeneralRepository<>));
+            services.AddScoped<IAdoDA, AdoDA>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
 

@@ -840,6 +840,40 @@ SELECT @TotalRecords = COUNT(Id) FROM SubCategory WITH (NOLOCK)
 
 END
 
+
+GO
+/****** Object:  StoredProcedure [dbo].[SPUI_GetHomePageBrands]    Script Date: 16-01-2022 18:18:42 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[SPUI_GetHomePageBrands] 
+AS
+BEGIN
+
+  SELECT prd.BrandId AS BrandId, brd.Name AS BrandName, COUNT(prd.id) AS ProductCount FROM Brand brd WITH (NOLOCK) JOIN Product prd WITH (NOLOCK) ON brd.Id = prd.BrandId
+  WHERE brd.IsDelete = 0 and brd.IsActive = 1 and prd.IsDelete = 0 and prd.IsActive = 1 
+  GROUP BY prd.BrandId, brd.Name
+
+END
+
+GO
+/****** Object:  StoredProcedure [dbo].[SPUI_GetHomePageCategories]    Script Date: 16-01-2022 18:19:54 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[SPUI_GetHomePageCategories] 
+AS
+BEGIN
+
+  SELECT prd.CategoryId AS CategoryId, cat.Name AS CategoryName, COUNT(prd.id) AS ProductCount FROM Category cat WITH (NOLOCK) JOIN Product prd  WITH (NOLOCK) ON cat.Id = prd.CategoryId
+  WHERE cat.IsDelete = 0 and cat.IsActive = 1 and prd.IsDelete = 0 and prd.IsActive = 1 
+  GROUP BY prd.CategoryId, cat.Name
+
+END
+
+
 GO
 USE [master]
 GO
