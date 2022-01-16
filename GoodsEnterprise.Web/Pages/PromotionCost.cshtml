@@ -1,0 +1,138 @@
+﻿@page "/all-promotion-cost"
+@model GoodsEnterprise.Web.Pages.PromotionCostModel
+@{
+
+    ViewData["Title"] = "Promotion Cost";
+    var Edit = "";
+    var List = ""; 
+
+    
+    if (Convert.ToString(ViewData["PageType"]) == "Edit")
+    {
+        Edit = "display:block;";
+        List = "display:none;";
+    }
+    else
+    {
+        Edit = "display:none;";
+        List = "display:block;";
+    }
+   
+}
+@Html.AntiForgeryToken()
+
+
+<div class="alert alert-success" id="success-alert" style="display:none;">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    @ViewData["SuccessMsg"]
+</div>
+
+<div id="productlist" style="@List">
+    <a asp-page-handler="Create" id="lnkCreateProduct" class="btn btn-primary margin-bottom-15">Create New Promotion Cost</a>
+
+    <form id="UploadDownloadform" method="post" enctype="multipart/form-data" asp-page-handler="SubmitUpload">
+        <h3>Bulk Import/Export Promotion Cost</h3>
+
+        <div class="mb-3">
+            <input type="file" id="productFileUpload" class="fileUpload" asp-for="Upload" accept=".xls, .xlsx" onchange="productFileValidation()">
+        </div>
+        <button type="submit" class="btn btn-primary UploadDownload-submit">Submit</button>
+         
+    </form>
+
+    <div style="max-height: 500px; overflow-y: auto; overflow-x: hidden;" class="container table-responsive py-5">
+        <table class="table table-bordered table-hover display" style="width:100%" id="tblPromotionCost">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Supplier</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">OuterEan</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+
+        </table>
+    </div>
+</div>
+
+<div id="divCreateUpdateProduct" style="@Edit">
+    <div class="row">
+        <div class="col-md-12">
+            <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
+                <div class="form-row">
+                    <div class="card-header col-md-12">
+                        <h3 class="mb-0">Product</h3>
+                    </div>
+                    <hr class="my-5">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+                    {
+                        <input asp-for="objpromotionCost.PromotionCostId" type="hidden" class="form-control" id="txtPromotionCostId">
+                        
+                        <input asp-for="objpromotionCost.CreatedBy" type="hidden" class="form-control" id="txtCreatedby">
+                        <input asp-for="objpromotionCost.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
+                        <input asp-for= "objpromotionCost.Modifiedby" type ="hidden" class="form-control" id="txtModifiedby">
+                        <input asp-for="objpromotionCost.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
+                    }
+                <div class="form-group  col-md-3">
+                    <label for="selectProductID" class="form-label">Product</label>
+                    <select asp-for="objpromotionCost.ProductId" class="form-control selectpicker" data-live-search="true"
+                            asp-items="Model.selectProduct" id="selectProductID">
+                        <option value="">-- Select Product --</option>
+                    </select>
+                </div>
+                <div class="form-group  col-md-3">
+                    <label for="selectSupplierID" class="form-label">Lavender Code</label>
+                    <select asp-for="objpromotionCost.SupplierId" class="form-control selectpicker" data-live-search="true"
+                            asp-items="Model.selectSupplier" id="selectSupplierID">
+                        <option value="">-- Select Supplier --</option>
+                    </select>
+                </div>
+                    <div class="form-group  col-md-3">
+                        <label for="txtStartDate" class="form-label">Start Date</label>
+                        <input asp-for="objpromotionCost.StartDate" type="text" class="form-control" id="txtStartDate">
+                    </div>
+                    <div class="form-group  col-md-3">
+                        <label for="txtEndDate" class="form-label">EndDate</label>
+                        <input asp-for="objpromotionCost.EndDate" type="text" class="form-control" id="txtEndDate">
+                    </div>
+                   
+                    <div class="form-group col-md-3">
+                        <label for="txtIsActive" class="form-label">IsActive</label>
+                        <input asp-for="objpromotionCost.IsActive" type="checkbox" id="txtIsActive">
+                    </div>
+                    <div class="form-group col-md-12">
+                        <button type="submit" class="btn btn-primary product-submit">Submit</button>
+                        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+                        {
+                            <a asp-page-handler="Reset" asp-route-productId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="btn btn-light">Reset</a>
+                        }
+                        else
+                        {
+                            <a asp-page-handler="Clear" class="btn btn-light">Clear</a>
+                        }
+                        <a asp-page="/PromotionCost" class="btn btn-light">Close</a>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+@if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
+{
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#success-alert").show();
+            $("#success-alert").fadeTo(2000, 3000).slideUp(3000, function () {
+                $("#success-alert").slideUp(3000);
+            });
+        });
+
+    </script>
+
+}
+<script src="~/js/ServerSidePagination.js"></script>

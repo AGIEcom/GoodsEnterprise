@@ -14,5 +14,7 @@ namespace GoodsEnterprise.DataAccess.Interface
         Task BulkInsertSubCategoryAsync(List<SubCategory> subCategories);
         Task BulkInsertProductAsync(List<Product> products);
         Task BulkInsertSupplierAsync(List<Supplier> suppliers);
+
+        Task BulkInsertPromotionCost(List<PromotionCost> promotionCosts);
     }
 }

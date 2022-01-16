@@ -71,5 +71,11 @@ namespace GoodsEnterprise.DataAccess.Implementation
             var bulkConfig = new BulkConfig { SetOutputIdentity = true, BatchSize = 1000 };
             await _goodsEnterpriseContext.BulkInsertAsync(suppliers, bulkConfig);
         }
+
+        public async Task BulkInsertPromotionCost(List<PromotionCost> promotionCosts)
+        {
+            var bulkConfig = new BulkConfig { SetOutputIdentity = true, BatchSize = 1000 };
+            await _goodsEnterpriseContext.BulkInsertAsync(promotionCosts, bulkConfig);
+        }
     }
 }

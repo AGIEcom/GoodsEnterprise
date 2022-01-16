@@ -16,17 +16,15 @@ namespace GoodsEnterprise.Web.Controller
     public class DataBasePaginationController : ControllerBase
     {
         private readonly IGeneralRepository<ProductList> _product;
+        private readonly IGeneralRepository<PromotionCostList> _promotionCost;
         private readonly IGeneralRepository<Category> _category;
         private readonly IGeneralRepository<SubCategory> _subCategory;
         private readonly IGeneralRepository<Brand> _brand;
        // public List<Product> lstproduct = new List<Product>();
-        public DataBasePaginationController(IGeneralRepository<ProductList> product, IGeneralRepository<Category> category,
-          IGeneralRepository<SubCategory> subCategory, IGeneralRepository<Brand> brand)
+        public DataBasePaginationController(IGeneralRepository<ProductList> product, IGeneralRepository<PromotionCostList> promotionCost)
         {
             _product = product;
-            _category = category;
-            _subCategory = subCategory;
-            _brand = brand;
+            _promotionCost = promotionCost;
         }
         [HttpPost]
         [Route("getproductdata")]
@@ -34,15 +32,8 @@ namespace GoodsEnterprise.Web.Controller
         {
             try
             {
-                //ViewData["PageType"] = "List";
-                //if (!string.IsNullOrEmpty(HttpContext.Session.GetString(Constants.StatusMessage)))
-                //{
-                //    ViewData["SuccessMsg"] = HttpContext.Session.GetString(Constants.StatusMessage);
-                //    HttpContext.Session.SetString(Constants.StatusMessage, "");
-                //}
-                //ViewData["PagePrimaryID"] = 0;
-                List<ProductList> lstproduct = new List<ProductList>();
-                //var myProducts = param.AdditionalValues.ToList();
+                
+                List<ProductList> lstproduct = new List<ProductList>(); 
                 DBPaginationParams dBPaginationParams = new DBPaginationParams()
                 {
 
@@ -56,11 +47,7 @@ namespace GoodsEnterprise.Web.Controller
                 };
 
                 lstproduct = await _product.GetAllWithPaginationAsync(dBPaginationParams);
-
-                //if (lstproduct == null || lstproduct?.Count == 0)
-                //{
-                //    ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
-                //}
+                 
                 if (lstproduct.Count == 0)
                 {
                     var returnvaule = new JsonResult(new JqueryDataTablesResult<ProductList>
@@ -86,7 +73,59 @@ namespace GoodsEnterprise.Web.Controller
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"Error in OnGetAsync(), Product");
+                Log.Error(ex, $"Error in LoadProductTable(), DataBasePaginationController");
+                return new JsonResult(new { error = "Internal Server Error" });
+            }
+        }
+
+        [HttpPost]
+        [Route("getpromotioncostdata")]
+        public async Task<IActionResult> LoadPromotionCostTable([FromBody] JqueryDataTablesParameters param)
+        {
+            try
+            {
+
+                List<PromotionCostList> lstproduct = new List<PromotionCostList>();
+                DBPaginationParams dBPaginationParams = new DBPaginationParams()
+                {
+
+                    sortOrder = param.Order[0].Dir.ToString(),
+                    sortColumn = param.SortOrder.Split(" ")[0],
+                    OffsetValue = param.Draw,
+                    PagingSize = param.Length,
+                    SearchText = param.Search.Value,
+                    StoredProcuder = "SPUI_GetPromotionCostDetails"
+
+                };
+
+                lstproduct = await _promotionCost.GetAllWithPaginationAsync(dBPaginationParams);
+
+                if (lstproduct.Count == 0)
+                {
+                    var returnvaule = new JsonResult(new JqueryDataTablesResult<PromotionCostList>
+                    {
+                        Draw = param.Draw,
+                        Data = lstproduct,
+                        RecordsFiltered = 0,
+                        RecordsTotal = 0
+                    });
+                    return returnvaule;
+                }
+                else
+                {
+                    var returnvaule = new JsonResult(new JqueryDataTablesResult<PromotionCostList>
+                    {
+                        Draw = param.Draw,
+                        Data = lstproduct,
+                        RecordsFiltered = lstproduct[0].FilterTotalCount,
+                        RecordsTotal = lstproduct[0].FilterTotalCount
+                    });
+                    return returnvaule;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Error in LoadPromotionCostTable(), DataBasePaginationController");
                 return new JsonResult(new { error = "Internal Server Error" });
             }
         }

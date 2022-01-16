@@ -34,6 +34,7 @@ namespace GoodsEnterprise.Model.Models
         public virtual DbSet<Supplier> Suppliers { get; set; }
         public virtual DbSet<Tax> Taxes { get; set; }
         public virtual DbSet<ProductList> ProductLists { get; set; }
+        public virtual DbSet<PromotionCostList> PromotionCostLists { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -101,6 +102,8 @@ namespace GoodsEnterprise.Model.Models
 
                 entity.Property(e => e.EndDate).HasColumnType("datetime");
 
+                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+
                 entity.Property(e => e.ProductId).HasColumnName("ProductID");
 
                 entity.Property(e => e.Remark)
@@ -109,10 +112,17 @@ namespace GoodsEnterprise.Model.Models
 
                 entity.Property(e => e.StartDate).HasColumnType("datetime");
 
+                entity.Property(e => e.SupplierId).HasColumnName("SupplierID");
+
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.BaseCosts)
                     .HasForeignKey(d => d.ProductId)
                     .HasConstraintName("FK_BaseCost_Product");
+
+                entity.HasOne(d => d.Supplier)
+                    .WithMany(p => p.BaseCosts)
+                    .HasForeignKey(d => d.SupplierId)
+                    .HasConstraintName("FK_BaseCost_Supplier");
             });
 
             modelBuilder.Entity<Brand>(entity =>
@@ -444,6 +454,8 @@ namespace GoodsEnterprise.Model.Models
 
                 entity.Property(e => e.EndDate).HasColumnType("datetime");
 
+                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+
                 entity.Property(e => e.ProductId).HasColumnName("ProductID");
 
                 entity.Property(e => e.PromotionCost1)
@@ -456,10 +468,17 @@ namespace GoodsEnterprise.Model.Models
 
                 entity.Property(e => e.StartDate).HasColumnType("datetime");
 
+                entity.Property(e => e.SupplierId).HasColumnName("SupplierID");
+
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.PromotionCosts)
                     .HasForeignKey(d => d.ProductId)
                     .HasConstraintName("FK_PromotionCost_PromotionCost");
+
+                entity.HasOne(d => d.Supplier)
+                    .WithMany(p => p.PromotionCosts)
+                    .HasForeignKey(d => d.SupplierId)
+                    .HasConstraintName("FK_PromotionCost_Supplier");
             });
 
             modelBuilder.Entity<Role>(entity =>

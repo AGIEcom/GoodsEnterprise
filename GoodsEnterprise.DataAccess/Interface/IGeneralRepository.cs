@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -18,5 +19,6 @@ namespace GoodsEnterprise.DataAccess.Interface
         Task UpdateAsync(T entity);
         Task<bool> PhysicalDeleteAsync(T entity);
         Task<bool> LogicalDeleteAsync(T entity);
+        Task<bool> PostValueUsingUDTT(DataTable datatable, CommenParameters commenParameters);
     }
 }

@@ -186,5 +186,26 @@ namespace GoodsEnterprise.DataAccess.Implementation
             await context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<bool> PostValueUsingUDTT(DataTable datatable, CommenParameters commenParameters)
+        {
+            try
+            {
+                Dictionary<string, SqlParameter> sqlParameters = new Dictionary<string, SqlParameter>();
+                sqlParameters.Add("@UDTType_PromotionCost", new SqlParameter("@UDTType_PromotionCost", SqlDbType.Structured)
+                {
+                    TypeName = commenParameters.SPName,
+                    Value = datatable
+                });
+                sqlParameters.Add("@CREATEDBY", new SqlParameter("@CREATEDBY", commenParameters.CreatedBy));
+                var result = await entities.FromSqlRaw($"{commenParameters.SPName} {string.Join(",", sqlParameters?.Keys)}", sqlParameters?.Values.ToArray()).ToListAsync();
+                //pagination.TotalRecords = Convert.ToInt32(totalRecordsParam.Value);
+                return Convert.ToBoolean(result[0]);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
     }
 }
