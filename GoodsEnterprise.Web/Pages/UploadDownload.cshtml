@@ -15,7 +15,7 @@
 <div id="divUploadDownload">
     @ViewData["SuccessMsg"]
     <form id="UploadDownloadform" method="post" enctype="multipart/form-data" asp-page-handler="Submit">
-        <H3>Bulk Import/Export Products</H3>
+        <H3>Import Products</H3>
 
         <div class="mb-3">
             <input type="file" id="productFileUpload" class="fileUpload" asp-for="Upload" accept=".xls, .xlsx" onchange="productFileValidation()">
