@@ -1,5 +1,5 @@
 ﻿@page "/all-category"
-@model GoodsEnterprise.Web.Pages.CategoryModel 
+@model GoodsEnterprise.Web.Pages.CategoryModel
 
 @{
     ViewData["Title"] = "Category";
@@ -25,30 +25,32 @@
 
 <div id="categorylist" style="@List">
     <a id="lnkCreateCategory" class="btn btn-primary margin-bottom-15">Create New Category</a>
-    <table class="display" style="width:100%" id="tblCategoryMaster">
-        <thead>
-            <tr>
-                <th scope="col">Category Name</th>
-                <th scope="col">Category Description</th>
-                <th scope="col">Status</th>
-                <th scope="col">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.lstcategory)
-            {
+    <div style="max-height: 500px; overflow-y: auto; overflow-x: hidden;" class="container table-responsive">
+        <table class="table table-bordered table-hover display" style="width:100%" id="tblCategoryMaster">
+            <thead class="thead-dark">
                 <tr>
-                    <th scope="row">@item.Name</th>
-                    <td>@item.Description</td>
-                    <td>@item.IsActive</td>
-                    <td>
-                        <a asp-page-handler="Edit" asp-route-categoryId="@item.Id" class="btn btn-primary">Edit</a> |
-                        <a asp-page-handler="DeleteCategory" asp-route-categoryId="@item.Id" class="btn btn-primary btn-category-delete">Delete</a>
-                    </td>
+                    <th scope="col">Category Name</th>
+                    <th scope="col">Category Description</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.lstcategory)
+                {
+                    <tr>
+                        <th scope="row">@item.Name</th>
+                        <td>@item.Description</td>
+                        <td>@item.IsActive</td>
+                        <td>
+                            <a asp-page-handler="Edit" asp-route-categoryId="@item.Id" class="btn btn-primary">Edit</a> |
+                            <a asp-page-handler="DeleteCategory" asp-route-categoryId="@item.Id" class="btn btn-primary btn-category-delete">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
 
@@ -78,7 +80,7 @@
             <label for="lblIsActive" class="form-label">IsActive</label>
             <input asp-for="objCategory.IsActive" type="checkbox" id="txtIsActive">
         </div>
-        
+
         <button type="submit" class="btn btn-primary category-submit">Submit</button>
         @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
         {

@@ -3,6 +3,7 @@ using GoodsEnterprise.DataAccess.Interface;
 using GoodsEnterprise.Model.CustomerModel;
 using GoodsEnterprise.Model.Models;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,15 +16,17 @@ namespace GoodsEnterprise.DataAccess.Implementation
     /// </summary>
     public class AdoDA : IAdoDA
     {
-        public AdoDA()
+        private readonly IConfiguration _iconfig;
+        public AdoDA(IConfiguration iconfig)
         {
-
+            _iconfig = iconfig;
         }
       
         public async Task<List<HomePageBrand>> GetHomePageBrandAsync()
         {
+            string connString = this._iconfig.GetConnectionString("GoodsEnterpriseDatabase");
             List<HomePageBrand> lstHomePageBrand = new List<HomePageBrand>();
-            using (SqlConnection con = new SqlConnection("Data Source=DESKTOP-FVJMKLK;Initial Catalog=GoodsEnterpriseNew;Integrated Security=True"))
+            using (SqlConnection con = new SqlConnection(connString))
             {
                 SqlCommand cmd = new SqlCommand("SPUI_GetHomePageBrands", con);
                 // Configure command and add parameters.
@@ -52,8 +55,9 @@ namespace GoodsEnterprise.DataAccess.Implementation
 
         public async Task<List<HomePageCategory>> GetHomePageCategoryAsync()
         {
+            string connString = this._iconfig.GetConnectionString("GoodsEnterpriseDatabase");
             List<HomePageCategory> lstHomePageCategory = new List<HomePageCategory>();
-            using (SqlConnection con = new SqlConnection("Data Source=DESKTOP-FVJMKLK;Initial Catalog=GoodsEnterpriseNew;Integrated Security=True"))
+            using (SqlConnection con = new SqlConnection(connString))
             {
                 SqlCommand cmd = new SqlCommand("SPUI_GetHomePageCategories", con);
                 // Configure command and add parameters.

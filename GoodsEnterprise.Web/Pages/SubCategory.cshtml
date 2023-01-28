@@ -24,31 +24,36 @@
 </div>
 
 <div id="subCategorylist" style="@List">
-    <a id="lnkCreateSubCategory" class="btn btn-primary margin-bottom-15">Create New SubCategory</a>
-    <table class="display" style="width:100%" id="tblSubCategoryMaster">
-        <thead>
-            <tr>
-                <th scope="col">SubCategory Name</th>
-                <th scope="col">SubCategory Description</th>
-                <th scope="col">Status</th>
-                <th scope="col">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.lstsubCategory)
-            {
+    <a id="lnkCreateSubCategory" class="btn btn-primary margin-bottom-15 float-right">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        Add
+    </a>
+    <div style="max-height: 500px; overflow-y: auto; overflow-x: hidden;" class="container table-responsive">
+        <table class="table table-bordered table-hover display" style="width:100%" id="tblSubCategoryMaster">
+            <thead class="thead-dark">
                 <tr>
-                    <th scope="row">@item.Name</th>
-                    <td>@item.Description</td>
-                    <td>@item.IsActive</td>
-                    <td>
-                        <a asp-page-handler="Edit" asp-route-subCategoryId="@item.Id" class="btn btn-primary">Edit</a> |
-                        <a asp-page-handler="DeleteSubCategory" asp-route-subCategoryId="@item.Id" class="btn btn-primary btn-subCategory-delete">Delete</a>
-                    </td>
+                    <th scope="col">SubCategory Name</th>
+                    <th scope="col">SubCategory Description</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.lstsubCategory)
+                {
+                    <tr>
+                        <th scope="row">@item.Name</th>
+                        <td>@item.Description</td>
+                        <td>@item.IsActive</td>
+                        <td>
+                            <a asp-page-handler="Edit" asp-route-subCategoryId="@item.Id" class="btn btn-primary">Edit</a> |
+                            <a asp-page-handler="DeleteSubCategory" asp-route-subCategoryId="@item.Id" class="btn btn-primary btn-subCategory-delete">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
 

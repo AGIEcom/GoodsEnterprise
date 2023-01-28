@@ -33,31 +33,32 @@
 <div id="brandlist" style="@List">
 
     <a id="lnkCreateBrand" class="btn btn-primary margin-bottom-15">Create New Brand</a>
-    <table class="display" style="width:100%" id="tblBrandMaster">
-        <thead>
-            <tr>
-                <th scope="col">Brand Name</th>
-                <th scope="col">Brand Description</th>
-                <th scope="col">Status</th>
-                <th scope="col">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.lstbrand)
-            {
+    <div style="max-height: 600px; overflow-y: auto; overflow-x: hidden;" class="container table-responsive">
+        <table class="table  table-bordered table-hover display" style="width:100%" id="tblBrandMaster">
+            <thead class="thead-dark">
                 <tr>
-                    <th scope="row">@item.Name</th>
-                    <td>@item.Description</td>
-                    <td>@item.IsActive</td>
-                    <td>
-                        <a asp-page-handler="Edit" asp-route-brandId="@item.Id" class="btn btn-primary">Edit</a> |
-                        <a asp-page-handler="DeleteBrand" asp-route-brandId="@item.Id" class="btn btn-primary btn-brand-delete">Delete</a>
-                    </td>
+                    <th scope="col">Brand Name</th>
+                    <th scope="col">Brand Description</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-
+            </thead>
+            <tbody>
+                @foreach (var item in Model.lstbrand)
+                {
+                    <tr>
+                        <th scope="row">@item.Name</th>
+                        <td>@item.Description</td>
+                        <td>@item.IsActive</td>
+                        <td>
+                            <a asp-page-handler="Edit" asp-route-brandId="@item.Id" class="btn btn-primary">Edit</a> |
+                            <a asp-page-handler="DeleteBrand" asp-route-brandId="@item.Id" class="btn btn-primary btn-brand-delete">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <div id="divCreateUpdateBrand" style="@Edit">
