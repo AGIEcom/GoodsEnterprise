@@ -136,6 +136,28 @@
                 <option value="0">-- Select Role --</option>
             </select>
         </div>
+        <div class="mb-3">
+            <label for="lblCompanyEmail" class="form-label">CompanyEmail</label>
+            <input asp-for="objCustomer.CompanyEmail" type="text" class="form-control" id="txtCompanyEmail">
+        </div>
+        <div class="mb-3">
+            <label for="lblCompanyFax" class="form-label">CompanyFax</label>
+            <input asp-for="objCustomer.CompanyFax" type="text" class="form-control" id="txtCompanyFax">
+        </div>
+        <div class="mb-3">
+            <label for="lblCompanyName" class="form-label">CompanyName</label>
+            <input asp-for="objCustomer.CompanyName" type="text" class="form-control" id="txtCompanyName">
+        </div>
+        <div class="mb-3">
+            <label for="lblCompanyPhone" class="form-label">CompanyPhone</label>
+            <input asp-for="objCustomer.CompanyPhone" type="text" class="form-control" id="txtCompanyPhone">
+        </div>
+        <div class="mb-3">
+            <label for="lblContactPerson" class="form-label">ContactPerson</label>
+            <input asp-for="objCustomer.ContactPerson" type="text" class="form-control" id="txtContactPerson">
+        </div>
+
+
         <button type="submit" class="btn btn-primary customer-submit">Submit</button>
         @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
         {

@@ -54,11 +54,11 @@
               "link": "/all-customer"
             },
             {
-              "name": "UploadDownload",
+              "name": "Import",
               "link": "/UploadDownload"
             },
             {
-              "name": "Download",
+              "name": "Export",
               "link": "/Download"
             }
           ]
