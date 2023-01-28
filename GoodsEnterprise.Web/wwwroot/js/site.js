@@ -603,10 +603,21 @@ $.getJSON("Menu/Menu.json", function (data) {
 });
 //End
 $(document).ready(function () {
-    $('#sidebarCollapse').on('click', function () {
+    $('#sidebarCollapse').on('click', function () {        
         $('#sidebar').toggleClass('active');
         $(this).toggleClass('active');
     });
+   
+    loadActiveMenu();
+
+    function loadActiveMenu() { 
+        var url = window.location.href.split('/')[window.location.href.split('/').length - 1];
+        $('.nav-item').removeClass('active');
+        if (url === 'all-promotion-cost' || url === 'all-product') {
+            $('.nav-item').find('a[href*="#ProductSubMenu"]').parent().addClass('active');
+        }
+        $('li.nav-item').find('a[href*="' + url + '"]').parent().addClass('active');
+    }
 });
 //Cascade dropdown
 //$(function () {

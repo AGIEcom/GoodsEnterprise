@@ -7,6 +7,12 @@ namespace GoodsEnterprise.Model.Models
 {
     public partial class Supplier
     {
+        public Supplier()
+        {
+            BaseCosts = new HashSet<BaseCost>();
+            PromotionCosts = new HashSet<PromotionCost>();
+        }
+
         public int Id { get; set; }
         public string Name { get; set; }
         public string Skucode { get; set; }
@@ -23,5 +29,8 @@ namespace GoodsEnterprise.Model.Models
         public int? Modifiedby { get; set; }
         public bool IsActive { get; set; }
         public bool IsDelete { get; set; }
+
+        public virtual ICollection<BaseCost> BaseCosts { get; set; }
+        public virtual ICollection<PromotionCost> PromotionCosts { get; set; }
     }
 }

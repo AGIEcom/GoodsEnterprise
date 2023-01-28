@@ -96,10 +96,10 @@ a, a:hover, a:focus {
     background: #fff;
 }
 
-#sidebar ul li.active > a, a[aria-expanded="true"] {
-    color: #fff;
-    background: #6d7fcc;
-}
+    #sidebar ul li.active > a, a[aria-expanded="true"] {
+        color: #333 !important;
+        background: #fff;
+    }
 
 
 a[data-toggle="collapse"] {

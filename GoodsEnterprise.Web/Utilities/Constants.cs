@@ -39,5 +39,7 @@ namespace GoodsEnterprise.Web.Utilities
 
         public static readonly string[] ProductFieldsDownload = { "Code", "Brand", "Category", "SubCategory", "Supplier", "InnerEan", "OuterEan", "PackSize", "Upc", "LayerQuantity", "PalletQuantity", "Height", "Weight",
         "Width", "NetWeight", "Depth", "IsActive", "ExpriyDate"};
+
+        public static readonly string[] PromotionCostFields = { "Start", "End", "Sellout Start", "Sellout End", "Supplier:", "Product", "Outer Barcode", "Inner Barcode", "W/sale Nett Cost", "Bonus Description", "Sell Out Description" };
     }
 }

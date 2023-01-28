@@ -317,41 +317,7 @@ namespace GoodsEnterprise.Web.Pages
                 throw;
             }
         }
-        ///// <summary>
-        ///// OnGetSubCategories
-        ///// </summary>
-        ///// <param name="categoryId"></param>
-        ///// <returns></returns>
-        //public async Task<JsonResult> OnGetSubCategories(int? categoryId)
-        //{
-        //    try
-        //    {
-        //        return new JsonResult(await _subCategory.GetAllAsync(filter: x => x.IsDelete != true && x.CategoryId == categoryId));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error(ex, $"Error in OnGetSubCategories(), Product, categoryId: { categoryId }");
-        //        throw;
-        //    }
-        //}
-
-        ///// <summary>
-        ///// OnGetCategories
-        ///// </summary>
-        ///// <param name="brandId"></param>
-        ///// <returns></returns>
-        //public async Task<JsonResult> OnGetCategories(int? brandId)
-        //{
-        //    try
-        //    {
-        //        return new JsonResult(await _category.GetAllAsync(filter: x => x.IsDelete != true));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error(ex, $"Error in OnGetCategories(), Product, brandId: { brandId }");
-        //        throw;
-        //    }           
-        //}
+        
     }
 }
 
