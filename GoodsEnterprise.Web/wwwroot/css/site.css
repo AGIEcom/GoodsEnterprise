@@ -1,4 +1,4 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
 a.navbar-brand {
@@ -63,12 +63,17 @@ button.accept-policy {
 -------------------------------------------------- */
 html {
     position: relative;
-    min-height: 100%;
+    height: 100%;
+    max-height: 100vh;
+    overflow-x: hidden;
 }
 
 body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
+    overflow-x: hidden !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
 }
 
 /*.footer {
@@ -161,4 +166,8 @@ body {
 
     .error-actions .btn {
         margin-right: 10px;
+    }
+
+    .d-none{
+        display:none;
     }

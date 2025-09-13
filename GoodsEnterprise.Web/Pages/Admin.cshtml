@@ -1,4 +1,4 @@
-﻿@page "/all-admin"
+@page "/all-admin"
 @model GoodsEnterprise.Web.Pages.AdminModel
 
 @{
@@ -18,48 +18,86 @@
     }
 }
 
-<div class="alert alert-success" id="success-alert" style="display:none;">
-    <button type="button" class="close" data-dismiss="alert">x</button>
-    @ViewData["SuccessMsg"]
+<div class="modern-alert modern-alert-success" id="success-alert" style="display:none;">
+    <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+    </svg>
+    <span>@ViewData["SuccessMsg"]</span>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
 </div>
 
 <div id="adminlist" style="@List">
-    <a asp-page-handler="Create" id="lnkCreateAdmin" class="btn btn-primary margin-bottom-15">Create New Admin</a>
-    <table class="display" style="width:100%" id="tblAdminMaster">
-        <thead>
-            <tr>
-                <th scope="col">First Name</th>
-                <th scope="col">Last Name</th>
-                <th scope="col">Email</th>
-                <th scope="col">Status</th>
-                <th scope="col">Subcribed</th>
-                <th scope="col">Action</th>
-            </tr>
-        </thead>
+    <div class="modern-card">
+        <div class="modern-card-header">
+            <h2 class="modern-card-title">Admin Management</h2>
+        </div>
+        <a asp-page-handler="Create" id="lnkCreateAdmin" class="modern-btn modern-btn-primary mb-3">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+            </svg>
+            Create New Admin
+        </a>
+        <div class="modern-table-container">
+            <table class="modern-table" id="tblAdminMaster">
+            <thead>
+                <tr>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Subscribed</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
         <tbody>
             @foreach (var item in Model.lstadmin)
             {
             <tr>
-                <th scope="row">@item.FirstName </th>
-                <td>@item.LastName  </td>
-                <td>@item.Email  </td>
-                <td>@item.IsEmailSubscribed </td>
-                <td>@item.IsActive</td>
+                <td>@item.FirstName</td>
+                <td>@item.LastName</td>
+                <td>@item.Email</td>
                 <td>
-                    <a asp-page-handler="Edit" asp-route-adminId="@item.Id" class="btn btn-primary">Edit</a> |
-                    <a asp-page-handler="DeleteAdmin" asp-route-adminId="@item.Id" asp-route-firstName="@item.FirstName" class="btn btn-primary btn-admin-delete">Delete</a>
+                    <span class="modern-badge @(item.IsActive ? "modern-badge-success" : "modern-badge-secondary")">
+                        @(item.IsActive ? "Active" : "Inactive")
+                    </span>
+                </td>
+                <td>
+                    <span class="modern-badge @(item.IsEmailSubscribed ? "modern-badge-info" : "modern-badge-secondary")">
+                        @(item.IsEmailSubscribed ? "Subscribed" : "Unsubscribed")
+                    </span>
+                </td>
+                <td>
+                    <a asp-page-handler="Edit" asp-route-adminId="@item.Id" class="modern-btn modern-btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem; margin-right: 0.5rem;">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                        </svg>
+                        Edit
+                    </a>
+                    <a asp-page-handler="DeleteAdmin" asp-route-adminId="@item.Id" asp-route-firstName="@item.FirstName" class="modern-btn modern-btn-danger btn-admin-delete" style="padding: 0.5rem 1rem; font-size: 0.8rem;">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        Delete
+                    </a>
                 </td>
             </tr>
             }
-        </tbody>
-    </table>
+            </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 
 
 <div id="divCreateUpdateAdmin" style="@Edit">
-    <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
-        <H3>Admin</H3>
+    <div class="modern-card">
+        <div class="modern-card-header">
+            <h2 class="modern-card-title">@(Convert.ToInt32(ViewData["PagePrimaryID"]) > 0 ? "Edit Admin" : "Create New Admin")</h2>
+        </div>
+        <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
         @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
         {
             <input asp-for="objAdmin.Id" type="hidden" class="form-control" id="txtAdminID">
@@ -69,52 +107,93 @@
             <input asp-for="objAdmin.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
             <input asp-for="objAdmin.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
         }
-        <div class="mb-3">
-            <label for="lblAdminFirstName" class="form-label">FirstName</label>
-            <input asp-for="objAdmin.FirstName" type="text" class="form-control" id="txtAdminFirstName">
+        <div class="modern-form-group">
+            <label for="txtAdminFirstName" class="modern-form-label">First Name *</label>
+            <input asp-for="objAdmin.FirstName" type="text" class="modern-form-input" id="txtAdminFirstName" required>
         </div>
-        <div class="mb-3">
-            <label for="lblAdminLastName" class="form-label">LastName</label>
-            <input asp-for="objAdmin.LastName" type="text" class="form-control" id="txtAdminLastName">
+        <div class="modern-form-group">
+            <label for="txtAdminLastName" class="modern-form-label">Last Name *</label>
+            <input asp-for="objAdmin.LastName" type="text" class="modern-form-input" id="txtAdminLastName" required>
         </div>
-        <div class="mb-3">
-            <label for="lblAdminEmail" class="form-label">Email</label>
-            <input asp-for="objAdmin.Email" type="text" class="form-control" id="txtAdminEmail">
+        <div class="modern-form-group">
+            <label for="txtAdminEmail" class="modern-form-label">Email Address *</label>
+            <input asp-for="objAdmin.Email" type="email" class="modern-form-input" id="txtAdminEmail" required>
         </div>
-        <div class="mb-3">
-            <label for="lblAdminPassword" class="form-label">Password</label>
-            <input asp-for="objAdmin.Password" type="text" class="form-control" id="txtAdminPassword">
+        <div class="modern-form-group">
+            <label for="txtAdminPassword" class="modern-form-label">Password *</label>
+            <input asp-for="objAdmin.Password" type="password" class="modern-form-input" id="txtAdminPassword" required>
         </div>
-        <div class="mb-3">
-            <label for="lblDescription" class="form-label">Description</label>
-            <input asp-for="objAdmin.Description" type="text" class="form-control" id="txtDescription">
+        <div class="modern-form-group">
+            <label for="txtDescription" class="modern-form-label">Description</label>
+            <textarea asp-for="objAdmin.Description" class="modern-form-input" id="txtDescription" rows="3" placeholder="Optional description..."></textarea>
         </div>
-        <div class="mb-3">
-            <label for="lblIsActive" class="form-label">IsActive</label>
-            <input asp-for="objAdmin.IsActive" type="checkbox" id="txtIsActive">
+        <div class="modern-form-group">
+            <label for="txtIsActive" class="modern-form-label">Account Status</label>
+            <div class="modern-toggle-container">
+                <input asp-for="objAdmin.IsActive" type="checkbox" id="txtIsActive" class="modern-checkbox">
+                <label for="txtIsActive" class="modern-toggle-label">
+                    <div class="toggle-switch">
+                        <div class="toggle-slider"></div>
+                        <span class="toggle-text-off">Inactive</span>
+                        <span class="toggle-text-on">Active</span>
+                    </div>
+                </label>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="lblIsEmailSubscribed" class="form-label">IsEmailSubscribed</label>
-            <input asp-for="objAdmin.IsEmailSubscribed" type="checkbox" id="txtIsEmailSubscribed">
+        <div class="modern-form-group">
+            <label for="txtIsEmailSubscribed" class="modern-form-label">Email Subscription</label>
+            <div class="modern-toggle-container">
+                <input asp-for="objAdmin.IsEmailSubscribed" type="checkbox" id="txtIsEmailSubscribed" class="modern-checkbox">
+                <label for="txtIsEmailSubscribed" class="modern-toggle-label">
+                    <div class="toggle-switch">
+                        <div class="toggle-slider"></div>
+                        <span class="toggle-text-off">Disabled</span>
+                        <span class="toggle-text-on">Enabled</span>
+                    </div>
+                </label>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="lblBrand" class="form-label">Role</label>
-            <select asp-for="objAdmin.RoleId" class="form-control"
-                    asp-items="Model.Roles" id="selectRole">
+        <div class="modern-form-group">
+            <label for="selectRole" class="modern-form-label">Role *</label>
+            <select asp-for="objAdmin.RoleId" class="modern-select"
+                    asp-items="Model.Roles" id="selectRole" required>
                 <option value="0">-- Select Role --</option>
             </select>
         </div>
-        <button type="submit" class="btn btn-primary admin-submit">Submit</button>
-        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
-        {
-            <a asp-page-handler="Reset" asp-route-adminId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="btn btn-light">Reset</a>
-        }
-        else
-        {
-            <a asp-page-handler="Clear" class="btn btn-light">Clear</a>
-        }
-        <a asp-page="/Admin" class="btn btn-light">Close</a>
-    </form>
+        <div class="d-flex gap-2 flex-wrap">
+            <button type="submit" class="modern-btn modern-btn-primary admin-submit">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                @(Convert.ToInt32(ViewData["PagePrimaryID"]) > 0 ? "Update Admin" : "Create Admin")
+            </button>
+            @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+            {
+                <a asp-page-handler="Reset" asp-route-adminId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="modern-btn modern-btn-secondary">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"></path>
+                    </svg>
+                    Reset
+                </a>
+            }
+            else
+            {
+                <a asp-page-handler="Clear" class="modern-btn modern-btn-secondary">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                    </svg>
+                    Clear
+                </a>
+            }
+            <a asp-page="/Admin" class="modern-btn modern-btn-secondary">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                </svg>
+                Close
+            </a>
+        </div>
+        </form>
+    </div>
 </div>
 
 @if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")

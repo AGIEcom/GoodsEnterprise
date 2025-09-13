@@ -1,49 +1,121 @@
-﻿@page "/Login"
+@page "/Login"
 @model GoodsEnterprise.Web.Pages.LoginModel
 @{
     Layout = "";
 }
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<link href="/css/Login.css" rel="stylesheet" asp-append-version="true" />
-<div class="alert alert-success" id="success-alert" style="display:none;">
-    <button type="button" class="close" data-dismiss="alert">x</button>
-    @ViewData["SuccessMsg"]
-</div>
-
-<div class="login-reg-panel">
-    <form method="post" enctype="multipart/form-data" asp-page-handler="Login">
-        <div class="login-info-box">
-            <h2>Have an account?</h2>
-            <p>Lorem ipsum dolor sit amet</p>
-            <label id="label-register" for="log-reg-show">Login</label>
-            <input type="radio" name="active-log-panel" id="log-reg-show" checked="checked">
-        </div>
-        <div class="white-panel">
-            <div class="login-show">
-                <h2>LOGIN</h2>
-                <input type="text" placeholder="Email" asp-for="objAdmin.Email">
-                <input type="password" placeholder="Password" asp-for="objAdmin.Password">
-                <button type="submit" class="login-btn">Submit</button>
-                @*<input type="button" value="Login">*@
-                <a href="">Forgot password?</a>
-            </div>
-        </div>
-    </form>
-</div>
-<script src="~/js/Login.js" asp-append-version="true"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - GoodsEnterprise</title>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/modern-components.css" rel="stylesheet" />
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .login-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 400px;
+            width: 100%;
+            margin: 2rem;
+        }
+        .login-header {
+            background: linear-gradient(135deg, #3182ce, #2c5282);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .login-form {
+            padding: 2rem;
+        }
+        .brand-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .brand-subtitle {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
 
 @if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
 {
-    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#success-alert").show();
-            $("#success-alert").fadeTo(2000, 3000).slideUp(3000, function () {
-                $("#success-alert").slideUp(3000);
-            });
-        });
-
-    </script>
+    <div class="modern-alert modern-alert-success" id="success-alert" style="position: fixed; top: 20px; right: 20px; z-index: 1000; max-width: 400px;">
+        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+        </svg>
+        <span>@ViewData["SuccessMsg"]</span>
+        <button type="button" class="close" onclick="this.parentElement.style.display='none'" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
 }
+
+<div class="login-container">
+    <div class="login-header">
+        <div class="brand-logo">
+            <svg width="32" height="32" fill="currentColor" viewBox="0 0 20 20" style="margin-right: 0.5rem;">
+                <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 6a2 2 0 114 0 2 2 0 01-4 0zm8-1a1 1 0 100 2h2a1 1 0 100-2h-2z" clip-rule="evenodd"></path>
+            </svg>
+            GoodsEnterprise
+        </div>
+        <p class="brand-subtitle">Welcome back! Please sign in to your account.</p>
+    </div>
+    
+    <div class="login-form">
+        <form method="post" enctype="multipart/form-data" asp-page-handler="Login">
+            <div class="modern-form-group">
+                <label for="email" class="modern-form-label">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20" style="margin-right: 0.5rem;">
+                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                    </svg>
+                    Email Address
+                </label>
+                <input type="email" id="email" class="modern-form-input" placeholder="Enter your email" asp-for="objAdmin.Email" required>
+            </div>
+            
+            <div class="modern-form-group">
+                <label for="password" class="modern-form-label">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20" style="margin-right: 0.5rem;">
+                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    Password
+                </label>
+                <input type="password" id="password" class="modern-form-input" placeholder="Enter your password" asp-for="objAdmin.Password" required>
+            </div>
+            
+            <button type="submit" class="modern-btn modern-btn-primary" style="width: 100%; margin-bottom: 1rem;">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                Sign In
+            </button>
+            
+            <div style="text-align: center;">
+                <a href="#" style="color: #3182ce; text-decoration: none; font-size: 0.9rem;">
+                    Forgot your password?
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="~/js/modern-interactions.js" asp-append-version="true"></script>
+</body>
+</html>

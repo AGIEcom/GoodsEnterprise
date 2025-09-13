@@ -1,0 +1,399 @@
+/* Modern UI Components for GoodsEnterprise */
+
+/* Modern Toggle Switch */
+.modern-toggle-container {
+    margin-top: 8px;
+}
+
+.modern-checkbox {
+    display: none;
+}
+
+.modern-toggle-label {
+    cursor: pointer;
+    display: inline-block;
+}
+
+.toggle-switch {
+    position: relative;
+    width: 80px;
+    height: 30px;
+    background: linear-gradient(145deg, #e74c3c, #c0392b);
+    border-radius: 20px;
+    box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+}
+
+.toggle-slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 26px;
+    height: 26px;
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-slider::before {
+    content: "✕";
+    color: #e74c3c;
+    font-weight: bold;
+    font-size: 12px;
+    transition: all 0.3s ease;
+}
+
+.toggle-text-off, .toggle-text-on {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.toggle-text-off {
+    right: 8px;
+    opacity: 1;
+}
+
+.toggle-text-on {
+    left: 8px;
+    opacity: 0;
+}
+
+/* Checked State */
+.modern-checkbox:checked + .modern-toggle-label .toggle-switch {
+    background: linear-gradient(145deg, #27ae60, #229954);
+    box-shadow: 0 3px 10px rgba(39, 174, 96, 0.3);
+}
+
+.modern-checkbox:checked + .modern-toggle-label .toggle-slider {
+    transform: translateX(52px);
+}
+
+.modern-checkbox:checked + .modern-toggle-label .toggle-slider::before {
+    content: "✓";
+    color: #27ae60;
+}
+
+.modern-checkbox:checked + .modern-toggle-label .toggle-text-off {
+    opacity: 0;
+}
+
+.modern-checkbox:checked + .modern-toggle-label .toggle-text-on {
+    opacity: 1;
+}
+
+/* Hover Effects */
+.toggle-switch:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modern-checkbox:checked + .modern-toggle-label .toggle-switch:hover {
+    box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+}
+
+/* Focus State for Accessibility */
+.modern-checkbox:focus + .modern-toggle-label .toggle-switch {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+/* Modern Form Controls */
+.modern-form-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.modern-form-label {
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+    display: block;
+    font-size: 0.95rem;
+}
+
+.modern-form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #ffffff;
+}
+
+.modern-form-input:focus {
+    outline: none;
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+    transform: translateY(-1px);
+}
+
+.modern-form-input:hover {
+    border-color: #cbd5e0;
+}
+
+/* Modern Select */
+.modern-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #ffffff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") no-repeat right 0.75rem center/1.5em 1.5em;
+    appearance: none;
+}
+
+.modern-select:focus {
+    outline: none;
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+/* Modern Buttons */
+.modern-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.modern-btn-primary {
+    background: linear-gradient(145deg, #3182ce, #2c5282);
+    color: white;
+    box-shadow: 0 4px 15px rgba(49, 130, 206, 0.3);
+}
+
+.modern-btn-primary:hover {
+    background: linear-gradient(145deg, #2c5282, #2a4365);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(49, 130, 206, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.modern-btn-secondary {
+    background: linear-gradient(145deg, #718096, #4a5568);
+    color: white;
+    box-shadow: 0 4px 15px rgba(113, 128, 150, 0.3);
+}
+
+.modern-btn-secondary:hover {
+    background: linear-gradient(145deg, #4a5568, #2d3748);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(113, 128, 150, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.modern-btn-danger {
+    background: linear-gradient(145deg, #e53e3e, #c53030);
+    color: white;
+    box-shadow: 0 4px 15px rgba(229, 62, 62, 0.3);
+}
+
+.modern-btn-danger:hover {
+    background: linear-gradient(145deg, #c53030, #9c2626);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(229, 62, 62, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+/* Modern Cards */
+.modern-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.modern-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.modern-card-header {
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.modern-card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 0;
+}
+
+/* Modern Tables */
+.modern-table-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.modern-table th {
+    background: linear-gradient(145deg, #4a5568, #2d3748);
+    color: white;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.modern-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    color: #4a5568;
+}
+
+.modern-table tbody tr:hover {
+    background: #f7fafc;
+}
+
+.modern-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Modern Alerts */
+.modern-alert {
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.modern-alert-success {
+    background: #f0fff4;
+    border-left-color: #38a169;
+    color: #22543d;
+}
+
+.modern-alert-error {
+    background: #fed7d7;
+    border-left-color: #e53e3e;
+    color: #742a2a;
+}
+
+.modern-alert-warning {
+    background: #fffbeb;
+    border-left-color: #d69e2e;
+    color: #744210;
+}
+
+.modern-alert-info {
+    background: #ebf8ff;
+    border-left-color: #3182ce;
+    color: #2a4365;
+}
+
+/* Loading States */
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+}
+
+.btn-loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid transparent;
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .modern-form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .modern-btn {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 0.5rem;
+    }
+    
+    .modern-card {
+        padding: 1rem;
+    }
+    
+    .modern-table-container {
+        overflow-x: auto;
+    }
+}
+
+/* Accessibility Improvements */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Focus visible for better keyboard navigation */
+.modern-btn:focus-visible,
+.modern-form-input:focus-visible,
+.modern-select:focus-visible {
+    outline: 2px solid #3182ce;
+    outline-offset: 2px;
+}

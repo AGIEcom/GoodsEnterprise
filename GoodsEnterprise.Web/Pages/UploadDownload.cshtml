@@ -1,31 +1,80 @@
-﻿@page "/UploadDownload"
+@page "/UploadDownload"
 @model GoodsEnterprise.Web.Pages.UploadDownloadModel
 @{
     ViewData["Title"] = "UploadDownload";
 }
-<div class="alert alert-success" id="success-alert" style="display:none;">
-    <button type="button" class="close" data-dismiss="alert">x</button>
+<div class="modern-alert modern-alert-success" id="success-alert" style="display:none;">
+    <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+    </svg>
+    <span>@ViewData["SuccessMsg"]</span>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
 </div>
 
-<div class="alert-ValidationSummary" id="validation-alert" style="display:none;">
-    <button type="button" class="close" data-dismiss="alert">x</button>
-    @Html.Raw(ViewData["ValidationMsg"])
+<div class="modern-alert modern-alert-warning" id="validation-alert" style="display:none;">
+    <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+    </svg>
+    <span>@Html.Raw(ViewData["ValidationMsg"])</span>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
 </div>
 
 <div id="divUploadDownload">
-    @ViewData["SuccessMsg"]
-    <form id="UploadDownloadform" method="post" enctype="multipart/form-data" asp-page-handler="Submit">
-        <H3>Import Products</H3>
-
-        <div class="mb-3">
-            <input type="file" id="productFileUpload" class="fileUpload" asp-for="Upload" accept=".xls, .xlsx" onchange="productFileValidation()">
+    <div class="modern-card">
+        <div class="modern-card-header">
+            <h2 class="modern-card-title">Import Products</h2>
+            <p class="modern-card-subtitle">Upload Excel file to import product data</p>
         </div>
-        <button type="submit" class="btn btn-primary UploadDownload-submit">Submit</button>
-
-        <a class="btn btn-light" href="/UploadDownload">Clear</a>
-
-        <a asp-page="/UploadDownload" class="btn btn-light">Close</a>
-    </form>
+        <form id="UploadDownloadform" method="post" enctype="multipart/form-data" asp-page-handler="Submit">
+            <div class="row">
+                <div class="col-12">
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Product File</label>
+                        <div class="file-upload-container">
+                            <div class="file-upload-area" onclick="document.getElementById('productFileUpload').click()">
+                                <div class="upload-icon">
+                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="17,8 12,3 7,8"></polyline>
+                                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                                    </svg>
+                                </div>
+                                <div class="upload-text">
+                                    <span class="upload-title">Click to upload Excel file</span>
+                                    <span class="upload-subtitle">or drag and drop</span>
+                                </div>
+                                <div class="upload-formats">XLS, XLSX files only</div>
+                            </div>
+                            <input type="file" id="productFileUpload" class="fileUpload-hidden d-none" asp-for="Upload" accept=".xls, .xlsx" onchange="productFileValidation()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="modern-form-actions">
+                        <button type="submit" class="modern-btn modern-btn-primary UploadDownload-submit">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                            Import Products
+                        </button>
+                        <a class="modern-btn modern-btn-secondary" href="/UploadDownload">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"></path>
+                            </svg>
+                            Clear
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 
 @if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")

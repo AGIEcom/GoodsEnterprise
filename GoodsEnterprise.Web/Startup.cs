@@ -87,14 +87,15 @@ namespace GoodsEnterprise
 
             app.UseHttpsRedirection();
 
-            app.UseMiddleware<ErrorHandlingMiddleware>(Log.Logger);
-
             app.UseStaticFiles();
 
             app.UseRouting();
 
-            app.UseAuthorization();
             app.UseSession();
+
+            app.UseMiddleware<GlobalExceptionMiddleware>();
+
+            app.UseAuthorization();
             app.Use(async (context, next) =>
             {
                 string CurrentUserIDSession = context.Session.GetString(Constants.LoginSession);

@@ -1,4 +1,4 @@
-﻿@page "/all-customer"
+@page "/all-customer"
 @model GoodsEnterprise.Web.Pages.CustomerModel
 
 @{
@@ -18,47 +18,88 @@
     }
 }
 
-<div class="alert alert-success" id="success-alert" style="display:none;">
-    <button type="button" class="close" data-dismiss="alert">x</button>
-    @ViewData["SuccessMsg"]
+<div class="modern-alert modern-alert-success" id="success-alert" style="display:none;">
+    <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+    </svg>
+    <span>@ViewData["SuccessMsg"]</span>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
 </div>
 
 <div id="customerlist" style="@List">
-    <a asp-page-handler="Create" id="lnkCreateCustomer" class="btn btn-primary margin-bottom-15">Create New Customer</a>
-    <table class="display" style="width:100%" id="tblCustomerMaster">
-        <thead>
-            <tr>
-                <th scope="col">First Name</th>
-                <th scope="col">Last Name</th>
-                <th scope="col">Email</th>
-                <th scope="col">Status</th>
-                <th scope="col">Subcribed</th>
-                <th scope="col">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.lstcustomer)
-            {
-                <tr>
-                    <th scope="row">@item.FirstName </th>
-                    <td>@item.LastName  </td>
-                    <td>@item.Email  </td>
-                    <td>@item.EmailSubscribed</td>
-                    <td>@item.IsActive</td>
-                    <td>
-                        <a asp-page-handler="Edit" asp-route-customerId="@item.Id" class="btn btn-primary">Edit</a> |
-                        <a asp-page-handler="DeleteCustomer" asp-route-customerId="@item.Id" class="btn btn-primary btn-customer-delete">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="modern-card">
+        <div class="modern-card-header">
+            <h2 class="modern-card-title">Customer Management</h2>
+        </div>
+        <a asp-page-handler="Create" id="lnkCreateCustomer" class="modern-btn modern-btn-primary mb-3">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+            </svg>
+            Create New Customer
+        </a>
+        <div class="modern-table-container">
+            <table class="modern-table" id="tblCustomerMaster">
+                <thead>
+                    <tr>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Subscribed</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.lstcustomer)
+                    {
+                        <tr>
+                            <td>@item.FirstName</td>
+                            <td>@item.LastName</td>
+                            <td>@item.Email</td>
+                            <td>
+                                <span class="modern-badge @(item.IsActive ? "modern-badge-success" : "modern-badge-secondary")">
+                                    @(item.IsActive ? "Active" : "Inactive")
+                                </span>
+                            </td>
+                            <td>
+                                <span class="modern-badge @(item.EmailSubscribed ? "modern-badge-info" : "modern-badge-secondary")">
+                                    @(item.EmailSubscribed ? "Subscribed" : "Not Subscribed")
+                                </span>
+                            </td>
+                            <td>
+                                <div class="modern-btn-group">
+                                    <a asp-page-handler="Edit" asp-route-customerId="@item.Id" class="modern-btn modern-btn-sm modern-btn-primary">
+                                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                                        </svg>
+                                        Edit
+                                    </a>
+                                    <a asp-page-handler="DeleteCustomer" asp-route-customerId="@item.Id" class="modern-btn modern-btn-sm modern-btn-danger btn-customer-delete">
+                                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"></path>
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 
 <div id="divCreateUpdateCustomer" style="@Edit">
-    <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
-        <H3>Customer</H3>
+    <div class="modern-card">
+        <div class="modern-card-header">
+            <h2 class="modern-card-title">@(Convert.ToInt32(ViewData["PagePrimaryID"]) > 0 ? "Edit Customer" : "Create New Customer")</h2>
+        </div>
+        <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
         @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
         {
             <input asp-for="objCustomer.Id" type="hidden" class="form-control" id="txtCustomerID">
@@ -69,106 +110,230 @@
             <input asp-for="objCustomer.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
         }
 
-        <div class="mb-3">
-            <label for="lblCustomerFirstName" class="form-label">FirstName</label>
-            <input asp-for="objCustomer.FirstName" type="text" class="form-control" id="txtCustomerFirstName">
-        </div>
-        <div class="mb-3">
-            <label for="lblCustomerLastName" class="form-label">LastName</label>
-            <input asp-for="objCustomer.LastName" type="text" class="form-control" id="txtCustomerLastName">
-        </div>
-        <div class="mb-3">
-            <label for="lblAddress1" class="form-label">Address1</label>
-            <input asp-for="objCustomer.Address1" type="text" class="form-control" id="txtAddress1">
-        </div>
-        <div class="mb-3">
-            <label for="lblAddress2" class="form-label">Address2</label>
-            <input asp-for="objCustomer.Address2" type="text" class="form-control" id="txtAddress2">
-        </div>
-        <div class="mb-3">
-            <label for="lblCity" class="form-label">City</label>
-            <input asp-for="objCustomer.City" type="text" class="form-control" id="txtCity">
-        </div>
-        <div class="mb-3">
-            <label for="lblCounty" class="form-label">County</label>
-            <input asp-for="objCustomer.County" type="text" class="form-control" id="txtCounty">
-        </div>
-        <div class="mb-3">
-            <label for="lblPostalCode" class="form-label">PostalCode</label>
-            <input asp-for="objCustomer.PostalCode" type="text" class="form-control" id="txtPostalCode">
-        </div>
-        <div class="mb-3">
-            <label for="lblCountry" class="form-label">Country</label>
-            <input asp-for="objCustomer.Country" type="text" class="form-control" id="txtCountry">
-        </div>
-        <div class="mb-3">
-            <label for="lblMobilePhone" class="form-label">MobilePhone</label>
-            <input asp-for="objCustomer.MobilePhone" type="text" class="form-control" id="txtMobilePhone">
-        </div>
-        <div class="mb-3">
-            <label for="lblHomePhone" class="form-label">HomePhone</label>
-            <input asp-for="objCustomer.HomePhone" type="text" class="form-control" id="txtHomePhone">
-        </div>
-        <div class="mb-3">
-            <label for="lblCustomerEmail" class="form-label">Email</label>
-            <input asp-for="objCustomer.Email" type="text" class="form-control" id="txtCustomerEmail">
-        </div>
-        <div class="mb-3">
-            <label for="lblCustomerPassword" class="form-label">Password</label>
-            <input asp-for="objCustomer.Password" type="text" class="form-control" id="txtCustomerPassword">
-        </div>
-        <div class="mb-3">
-            <label for="lblDescription" class="form-label">Description</label>
-            <input asp-for="objCustomer.Description" type="text" class="form-control" id="txtDescription">
-        </div>
-        <div class="mb-3">
-            <label for="lblIsActive" class="form-label">IsActive</label>
-            <input asp-for="objCustomer.IsActive" type="checkbox" id="txtIsActive">
-        </div>
-        <div class="mb-3">
-            <label for="lblEmailSubscribed" class="form-label">IsEmailSubscribed</label>
-            <input asp-for="objCustomer.EmailSubscribed" type="checkbox" id="txtEmailSubscribed">
-        </div>
-        <div class="mb-3">
-            <label for="lblBrand" class="form-label">Role</label>
-            <select asp-for="objCustomer.RoleId" class="form-control"
-                    asp-items="Model.Roles" id="selectRole">
-                <option value="0">-- Select Role --</option>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label for="lblCompanyEmail" class="form-label">CompanyEmail</label>
-            <input asp-for="objCustomer.CompanyEmail" type="text" class="form-control" id="txtCompanyEmail">
-        </div>
-        <div class="mb-3">
-            <label for="lblCompanyFax" class="form-label">CompanyFax</label>
-            <input asp-for="objCustomer.CompanyFax" type="text" class="form-control" id="txtCompanyFax">
-        </div>
-        <div class="mb-3">
-            <label for="lblCompanyName" class="form-label">CompanyName</label>
-            <input asp-for="objCustomer.CompanyName" type="text" class="form-control" id="txtCompanyName">
-        </div>
-        <div class="mb-3">
-            <label for="lblCompanyPhone" class="form-label">CompanyPhone</label>
-            <input asp-for="objCustomer.CompanyPhone" type="text" class="form-control" id="txtCompanyPhone">
-        </div>
-        <div class="mb-3">
-            <label for="lblContactPerson" class="form-label">ContactPerson</label>
-            <input asp-for="objCustomer.ContactPerson" type="text" class="form-control" id="txtContactPerson">
-        </div>
-
-
-        <button type="submit" class="btn btn-primary customer-submit">Submit</button>
-        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
-        {
-            <a asp-page-handler="Reset" asp-route-customerId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="btn btn-light">Reset</a>
-        }
-        else
-        {
-            <a asp-page-handler="Clear" class="btn btn-light">Clear</a>
-        }
-        <a asp-page="/Customer" class="btn btn-light">Close</a>
-    </form>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtCustomerFirstName" class="modern-form-label">First Name *</label>
+                        <input asp-for="objCustomer.FirstName" type="text" class="modern-form-input" id="txtCustomerFirstName" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtCustomerLastName" class="modern-form-label">Last Name *</label>
+                        <input asp-for="objCustomer.LastName" type="text" class="modern-form-input" id="txtCustomerLastName" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="modern-form-group">
+                        <label for="txtAddress1" class="modern-form-label">Address Line 1</label>
+                        <input asp-for="objCustomer.Address1" type="text" class="modern-form-input" id="txtAddress1">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="modern-form-group">
+                        <label for="txtAddress2" class="modern-form-label">Address Line 2</label>
+                        <input asp-for="objCustomer.Address2" type="text" class="modern-form-input" id="txtAddress2">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="modern-form-group">
+                        <label for="txtCity" class="modern-form-label">City</label>
+                        <input asp-for="objCustomer.City" type="text" class="modern-form-input" id="txtCity">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="modern-form-group">
+                        <label for="txtCounty" class="modern-form-label">County</label>
+                        <input asp-for="objCustomer.County" type="text" class="modern-form-input" id="txtCounty">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="modern-form-group">
+                        <label for="txtPostalCode" class="modern-form-label">Postal Code</label>
+                        <input asp-for="objCustomer.PostalCode" type="text" class="modern-form-input" id="txtPostalCode">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtCountry" class="modern-form-label">Country</label>
+                        <input asp-for="objCustomer.Country" type="text" class="modern-form-input" id="txtCountry">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="selectRole" class="modern-form-label">Role</label>
+                        <select asp-for="objCustomer.RoleId" class="modern-select" asp-items="Model.Roles" id="selectRole">
+                            <option value="0">-- Select Role --</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtMobilePhone" class="modern-form-label">Mobile Phone</label>
+                        <input asp-for="objCustomer.MobilePhone" type="tel" class="modern-form-input" id="txtMobilePhone">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtHomePhone" class="modern-form-label">Home Phone</label>
+                        <input asp-for="objCustomer.HomePhone" type="tel" class="modern-form-input" id="txtHomePhone">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtCustomerEmail" class="modern-form-label">Email *</label>
+                        <input asp-for="objCustomer.Email" type="email" class="modern-form-input" id="txtCustomerEmail" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtCustomerPassword" class="modern-form-label">Password *</label>
+                        <input asp-for="objCustomer.Password" type="password" class="modern-form-input" id="txtCustomerPassword" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="modern-form-group">
+                        <label for="txtDescription" class="modern-form-label">Description</label>
+                        <textarea asp-for="objCustomer.Description" class="modern-form-input" id="txtDescription" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Account Status</label>
+                        <div class="modern-toggle-container">
+                            <input asp-for="objCustomer.IsActive" type="checkbox" id="txtIsActive" class="modern-checkbox">
+                            <label for="txtIsActive" class="modern-toggle-label">
+                                <div class="toggle-switch">
+                                    <div class="toggle-slider"></div>
+                                    <span class="toggle-text-off">Inactive</span>
+                                    <span class="toggle-text-on">Active</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Email Subscription</label>
+                        <div class="modern-toggle-container">
+                            <input asp-for="objCustomer.EmailSubscribed" type="checkbox" id="txtEmailSubscribed" class="modern-checkbox">
+                            <label for="txtEmailSubscribed" class="modern-toggle-label">
+                                <div class="toggle-switch">
+                                    <div class="toggle-slider"></div>
+                                    <span class="toggle-text-off">Unsubscribed</span>
+                                    <span class="toggle-text-on">Subscribed</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <h4 class="modern-section-title">Company Information</h4>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtCompanyName" class="modern-form-label">Company Name</label>
+                        <input asp-for="objCustomer.CompanyName" type="text" class="modern-form-input" id="txtCompanyName">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtContactPerson" class="modern-form-label">Contact Person</label>
+                        <input asp-for="objCustomer.ContactPerson" type="text" class="modern-form-input" id="txtContactPerson">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="modern-form-group">
+                        <label for="txtCompanyEmail" class="modern-form-label">Company Email</label>
+                        <input asp-for="objCustomer.CompanyEmail" type="email" class="modern-form-input" id="txtCompanyEmail">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="modern-form-group">
+                        <label for="txtCompanyPhone" class="modern-form-label">Company Phone</label>
+                        <input asp-for="objCustomer.CompanyPhone" type="tel" class="modern-form-input" id="txtCompanyPhone">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="modern-form-group">
+                        <label for="txtCompanyFax" class="modern-form-label">Company Fax</label>
+                        <input asp-for="objCustomer.CompanyFax" type="tel" class="modern-form-input" id="txtCompanyFax">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="modern-form-actions">
+                        <button type="submit" class="modern-btn modern-btn-primary customer-submit">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            @(Convert.ToInt32(ViewData["PagePrimaryID"]) > 0 ? "Update Customer" : "Create Customer")
+                        </button>
+                        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+                        {
+                            <a asp-page-handler="Reset" asp-route-customerId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="modern-btn modern-btn-secondary">
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"></path>
+                                </svg>
+                                Reset
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-page-handler="Clear" class="modern-btn modern-btn-secondary">
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"></path>
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                </svg>
+                                Clear
+                            </a>
+                        }
+                        <a asp-page="/Customer" class="modern-btn modern-btn-secondary">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                            Close
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 
 @if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")

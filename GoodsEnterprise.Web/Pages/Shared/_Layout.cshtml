@@ -1,11 +1,37 @@
-﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
 @using Newtonsoft.Json
 
 @{
-
-    byte[] value = null;
-    _httpContextAccessor.HttpContext.Session.TryGetValue("LoginSession", out value);
-    GoodsEnterprise.Model.Models.Admin admin = JsonConvert.DeserializeObject<GoodsEnterprise.Model.Models.Admin>(System.Text.Encoding.UTF8.GetString(value));
+    GoodsEnterprise.Model.Models.Admin admin = null;
+    try
+    {
+        byte[] value = null;
+        if (_httpContextAccessor.HttpContext.Session.TryGetValue("LoginSession", out value) && value != null)
+        {
+            var sessionString = System.Text.Encoding.UTF8.GetString(value);
+            if (!string.IsNullOrEmpty(sessionString))
+            {
+                admin = JsonConvert.DeserializeObject<GoodsEnterprise.Model.Models.Admin>(sessionString);
+            }
+        }
+        
+        // Redirect to login if no valid session
+        if (admin == null && !Context.Request.Path.StartsWithSegments("/Login"))
+        {
+            Context.Response.Redirect("/Login");
+            return;
+        }
+    }
+    catch (Exception ex)
+    {
+        // Log error and redirect to login
+        System.Diagnostics.Debug.WriteLine($"Session error: {ex.Message}");
+        if (!Context.Request.Path.StartsWithSegments("/Login"))
+        {
+            Context.Response.Redirect("/Login");
+            return;
+        }
+    }
 }
 
 <!DOCTYPE html>
@@ -22,6 +48,7 @@
 
     <link rel="stylesheet" href="~/css/site.css" />
     <link href="~/css/LeftMenu.css" rel="stylesheet" />
+    <link href="~/css/modern-components.css" rel="stylesheet" />
     @*<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">*@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/css/bootstrap-select.min.css" />
@@ -50,100 +77,104 @@
 
     <header>
         <div class="wrapper">
-            <nav id="sidebar">
+            <nav id="sidebar" class="modern-sidebar">
                 <div class="sidebar-header">
-                    <a class="navbar-brand" asp-area="" asp-page="/Index">GoodsEnterprise</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-
+                    <div class="brand-container">
+                        <div class="brand-icon">
+                            <svg width="32" height="32" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div class="brand-text">
+                            <h3 class="brand-title">GoodsEnterprise</h3>
+                            <span class="brand-subtitle">Management System</span>
+                        </div>
+                    </div>
                 </div>
 
-                <ul class="list-unstyled components" id="mainmenu">
-                </ul>
-
-                @*<ul class="list-unstyled components">
-                    <p>Dummy Heading</p>
-                    <li class="active">
-                        <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
-                        <ul class="collapse list-unstyled" id="homeSubmenu">
-                            <li>
-                                <a href="#">Home 1</a>
-                            </li>
-                            <li>
-                                <a href="#">Home 2</a>
-                            </li>
-                            <li>
-                                <a href="#">Home 3</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#">About</a>
-                        <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pages</a>
-                        <ul class="collapse list-unstyled" id="pageSubmenu">
-                            <li>
-                                <a href="#">Page 1</a>
-                            </li>
-                            <li>
-                                <a href="#">Page 2</a>
-                            </li>
-                            <li>
-                                <a href="#">Page 3</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#">Portfolio</a>
-                    </li>
-                    <li>
-                        <a href="#">Contact</a>
-                    </li>
-                </ul>*@
-
-                @*<ul class="list-unstyled CTAs">
-                    <li>
-                        <a href="https://bootstrapious.com/tutorial/files/sidebar.zip" class="download">Download source</a>
-                    </li>
-                    <li>
-                        <a href="https://bootstrapious.com/p/bootstrap-sidebar" class="article">Back to article</a>
-                    </li>
-                </ul>*@
+                <div class="sidebar-menu">
+                    <ul class="list-unstyled components" id="mainmenu">
+                  
+                    </ul>
+                </div>
+                 
             </nav>
-            <div id="content">
-                <nav class="navbar navbar-expand-lg navbar-light bg-secondary bg-gradient">
-                    <div class="container">
-
-                        <button type="button" id="sidebarCollapse" class="navbar-btn">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </button>
-                        <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <i class="fas fa-align-justify"></i>
-                        </button>
-
-                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                            <ul class="nav navbar-nav ml-auto">
-                                <li class="dropdown">
-                                    <a href="#" data-toggle="dropdown">
-                                        <i class="glyphicon glyphicon-user"></i>
-                                    </a>
-                                    <ul class="dropdown-menu user-menu">
-                                        <span class="form-label">@admin.FirstName</span>
-                                        <hr style="border-top: 1px solid blue">
-                                        <li><i class="icon-arrow-up"></i><a asp-page-handler="LogOut" asp-page="/Login">Logout</a></li>
-                                        <li>
-                                            <i class="icon-arrow-down"></i><a asp-route-adminId="@admin.Id" asp-page-handler="Edit" asp-page="/Admin">Update Profile</a>
-                                        </li>
-
-                                    </ul>
-                                </li>
-                            </ul>
+            <div id="contentHeader">
+                <nav class="modern-header">
+                    <div class="header-container">
+                        <div class="header-left">
+                            <button type="button" id="sidebarCollapse" class="modern-sidebar-toggle">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                            <div class="page-title">
+                                <h1 id="currentPageTitle"></h1>
+                            </div>
+                        </div>
+                        
+                        <div class="header-right">
+                            @if (admin != null)
+                            {
+                                <div class="user-menu-container">
+                                    <div class="dropdown">
+                                        <button class="modern-user-menu-btn" type="button" data-toggle="dropdown" aria-expanded="false">
+                                            <div class="user-avatar">
+                                                <svg width="24" height="24" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="user-info">
+                                                <span class="user-name">@admin.FirstName</span>
+                                                <span class="user-role">Administrator</span>
+                                            </div>
+                                            <div class="dropdown-arrow">
+                                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                                </svg>
+                                            </div>
+                                        </button>
+                                        <div class="dropdown-menu modern-user-dropdown">
+                                            <div class="user-dropdown-header">
+                                                <div class="user-avatar-large">
+                                                    <svg width="32" height="32" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                </div>
+                                                <div class="user-details">
+                                                    <span class="user-name-large">@admin.FirstName</span>
+                                                    <span class="user-email">@admin.Email</span>
+                                                </div>
+                                            </div>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" asp-route-adminId="@admin.Id" asp-page-handler="Edit" asp-page="/Admin">
+                                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                                                </svg>
+                                                Update Profile
+                                            </a>
+                                            <a class="dropdown-item" href="#">
+                                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                Settings
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item logout-item" asp-page-handler="LogOut" asp-page="/Login">
+                                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                Sign Out
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
                 </nav>
+            </div>
+            <div id="content">
                 <div class="container">
                     <main role="main" class="pb-3">
                         @RenderBody()
@@ -173,7 +204,10 @@
         </div>
 
 
-        <input type="hidden" id="hdnRoleId" value=@admin.RoleId>
+        @if (admin != null)
+        {
+            <input type="hidden" id="hdnRoleId" value="@admin.RoleId">
+        }
 
     </header>
 
@@ -194,6 +228,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/modern-interactions.js" asp-append-version="true"></script>
 
     @RenderSection("Scripts", required: false)
 </body>

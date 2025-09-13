@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+$(document).ready(function () {
     ProductGridDataLoading();
     PromotionPriceGridDataLoading();
 
@@ -15,7 +15,7 @@
             "deferRender": true,
             'columnDefs': [{
 
-                'targets': [3], /* column index */
+                'targets': [4], /* column index */
 
                 'orderable': false, /* true or false */
 
@@ -60,29 +60,28 @@
             },
             columns: [
                 {
-                    data: "code"
+                    data: "code",
+                    name: "Code"
                 },
                 {
-                    data: "Product"
+                    data: "productName",
+                    name: "ProductName"
                 },
                 {
-                    data: "Category"
+                    data: "outerEan",
+                    name: "OuterEan"
                 },
                 {
-                    data: "Brand"
-                },                
-                {
-                    data: "outerEan"
-                },
-                {
-                    data: "status"
+                    data: "status",
+                    name: "Status"
                 },
                 {
                     data: "id",
+                    name: "Id",
                     render: function (data, type, row) {
                         if (type === 'display') {
-                            return '<a class="btn btn-primary" href="/all-product?productId=' + row.id + '&amp;handler=Edit">Edit</a> | ' +
-                                '<a href="/all-product?productId=' + row.id + '&amp;handler=DeleteProduct" class="btn btn-primary btn-product-delete">Delete</a>';
+                            return '<a class="modern-btn modern-btn-primary modern-btn-sm" href="/all-product?productId=' + row.id + '&amp;handler=Edit">Edit</a> ' +
+                                '<a href="/all-product?productId=' + row.id + '&amp;handler=DeleteProduct" class="modern-btn modern-btn-danger modern-btn-sm btn-product-delete">Delete</a>';
                         }
                         return data;
                     }
