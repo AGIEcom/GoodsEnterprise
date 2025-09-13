@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,12 @@ namespace GoodsEnterprise.Web.Pages
         [BindProperty()]
         public Category objCategory { get; set; }
 
+        [BindProperty]
+        public IFormFile Upload { get; set; }
+
         public List<Category> lstcategory = new List<Category>();
+
+        public Admin objAdmin = new Admin();
 
         public Pagination PaginationModel { get; set; } = new Pagination();
 
@@ -83,6 +89,7 @@ namespace GoodsEnterprise.Web.Pages
                 }
                 ViewData["PageType"] = "Edit";
                 ViewData["PagePrimaryID"] = objCategory.Id;
+                ViewData["ImagePath"] = objCategory.ImageUrl500;
             }
             catch (Exception ex)
             {
@@ -123,6 +130,7 @@ namespace GoodsEnterprise.Web.Pages
                 objCategory = await _category.GetAsync(filter: x => x.Id == categoryId && x.IsDelete != true);
                 ViewData["PageType"] = "Edit";
                 ViewData["PagePrimaryID"] = objCategory.Id;
+                ViewData["ImagePath"] = objCategory.ImageUrl500;
             }
             catch (Exception ex)
             {
@@ -176,21 +184,39 @@ namespace GoodsEnterprise.Web.Pages
                         if (objCategory.Id != 0)
                         {
                             ViewData["PagePrimaryID"] = objCategory.Id;
+                            ViewData["ImagePath"] = objCategory.ImageUrl500;
                         }
                         ViewData["SuccessMsg"] = $"Category: {objCategory.Name} {Constants.AlreadyExistMessage}";
                         return Page();
                     }
                 }
 
+                Tuple<string, string> tupleImagePath = await Common.UploadImages(Upload, objCategory.Name, Constants.Category);
+
                 if (ModelState.IsValid)
                 {
+                    var _admin = HttpContext.Session.GetString(Constants.LoginSession);
+                    objAdmin = JsonConvert.DeserializeObject<Admin>(_admin);
+
                     if (objCategory.Id == 0)
                     {
+                        objCategory.ImageUrl500 = tupleImagePath.Item1;
+                        objCategory.ImageUrl200 = tupleImagePath.Item2;
+                        objCategory.Createdby = objAdmin.Id;
                         await _category.InsertAsync(objCategory);
                         HttpContext.Session.SetString(Constants.StatusMessage, Constants.SaveMessage);
                     }
                     else
                     {
+                        if (!string.IsNullOrEmpty(tupleImagePath.Item1))
+                        {
+                            objCategory.ImageUrl500 = tupleImagePath.Item1;
+                        }
+                        if (!string.IsNullOrEmpty(tupleImagePath.Item2))
+                        {
+                            objCategory.ImageUrl200 = tupleImagePath.Item2;
+                        }
+                        objCategory.Modifiedby = objAdmin.Id;
                         await _category.UpdateAsync(objCategory);
                         HttpContext.Session.SetString(Constants.StatusMessage, Constants.UpdateMessage);
                     }

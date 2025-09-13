@@ -29,6 +29,9 @@
 
     }
 }
+
+<link href="/css/common.css" rel="stylesheet" asp-append-version="true" />
+
 @Html.AntiForgeryToken()
 
 <div class="alert alert-success" id="success-alert" style="display:none;">
@@ -186,11 +189,11 @@
                         <label for="lblPalletDepthMeter" class="form-label">Pallet Depth(Meter)</label>
                         <input asp-for="objProduct.PalletDepthMeter" type="text" class="form-control" id="txtPalletDepthMeter" onkeypress="return isDecimal(event)">
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-3 highlight-checkbox">
                         <label for="lblIsActive" class="form-label">IsActive</label>
                         <input asp-for="objProduct.IsActive" type="checkbox" id="txtIsActive">
                     </div>
-                    <div class="form-group col-md-3">
+                   @*  <div class="form-group col-md-3 highlight-checkbox">
                         <label for="lblIsActive" class="form-label">IsTaxable</label>
                         <input type="checkbox" id="txtIsTaxable">
 
@@ -198,7 +201,35 @@
                                 asp-items="Model.selectTaxSlab" id="selectProductTax">
                             <option value="">-- Select Tax Slab --</option>
                         </select>
+                    </div> *@
+
+                    @* <div class="form-group col-md-3 highlight-checkbox">
+                        <label for="lblIsActive" class="form-label">IsTaxable</label>
+                        <input type="checkbox" id="txtIsTaxable" onchange="toggleTaxSlab()">
+
+
+                        <select id="taxSlabDropdown" style="display:none" asp-for="objProduct.TaxslabId" class="form-control selectpicker" data-live-search="true"
+                                asp-items="Model.selectTaxSlab" id="selectProductTax">
+                            <option value="">-- Select Tax Slab --</option>
+                        </select>
+                        
+                    </div> *@
+
+                    <div class="form-group col-md-3 highlight-checkbox">
+                        <label for="lblIsActive" class="form-label">IsTaxable</label>
+                        <input type="checkbox" id="txtIsTaxable" onchange="toggleTaxSlab()" />
+
+                        <select id="taxSlabDropdown"
+                                asp-for="objProduct.TaxslabId"
+                                asp-items="Model.selectTaxSlab"
+                                class="form-control selectpicker"
+                                data-live-search="true"
+                                disabled
+                                style="display:none;"
+                                optionlabel="-- Select Tax Slab --">
+                        </select>
                     </div>
+
                     <div class="form-group col-md-3">
                         <input type="file" id="fileUpload" class="fileUpload" asp-for="Upload" accept="image/*" onchange="fileValidation()">
                         @if (imagePath != "")
@@ -240,4 +271,19 @@
     </script>
 
 }
+<script>
+    function toggleTaxSlab() {
+        var checkBox = document.getElementById("txtIsTaxable");
+        var dropdown = document.getElementById("taxSlabDropdown");
+
+        if (checkBox.checked) {
+            dropdown.style.display = "block";   // show
+            dropdown.disabled = false;          // enable
+        } else {
+            dropdown.style.display = "none";    // hide
+            dropdown.disabled = true;           // disable
+            dropdown.value = "";                // clear selection
+        }
+    }
+</script>
 <script src="~/js/ServerSidePagination.js"></script>

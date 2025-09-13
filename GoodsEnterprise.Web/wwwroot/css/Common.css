@@ -1,0 +1,16 @@
+﻿.highlight-checkbox {
+    display: inline-block;
+    padding: 6px 10px;
+    background-color: #f0fff0; /* light green background */
+    /*border: 2px solid #28a745;*/ /* green border */
+    border-radius: 6px;
+    font-weight: bold;
+    color: #155724; /* dark green text */
+    font-size: 16px;
+}
+
+    .highlight-checkbox input[type="checkbox"] {
+        transform: scale(1.4); /* make checkbox larger */
+        margin-right: 8px;
+        cursor: pointer;
+    }

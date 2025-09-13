@@ -44,9 +44,12 @@
         <table class="table table-bordered table-hover display" style="width:100%" id="tblPromotionCost">
             <thead class="thead-dark">
                 <tr>
-                    <th scope="col">Supplier</th>
-                    <th scope="col">Product</th>
-                    <th scope="col">OuterEan</th>
+                    <th scope="col">SupplierName</th>
+                    <th scope="col">ProductName</th>
+                    <th scope="col">PromotionCost</th>
+                    <th scope="col">StartDate</th>
+                    <th scope="col">EndDate</th>
+                    <th scope="col">Status</th>
                     <th scope="col">Action</th>
                 </tr>
             </thead>
@@ -67,36 +70,40 @@
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
                     {
-                        <input asp-for="objpromotionCost.PromotionCostId" type="hidden" class="form-control" id="txtPromotionCostId">
-                        
-                        <input asp-for="objpromotionCost.CreatedBy" type="hidden" class="form-control" id="txtCreatedby">
-                        <input asp-for="objpromotionCost.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
-                        <input asp-for= "objpromotionCost.Modifiedby" type ="hidden" class="form-control" id="txtModifiedby">
-                        <input asp-for="objpromotionCost.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
+                    <input asp-for="objpromotionCost.PromotionCostId" type="hidden" class="form-control" id="txtPromotionCostId">
+
+                    <input asp-for="objpromotionCost.CreatedBy" type="hidden" class="form-control" id="txtCreatedby">
+                    <input asp-for="objpromotionCost.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
+                    <input asp-for="objpromotionCost.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
+                    <input asp-for="objpromotionCost.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
                     }
-                <div class="form-group  col-md-3">
-                    <label for="selectProductID" class="form-label">Product</label>
-                    <select asp-for="objpromotionCost.ProductId" class="form-control selectpicker" data-live-search="true"
-                            asp-items="Model.selectProduct" id="selectProductID">
-                        <option value="">-- Select Product --</option>
-                    </select>
-                </div>
-                <div class="form-group  col-md-3">
-                    <label for="selectSupplierID" class="form-label">Lavender Code</label>
-                    <select asp-for="objpromotionCost.SupplierId" class="form-control selectpicker" data-live-search="true"
-                            asp-items="Model.selectSupplier" id="selectSupplierID">
-                        <option value="">-- Select Supplier --</option>
-                    </select>
-                </div>
+                    <div class="form-group  col-md-3">
+                        <label for="selectProductID" class="form-label">Product</label>
+                        <select asp-for="objpromotionCost.ProductId" class="form-control selectpicker" data-live-search="true"
+                                asp-items="Model.selectProduct" id="selectProductID">
+                            <option value="">-- Select Product --</option>
+                        </select>
+                    </div>
+                    <div class="form-group  col-md-3">
+                        <label for="selectSupplierID" class="form-label">Lavender Code</label>
+                        <select asp-for="objpromotionCost.SupplierId" class="form-control selectpicker" data-live-search="true"
+                                asp-items="Model.selectSupplier" id="selectSupplierID">
+                            <option value="">-- Select Supplier --</option>
+                        </select>
+                    </div>
                     <div class="form-group  col-md-3">
                         <label for="txtStartDate" class="form-label">Start Date</label>
                         <input asp-for="objpromotionCost.StartDate" type="text" class="form-control" id="txtStartDate">
                     </div>
                     <div class="form-group  col-md-3">
-                        <label for="txtEndDate" class="form-label">EndDate</label>
+                        <label for="txtEndDate" class="form-label">End Date</label>
                         <input asp-for="objpromotionCost.EndDate" type="text" class="form-control" id="txtEndDate">
                     </div>
-                   
+                    <div class="form-group  col-md-3">
+                        <label for="txtPromotionCost" class="form-label">Promotion Cost</label>
+                        <input asp-for="objpromotionCost.PromotionCost1" type="text" class="form-control" id="txtEndDate">
+                    </div>
+
                     <div class="form-group col-md-3">
                         <label for="txtIsActive" class="form-label">IsActive</label>
                         <input asp-for="objpromotionCost.IsActive" type="checkbox" id="txtIsActive">
@@ -105,11 +112,11 @@
                         <button type="submit" class="btn btn-primary product-submit">Submit</button>
                         @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
                         {
-                            <a asp-page-handler="Reset" asp-route-productId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="btn btn-light">Reset</a>
+                        <a asp-page-handler="Reset" asp-route-productId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="btn btn-light">Reset</a>
                         }
                         else
                         {
-                            <a asp-page-handler="Clear" class="btn btn-light">Clear</a>
+                        <a asp-page-handler="Clear" class="btn btn-light">Clear</a>
                         }
                         <a asp-page="/PromotionCost" class="btn btn-light">Close</a>
                     </div>

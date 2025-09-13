@@ -46,9 +46,12 @@ namespace GoodsEnterprise.Web.Pages
                                                         join subcat in _context.SubCategories.AsNoTracking() on pd.SubCategoryId equals subcat.Id into subcats
                                                         from subcat in subcats.DefaultIfEmpty()
                                                         join sup in _context.Suppliers.AsNoTracking() on pd.SupplierId equals sup.Id into sups
-                                                        from sup in sups.DefaultIfEmpty()                                       
-                                                        //orderby pd.ModifiedDate == null ? pd.CreatedDate : pd.ModifiedDate descending
-                                                        select new ProductDownload
+                                                        from sup in sups.DefaultIfEmpty()
+                                                        join promcost in _context.PromotionCosts.AsNoTracking() on pd.Id equals promcost.ProductId into promcosts
+                                                        from promcost in promcosts.DefaultIfEmpty()
+                                                        
+                                                              //orderby pd.ModifiedDate == null ? pd.CreatedDate : pd.ModifiedDate descending
+                                                          select new ProductDownload
                                                         {                                           
                                                             Code = pd.Code,
                                                             Brand = brd.Name,
@@ -59,6 +62,9 @@ namespace GoodsEnterprise.Web.Pages
                                                             OuterEan = pd.OuterEan,
                                                             UnitSize = pd.UnitSize,
                                                             Upc = pd.Upc,
+                                                            PromotionCost = promcost.PromotionCost1,
+                                                            PromotionCostStartDate = promcost.StartDate,
+                                                            PromotionCostEndDate = promcost.EndDate,
                                                             LayerQuantity = pd.LayerQuantity,
                                                             PalletQuantity = pd.PalletQuantity,
                                                             CasePrice = pd.CasePrice,

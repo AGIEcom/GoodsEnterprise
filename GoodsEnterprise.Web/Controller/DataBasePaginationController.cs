@@ -100,7 +100,7 @@ namespace GoodsEnterprise.Web.Controller
 
                 lstproduct = await _promotionCost.GetAllWithPaginationAsync(dBPaginationParams);
 
-                if (lstproduct.Count == 0)
+                if (lstproduct == null || lstproduct.Count == 0)
                 {
                     var returnvaule = new JsonResult(new JqueryDataTablesResult<PromotionCostList>
                     {

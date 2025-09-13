@@ -16,6 +16,13 @@
         Edit = "display:none;";
         List = "display:block;";
     }
+
+    var imagePath = "";
+    if (ViewData["ImagePath"] != null)
+    {
+        imagePath = Convert.ToString(ViewData["ImagePath"]);
+
+    }
 }
 
 <div class="alert alert-success" id="success-alert" style="display:none;">
@@ -61,6 +68,8 @@
         @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
         {
             <input asp-for="objCategory.Id" type="hidden" class="form-control" id="txtCategoryID">
+            <input asp-for="objCategory.ImageUrl200" type="hidden" class="form-control" id="txtImageUrl200">
+            <input asp-for="objCategory.ImageUrl500" type="hidden" class="form-control" id="txtImageUrl500">
             <input asp-for="objCategory.IsDelete" type="hidden" class="form-control" id="txtIsDelete">
             <input asp-for="objCategory.Createdby" type="hidden" class="form-control" id="txtCreatedby">
             <input asp-for="objCategory.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
@@ -80,7 +89,13 @@
             <label for="lblIsActive" class="form-label">IsActive</label>
             <input asp-for="objCategory.IsActive" type="checkbox" id="txtIsActive">
         </div>
-
+        <div class="mb-3">
+            <input type="file" id="fileUpload" class="fileUpload" asp-for="Upload" accept="image/*" onchange="fileValidation()">
+            @if (imagePath != "")
+            {
+                <img src="@imagePath" id="imgPath" alt="Sample Image" width="250" height="250" />
+            }
+        </div>
         <button type="submit" class="btn btn-primary category-submit">Submit</button>
         @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
         {
