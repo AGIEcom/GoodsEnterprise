@@ -63,6 +63,15 @@
                     data: "code"
                 },
                 {
+                    data: "Product"
+                },
+                {
+                    data: "Category"
+                },
+                {
+                    data: "Brand"
+                },                
+                {
                     data: "outerEan"
                 },
                 {
