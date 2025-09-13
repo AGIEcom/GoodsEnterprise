@@ -117,6 +117,50 @@
             <label for="txtDescription" class="modern-form-label">Description</label>
             <textarea asp-for="objCategory.Description" class="modern-form-input" id="txtDescription" rows="3" placeholder="Optional description..."></textarea>
         </div>
+       @*  <div class="mb-3">
+                <input type="file" id="fileUpload" class="fileUpload" asp-for="Upload" accept="image/*" onchange="fileValidation()">
+                @if (imagePath != "")
+                {
+                    <img src="@imagePath" id="imgPath" alt="Sample Image" width="250" height="250" />
+                }
+        </div> *@
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Brand Image</label>
+                        <div class="file-upload-container">
+                            <div class="file-upload-area" onclick="document.getElementById('fileUpload').click()">
+                                <div class="upload-icon">
+                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="17,8 12,3 7,8"></polyline>
+                                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                                    </svg>
+                                </div>
+                                <div class="upload-text">
+                                    <span class="upload-title">Click to upload image</span>
+                                    <span class="upload-subtitle">or drag and drop</span>
+                                </div>
+                                <div class="upload-formats">PNG, JPG, GIF up to 10MB</div>
+                            </div>
+                            <input type="file" id="fileUpload" class="fileUpload-hidden d-none" asp-for="Upload" accept="image/*" onchange="fileValidation()">
+                            @if (imagePath != "")
+                            {
+                                <div class="image-preview-container">
+                                    <img src="@imagePath" id="imgPath" alt="Category Image" class="preview-image" />
+                                    <div class="image-overlay">
+                                        <button type="button" class="change-image-btn" onclick="document.getElementById('fileUpload').click()">
+                                            Change Image
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         <div class="modern-form-group">
             <label for="txtIsActive" class="modern-form-label">Category Status</label>
             <div class="modern-toggle-container">
@@ -166,25 +210,8 @@
         </form>
     </div>
 </div>
-        <div class="mb-3">
-            <input type="file" id="fileUpload" class="fileUpload" asp-for="Upload" accept="image/*" onchange="fileValidation()">
-            @if (imagePath != "")
-            {
-                <img src="@imagePath" id="imgPath" alt="Sample Image" width="250" height="250" />
-            }
-        </div>
-        <button type="submit" class="btn btn-primary category-submit">Submit</button>
-        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
-        {
-            <a asp-page-handler="Reset" asp-route-categoryId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="btn btn-light">Reset</a>
-        }
-        else
-        {
-            <a asp-page-handler="Clear" class="btn btn-light">Clear</a>
-        }
-        <a asp-page="/Category" class="btn btn-light">Close</a>
-    </form>
-</div>
+       
+      
 
 @if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
 {
