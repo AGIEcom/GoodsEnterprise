@@ -1,4 +1,4 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 //datatable initilaze
 $(document).ready(function () {
@@ -14,7 +14,7 @@ $(document).ready(function () {
     $('#tblCategoryMaster').DataTable({
         'columnDefs': [
             { 'targets': [3], 'orderable': false },
-            { 'searchable': false, "targets": [1, 2, 3] }
+            { 'searchable': true, "targets": [1, 2, 3] }
         ],
         "order": [],
         lengthMenu: [5, 10, 20, 50]
@@ -548,44 +548,98 @@ $('ul li.dropdown').hover(function () {
 //End
 
 //Load Menu
+// Icon mapping for menu items
+var menuIcons = {
+    'Brand': '<svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path></svg>',
+    'Category': '<svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path></svg>',
+    'SubCategory': '<svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 16a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"></path></svg>',
+    'Product': '<svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2L3 7v11a1 1 0 001 1h12a1 1 0 001-1V7l-7-5zM6 9a1 1 0 112 0v6a1 1 0 11-2 0V9zm6 0a1 1 0 112 0v6a1 1 0 11-2 0V9z" clip-rule="evenodd"></path></svg>',
+    'Tax': '<svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>',
+    'Supplier': '<svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>',
+    'Role': '<svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"></path><path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"></path></svg>',
+    'Admin': '<svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd"></path></svg>',
+    'Customer': '<svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>',
+    'Import': '<svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 11-1.414 1.414L5 6.414V8a1 1 0 01-2 0V4zm9 1a1 1 0 010-2h4a1 1 0 011 1v4a1 1 0 01-2 0V6.414l-2.293 2.293a1 1 0 11-1.414-1.414L13.586 5H12zm-9 7a1 1 0 012 0v1.586l2.293-2.293a1 1 0 111.414 1.414L6.414 15H8a1 1 0 010 2H4a1 1 0 01-1-1v-4zm13-1a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 010-2h1.586l-2.293-2.293a1 1 0 111.414-1.414L15 13.586V12a1 1 0 011-1z" clip-rule="evenodd"></path></svg>',
+    'Export': '<svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>',
+    'Base Cost': '<svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"></path><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"></path></svg>',
+    'Promotion Cost': '<svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path></svg>'
+};
+
 var getMenuItem = function (itemData) {
+    var menuIcon = menuIcons[itemData.name] || '<svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path></svg>';
+    
     var item = "";
     if (itemData.SubMenu) {
+        // Parent menu item with submenu
         item = $("<li>", {
-            class: 'nav-item',
+            class: 'menu-item',
             id: itemData.id
         }).append(
             $("<a>", {
                 href: itemData.link,
-                class: 'dropdown-toggle',
-                html: itemData.name,
+                class: 'menu-link dropdown-toggle',
                 id: itemData.id + '-links',
                 "data-toggle": "collapse",
-                "aria-expanded":"false"
-            }));
-    }
-    else {
+                "aria-expanded": "false"
+            }).append(
+                $("<div>", {
+                    class: 'menu-icon',
+                    html: menuIcon
+                })
+            ).append(
+                $("<span>", {
+                    class: 'menu-text',
+                    html: itemData.name
+                })
+            ).append(
+                $("<svg>", {
+                    class: 'dropdown-arrow',
+                    width: '16',
+                    height: '16',
+                    fill: 'currentColor',
+                    viewBox: '0 0 20 20',
+                    html: '<path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>'
+                })
+            )
+        );
+    } else {
+        // Regular menu item
         item = $("<li>", {
-            class: 'nav-item',
+            class: 'menu-item',
             id: itemData.id
         }).append(
             $("<a>", {
                 href: itemData.link,
-                class: 'nav-link text-dark',
-                html: itemData.name,
-                id: itemData.id + '-links',
-            }));
-    }   
+                class: 'menu-link',
+                id: itemData.id + '-links'
+            }).append(
+                $("<div>", {
+                    class: 'menu-icon',
+                    html: menuIcon
+                })
+            ).append(
+                $("<span>", {
+                    class: 'menu-text',
+                    html: itemData.name
+                })
+            )
+        );
+    }
+    
+    // Add submenu if exists
     if (itemData.SubMenu) {
         var subList = $("<ul>", {
-            class: 'collapse list-unstyled',
-            id: "ProductSubMenu"
+            class: 'collapse list-unstyled submenu',
+            id: itemData.name.replace(/\s+/g, '') + "SubMenu"
         });
         $.each(itemData.SubMenu, function () {
-            subList.append(getMenuItem(this));
+            var subItem = getMenuItem(this);
+            subItem.find('.menu-link').addClass('submenu-link');
+            subList.append(subItem);
         });
         item.append(subList);
     }
+    
     return item;
 };
 
@@ -600,23 +654,97 @@ $.getJSON("Menu/Menu.json", function (data) {
             });
         }
     });
+    
+    // After menu is loaded, set up click handlers for dropdown toggles
+    $('.menu-link[data-toggle="collapse"]').on('click', function(e) {
+        e.preventDefault();
+        var $this = $(this);
+        var isExpanded = $this.attr('aria-expanded') === 'true';
+        
+        // Toggle aria-expanded
+        $this.attr('aria-expanded', !isExpanded);
+        
+        // Find the submenu
+        var $submenu = $this.parent().find('.submenu, .collapse');
+        
+        if (isExpanded) {
+            $submenu.removeClass('show').hide();
+        } else {
+            $submenu.addClass('show').show();
+        }
+    });
+    
+    // Load active menu after menu is built
+    loadActiveMenu();
 });
 //End
 $(document).ready(function () {
-    $('#sidebarCollapse').on('click', function () {        
-        $('#sidebar').toggleClass('active');
-        $(this).toggleClass('active');
-    });
-   
-    loadActiveMenu();
+    // Sidebar toggle is handled in modern-interactions.js
+    // No duplicate event handlers needed here
 
     function loadActiveMenu() {
-        var url = window.location.href.split('/')[window.location.href.split('/').length - 1];
-        $('.nav-item').removeClass('active');
-        if (url === 'all-promotion-cost' || url === 'all-product') {
-            $('.nav-item').find('a[href*="#ProductSubMenu"]').parent().addClass('active');
+        var currentPath = window.location.pathname;
+        var url = currentPath.split('/').pop() || currentPath;
+        
+        // Remove active class from all menu items
+        $('.menu-link').removeClass('active');
+        $('.menu-item').removeClass('active');
+        
+        // Handle special cases for submenu items
+        if (url === 'all-promotion-cost' || url === 'all-product' || url === 'all-base-cost') {
+            // Activate parent Product menu and expand submenu
+            var productMenu = $('.menu-link[data-toggle="collapse"]');
+            if (productMenu.length) {
+                productMenu.addClass('active');
+                productMenu.attr('aria-expanded', 'true');
+                
+                // Find and show the submenu
+                var submenu = productMenu.parent().find('.submenu, .collapse');
+                submenu.addClass('show').show();
+                
+                // Also activate the specific submenu item
+                setTimeout(function() {
+                    $('.submenu-link[href*="' + url + '"]').addClass('active');
+                }, 100);
+            }
+        } else {
+            // Find and activate the matching menu item
+            var matchingLink = $('.menu-link[href*="' + url + '"]').first();
+            if (matchingLink.length) {
+                matchingLink.addClass('active');
+            } else {
+                // Try to match by page name patterns
+                var pagePatterns = {
+                    'Brand': ['brand', 'all-brand'],
+                    'Category': ['category', 'all-category'],
+                    'SubCategory': ['subcategory', 'all-subcategory'],
+                    'Product': ['product', 'all-product'],
+                    'Tax': ['tax', 'all-tax'],
+                    'Supplier': ['supplier', 'all-supplier'],
+                    'Role': ['role', 'all-role'],
+                    'Admin': ['admin', 'all-admin'],
+                    'Customer': ['customer', 'all-customer'],
+                    'Import': ['uploaddownload', 'upload'],
+                    'Export': ['download', 'export']
+                };
+                
+                for (var menuName in pagePatterns) {
+                    var patterns = pagePatterns[menuName];
+                    for (var i = 0; i < patterns.length; i++) {
+                        if (url.toLowerCase().includes(patterns[i])) {
+                            $('.menu-text:contains("' + menuName + '")').parent().addClass('active');
+                            break;
+                        }
+                    }
+                }
+            }
         }
-        $('li.nav-item').find('a[href*="' + url + '"]').parent().addClass('active');
+        
+        // Update page title based on active menu
+        var activeMenu = $('.menu-link.active .menu-text').first();
+        if (activeMenu.length && $('#currentPageTitle').length) {
+            $('#currentPageTitle').text(activeMenu.text());
+        }
     }
 });
 //Cascade dropdown

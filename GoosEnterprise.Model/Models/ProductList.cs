@@ -9,6 +9,7 @@ namespace GoodsEnterprise.Model.Models
     {
         public int Id { get; set; }
         public string Code { get; set; }
+        public string ProductName { get; set; }
         public string OuterEan { get; set; }
         public int FilterTotalCount { get; set; }
         public string Status { get; set; }

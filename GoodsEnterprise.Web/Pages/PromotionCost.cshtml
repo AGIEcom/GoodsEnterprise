@@ -1,4 +1,4 @@
-﻿@page "/all-promotion-cost"
+@page "/all-promotion-cost"
 @model GoodsEnterprise.Web.Pages.PromotionCostModel
 @{
 
@@ -22,49 +22,91 @@
 @Html.AntiForgeryToken()
 
 
-<div class="alert alert-success" id="success-alert" style="display:none;">
-    <button type="button" class="close" data-dismiss="alert">x</button>
-    @ViewData["SuccessMsg"]
+<div class="modern-alert modern-alert-success" id="success-alert" style="display:none;">
+    <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+    </svg>
+    <span>@ViewData["SuccessMsg"]</span>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
 </div>
 
 <div id="productlist" style="@List">
-    <a asp-page-handler="Create" id="lnkCreateProduct" class="btn btn-primary margin-bottom-15">Create New Promotion Cost</a>
-
-    <form id="UploadDownloadform" method="post" enctype="multipart/form-data" asp-page-handler="SubmitUpload">
-        <h3>Bulk Import/Export Promotion Cost</h3>
-
-        <div class="mb-3">
-            <input type="file" id="productFileUpload" class="fileUpload" asp-for="Upload" accept=".xls, .xlsx" onchange="productFileValidation()">
+    <div class="modern-card">
+        <div class="modern-card-header">
+            <h2 class="modern-card-title">Promotion Cost Management</h2>
         </div>
-        <button type="submit" class="btn btn-primary UploadDownload-submit">Submit</button>
-         
-    </form>
+        <a asp-page-handler="Create" id="lnkCreateProduct" class="modern-btn modern-btn-primary mb-3">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+            </svg>
+            Create New Promotion Cost
+        </a>
+    </div>
 
-    <div style="max-height: 500px; overflow-y: auto; overflow-x: hidden;" class="container table-responsive py-5">
-        <table class="table table-bordered table-hover display" style="width:100%" id="tblPromotionCost">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Supplier</th>
-                    <th scope="col">Product</th>
-                    <th scope="col">OuterEan</th>
-                    <th scope="col">Action</th>
-                </tr>
-            </thead>
+    <div class="modern-card mt-4">
+        <div class="modern-card-header">
+            <h3 class="modern-card-title">Bulk Import/Export</h3>
+            <p class="modern-card-subtitle">Upload Excel file to import promotion costs</p>
+        </div>
+        <form id="UploadDownloadform" method="post" enctype="multipart/form-data" asp-page-handler="SubmitUpload">
+            <div class="file-upload-container">
+                <div class="file-upload-area" onclick="document.getElementById('productFileUpload').click()">
+                    <div class="upload-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17,8 12,3 7,8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                    </div>
+                    <div class="upload-text">
+                        <span class="upload-title">Click to upload Excel file</span>
+                        <span class="upload-subtitle">or drag and drop</span>
+                    </div>
+                    <div class="upload-formats">XLS, XLSX files only</div>
+                </div>
+                <input type="file" id="productFileUpload" class="fileUpload-hidden d-none" asp-for="Upload" accept=".xls, .xlsx" onchange="productFileValidation()">
+            </div>
+            <div class="modern-form-actions mt-3">
+                <button type="submit" class="modern-btn modern-btn-primary UploadDownload-submit">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                    Import Data
+                </button>
+            </div>
+        </form>
+    </div>
 
-        </table>
+    <div class="modern-card mt-4">
+        <div class="modern-card-header">
+            <h3 class="modern-card-title">Promotion Cost List</h3>
+        </div>
+        <div class="modern-table-container" style="max-height: 500px; overflow-y: auto;">
+            <table class="modern-table" id="tblPromotionCost">
+                <thead>
+                    <tr>
+                        <th scope="col">Supplier</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Outer EAN</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <div id="divCreateUpdateProduct" style="@Edit">
-    <div class="row">
-        <div class="col-md-12">
-            <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
-                <div class="form-row">
-                    <div class="card-header col-md-12">
-                        <h3 class="mb-0">Product</h3>
-                    </div>
-                    <hr class="my-5">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modern-card">
+        <div class="modern-card-header">
+            <h2 class="modern-card-title">@(Convert.ToInt32(ViewData["PagePrimaryID"]) > 0 ? "Edit Promotion Cost" : "Create New Promotion Cost")</h2>
+        </div>
+        <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
+            <div asp-validation-summary="ModelOnly" class="modern-alert modern-alert-danger"></div>
                     @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
                     {
                         <input asp-for="objpromotionCost.PromotionCostId" type="hidden" class="form-control" id="txtPromotionCostId">
@@ -74,51 +116,96 @@
                         <input asp-for= "objpromotionCost.Modifiedby" type ="hidden" class="form-control" id="txtModifiedby">
                         <input asp-for="objpromotionCost.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
                     }
-                <div class="form-group  col-md-3">
-                    <label for="selectProductID" class="form-label">Product</label>
-                    <select asp-for="objpromotionCost.ProductId" class="form-control selectpicker" data-live-search="true"
-                            asp-items="Model.selectProduct" id="selectProductID">
-                        <option value="">-- Select Product --</option>
-                    </select>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="selectProductID" class="modern-form-label">Product *</label>
+                        <select asp-for="objpromotionCost.ProductId" class="modern-select" data-live-search="true"
+                                asp-items="Model.selectProduct" id="selectProductID" required>
+                            <option value="">-- Select Product --</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group  col-md-3">
-                    <label for="selectSupplierID" class="form-label">Lavender Code</label>
-                    <select asp-for="objpromotionCost.SupplierId" class="form-control selectpicker" data-live-search="true"
-                            asp-items="Model.selectSupplier" id="selectSupplierID">
-                        <option value="">-- Select Supplier --</option>
-                    </select>
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="selectSupplierID" class="modern-form-label">Supplier *</label>
+                        <select asp-for="objpromotionCost.SupplierId" class="modern-select" data-live-search="true"
+                                asp-items="Model.selectSupplier" id="selectSupplierID" required>
+                            <option value="">-- Select Supplier --</option>
+                        </select>
+                    </div>
                 </div>
-                    <div class="form-group  col-md-3">
-                        <label for="txtStartDate" class="form-label">Start Date</label>
-                        <input asp-for="objpromotionCost.StartDate" type="text" class="form-control" id="txtStartDate">
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="modern-form-group">
+                        <label for="txtStartDate" class="modern-form-label">Start Date *</label>
+                        <input asp-for="objpromotionCost.StartDate" type="date" class="modern-form-input" id="txtStartDate" required>
                     </div>
-                    <div class="form-group  col-md-3">
-                        <label for="txtEndDate" class="form-label">EndDate</label>
-                        <input asp-for="objpromotionCost.EndDate" type="text" class="form-control" id="txtEndDate">
+                </div>
+                <div class="col-md-4">
+                    <div class="modern-form-group">
+                        <label for="txtEndDate" class="modern-form-label">End Date *</label>
+                        <input asp-for="objpromotionCost.EndDate" type="date" class="modern-form-input" id="txtEndDate" required>
                     </div>
-                   
-                    <div class="form-group col-md-3">
-                        <label for="txtIsActive" class="form-label">IsActive</label>
-                        <input asp-for="objpromotionCost.IsActive" type="checkbox" id="txtIsActive">
+                </div>
+                <div class="col-md-4">
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Status</label>
+                        <div class="modern-toggle-container">
+                            <input asp-for="objpromotionCost.IsActive" type="checkbox" id="txtIsActive" class="modern-checkbox">
+                            <label for="txtIsActive" class="modern-toggle-label">
+                                <div class="toggle-switch">
+                                    <div class="toggle-slider"></div>
+                                    <span class="toggle-text-off">Inactive</span>
+                                    <span class="toggle-text-on">Active</span>
+                                </div>
+                            </label>
+                        </div>
                     </div>
-                    <div class="form-group col-md-12">
-                        <button type="submit" class="btn btn-primary product-submit">Submit</button>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="modern-form-actions">
+                        <button type="submit" class="modern-btn modern-btn-primary product-submit">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            @(Convert.ToInt32(ViewData["PagePrimaryID"]) > 0 ? "Update Promotion" : "Create Promotion")
+                        </button>
                         @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
                         {
-                            <a asp-page-handler="Reset" asp-route-productId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="btn btn-light">Reset</a>
+                            <a asp-page-handler="Reset" asp-route-productId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="modern-btn modern-btn-secondary">
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"></path>
+                                </svg>
+                                Reset
+                            </a>
                         }
                         else
                         {
-                            <a asp-page-handler="Clear" class="btn btn-light">Clear</a>
+                            <a asp-page-handler="Clear" class="modern-btn modern-btn-secondary">
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"></path>
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                </svg>
+                                Clear
+                            </a>
                         }
-                        <a asp-page="/PromotionCost" class="btn btn-light">Close</a>
+                        <a asp-page="/PromotionCost" class="modern-btn modern-btn-secondary">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                            Close
+                        </a>
                     </div>
-
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
-
 </div>
 
 @if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")

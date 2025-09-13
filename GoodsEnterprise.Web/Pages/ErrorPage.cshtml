@@ -1,28 +1,39 @@
-﻿@page "/all-error"
+@page "/all-error"
 @model GoodsEnterprise.Web.Pages.ErrorPageModel
 @{
+    ViewData["Title"] = "Error";
 }
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="error-template">
-                <h1>
-                    Oops!
-                </h1>
-                <h2>
-                    404 Not Found
-                </h2>
-                <div class="error-details">
-                    Sorry, an error has occured, Requested page not found!
-                </div>
-                <div class="error-actions">
-                    <a asp-area=""  asp-page="/UploadDownload"  class="btn btn-primary btn-lg">
-                        <span class="glyphicon glyphicon-home"></span>
-                        Take Me Home
-                    </a>
-                    <a asp-area=""  asp-page="/UploadDownload"  class="btn btn-default btn-lg"><span class="glyphicon glyphicon-envelope"></span> Contact Support </a>
-                </div>
-            </div>
+
+<div class="modern-card" style="max-width: 600px; margin: 2rem auto;">
+    <div class="modern-card-header text-center">
+        <div class="error-icon mb-3">
+            <svg width="80" height="80" fill="currentColor" viewBox="0 0 20 20" style="color: #ef4444;">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+            </svg>
+        </div>
+        <h1 class="modern-card-title" style="font-size: 2.5rem; color: #ef4444;">Oops!</h1>
+        <h2 style="font-size: 1.5rem; color: #6b7280; margin-bottom: 1rem;">404 - Page Not Found</h2>
+    </div>
+    
+    <div class="text-center">
+        <p style="font-size: 1.1rem; color: #6b7280; margin-bottom: 2rem;">
+            Sorry, the page you are looking for could not be found. It might have been moved, deleted, or you entered the wrong URL.
+        </p>
+        
+        <div class="modern-form-actions">
+            <a asp-page="/UploadDownload" class="modern-btn modern-btn-primary">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L9 5.414V17a1 1 0 102 0V5.414l5.293 5.293a1 1 0 001.414-1.414l-7-7z"></path>
+                </svg>
+                Go to Dashboard
+            </a>
+            <a href="mailto:support@goodsenterprise.com" class="modern-btn modern-btn-secondary">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                </svg>
+                Contact Support
+            </a>
         </div>
     </div>
 </div>
