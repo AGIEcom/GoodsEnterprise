@@ -16,6 +16,13 @@
         Edit = "display:none;";
         List = "display:block;";
     }
+
+    var imagePath = "";
+    if (ViewData["ImagePath"] != null)
+    {
+        imagePath = Convert.ToString(ViewData["ImagePath"]);
+
+    }
 }
 
 <div class="modern-alert modern-alert-success" id="success-alert" style="display:none;">
@@ -93,6 +100,8 @@
         @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
         {
             <input asp-for="objCategory.Id" type="hidden" class="form-control" id="txtCategoryID">
+            <input asp-for="objCategory.ImageUrl200" type="hidden" class="form-control" id="txtImageUrl200">
+            <input asp-for="objCategory.ImageUrl500" type="hidden" class="form-control" id="txtImageUrl500">
             <input asp-for="objCategory.IsDelete" type="hidden" class="form-control" id="txtIsDelete">
             <input asp-for="objCategory.Createdby" type="hidden" class="form-control" id="txtCreatedby">
             <input asp-for="objCategory.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
@@ -156,6 +165,25 @@
         </div>
         </form>
     </div>
+</div>
+        <div class="mb-3">
+            <input type="file" id="fileUpload" class="fileUpload" asp-for="Upload" accept="image/*" onchange="fileValidation()">
+            @if (imagePath != "")
+            {
+                <img src="@imagePath" id="imgPath" alt="Sample Image" width="250" height="250" />
+            }
+        </div>
+        <button type="submit" class="btn btn-primary category-submit">Submit</button>
+        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+        {
+            <a asp-page-handler="Reset" asp-route-categoryId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="btn btn-light">Reset</a>
+        }
+        else
+        {
+            <a asp-page-handler="Clear" class="btn btn-light">Clear</a>
+        }
+        <a asp-page="/Category" class="btn btn-light">Close</a>
+    </form>
 </div>
 
 @if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")

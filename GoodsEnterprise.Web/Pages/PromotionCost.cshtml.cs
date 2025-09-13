@@ -334,12 +334,14 @@ namespace GoodsEnterprise.Web.Pages
                 }
 
 
+                DataTable dtUDTTPromotion = ReorderPromotionCostTable(dtCloned);
+
                 CommenParameters commenParameters = new CommenParameters();
                 commenParameters.SPName = "usp_INSERTPROMOTIONCOST";
                 string CurrentUserIDSession = HttpContext.Session.GetString(Constants.LoginSession);
                 var result = JsonConvert.DeserializeObject<Admin>(CurrentUserIDSession);
                 commenParameters.CreatedBy = result.Id;
-                await _promotionCost.PostValueUsingUDTT(dtCloned, commenParameters);
+                await _promotionCost.PostValueUsingUDTT(dtUDTTPromotion, commenParameters);
 
                 //LoadFields();
                 //foreach (DataColumn column in productUpload.Columns)
@@ -415,6 +417,53 @@ namespace GoodsEnterprise.Web.Pages
                 Common.UploadSuppliers = null;
             }
         }
+        /// <summary>
+        /// ReorderPromotionCostTable
+        /// </summary>
+        /// <param name="src"></param>
+        /// <returns></returns>
+        public static DataTable ReorderPromotionCostTable(DataTable src)
+        {
+            // Exact column order from your UDTType_PromotionCost
+            string[] expectedOrder = new[]
+            {
+        "Product",
+        "OuterBarcode",
+        "PromotionCost",
+        "StartDate",
+        "EndDate",
+        "SelloutStartDate",
+        "SelloutEndDate",
+        "BonusDescription",
+        "SelloutDescription",
+        "Supplier"
+    };
+
+            var dst = new DataTable();
+
+            // Create new columns in correct order, preserving type
+            foreach (var colName in expectedOrder)
+            {
+                if (!src.Columns.Contains(colName))
+                    throw new Exception($"Source DataTable missing column: {colName}");
+
+                dst.Columns.Add(colName, src.Columns[colName].DataType);
+            }
+
+            // Copy rows in the new column order
+            foreach (DataRow r in src.Rows)
+            {
+                var newRow = dst.NewRow();
+                foreach (var colName in expectedOrder)
+                {
+                    newRow[colName] = r[colName];
+                }
+                dst.Rows.Add(newRow);
+            }
+
+            return dst;
+        }
+
         public async Task LoadSuppliers()
         {
             try

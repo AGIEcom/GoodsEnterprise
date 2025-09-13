@@ -79,24 +79,21 @@
         </form>
     </div>
 
-    <div class="modern-card mt-4">
-        <div class="modern-card-header">
-            <h3 class="modern-card-title">Promotion Cost List</h3>
-        </div>
-        <div class="modern-table-container" style="max-height: 500px; overflow-y: auto;">
-            <table class="modern-table" id="tblPromotionCost">
-                <thead>
-                    <tr>
-                        <th scope="col">Supplier</th>
-                        <th scope="col">Product</th>
-                        <th scope="col">Outer EAN</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
+    <div style="max-height: 500px; overflow-y: auto; overflow-x: hidden;" class="container table-responsive py-5">
+        <table class="table table-bordered table-hover display" style="width:100%" id="tblPromotionCost">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">SupplierName</th>
+                    <th scope="col">ProductName</th>
+                    <th scope="col">PromotionCost</th>
+                    <th scope="col">StartDate</th>
+                    <th scope="col">EndDate</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+
+        </table>
     </div>
 </div>
 
@@ -109,12 +106,12 @@
             <div asp-validation-summary="ModelOnly" class="modern-alert modern-alert-danger"></div>
                     @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
                     {
-                        <input asp-for="objpromotionCost.PromotionCostId" type="hidden" class="form-control" id="txtPromotionCostId">
-                        
-                        <input asp-for="objpromotionCost.CreatedBy" type="hidden" class="form-control" id="txtCreatedby">
-                        <input asp-for="objpromotionCost.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
-                        <input asp-for= "objpromotionCost.Modifiedby" type ="hidden" class="form-control" id="txtModifiedby">
-                        <input asp-for="objpromotionCost.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
+                    <input asp-for="objpromotionCost.PromotionCostId" type="hidden" class="form-control" id="txtPromotionCostId">
+
+                    <input asp-for="objpromotionCost.CreatedBy" type="hidden" class="form-control" id="txtCreatedby">
+                    <input asp-for="objpromotionCost.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
+                    <input asp-for="objpromotionCost.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
+                    <input asp-for="objpromotionCost.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
                     }
             <div class="row">
                 <div class="col-md-6">

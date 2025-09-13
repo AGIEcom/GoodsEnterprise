@@ -29,6 +29,9 @@
 
     }
 }
+
+<link href="/css/common.css" rel="stylesheet" asp-append-version="true" />
+
 @Html.AntiForgeryToken()
 
 <div class="modern-alert modern-alert-success" id="success-alert" style="display:none;">
@@ -386,4 +389,19 @@
     </script>
 
 }
+<script>
+    function toggleTaxSlab() {
+        var checkBox = document.getElementById("txtIsTaxable");
+        var dropdown = document.getElementById("taxSlabDropdown");
+
+        if (checkBox.checked) {
+            dropdown.style.display = "block";   // show
+            dropdown.disabled = false;          // enable
+        } else {
+            dropdown.style.display = "none";    // hide
+            dropdown.disabled = true;           // disable
+            dropdown.value = "";                // clear selection
+        }
+    }
+</script>
 <script src="~/js/ServerSidePagination.js"></script>

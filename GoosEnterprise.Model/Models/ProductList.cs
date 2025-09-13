@@ -21,6 +21,7 @@ namespace GoodsEnterprise.Model.Models
         public int PromotionCostID { get; set; }
         public string SupplierName { get; set; }
         public string ProductName { get; set; }
+        public decimal PromotionCost { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int FilterTotalCount { get; set; }

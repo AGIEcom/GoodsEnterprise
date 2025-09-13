@@ -163,6 +163,16 @@ namespace GoodsEnterprise.Model.Models
                     .HasMaxLength(1000)
                     .IsUnicode(false);
 
+                entity.Property(e => e.ImageUrl200)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("ImageUrl_200");
+
+                entity.Property(e => e.ImageUrl500)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("ImageUrl_500");
+
                 entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
 
                 entity.Property(e => e.Name)

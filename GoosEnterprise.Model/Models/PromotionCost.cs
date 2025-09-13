@@ -19,7 +19,7 @@ namespace GoodsEnterprise.Model.Models
         public int? CreatedBy { get; set; }
         public int? Modifiedby { get; set; }
         public DateTime? ModifiedDate { get; set; }
-
+        public bool IsDelete { get; set; }
         public virtual Product Product { get; set; }
         public virtual Supplier Supplier { get; set; }
     }

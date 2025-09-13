@@ -138,9 +138,9 @@ namespace GoodsEnterprise.Web.Pages
 
                 if (products != null && products.Count > 0)
                 {
-                    string[] existingProducts = productUpload.AsEnumerable().Where(a => products.Select(b => b.Code).Contains(a.Field<string>("Outer EAN")))
-                                              .GroupBy(product => product.Field<string>("Outer EAN").Trim())
-                                              .Select(group => group.First().Field<string>("Outer EAN")).ToArray();
+                    string[] existingProducts = productUpload.AsEnumerable().Where(a => products.Select(b => b.OuterEan).Contains(a.Field<object>("Outer EAN")?.ToString()))
+                                              .GroupBy(product => product.Field<object>("Outer EAN")?.ToString().Trim())
+                                              .Select(group => group.First().Field<object>("Outer EAN")?.ToString()).ToArray();
 
                     if (existingProducts.Count() > 1)
                     {
@@ -306,8 +306,8 @@ namespace GoodsEnterprise.Web.Pages
                 {
                     return; 
                 }
-                var newBrands = productUploadForBrands.AsEnumerable().Where(a => !Common.UploadBrands.Select(b => b.Name).Contains(a.Field<string>("Brand")))
-                                              .GroupBy(brand => brand.Field<string>("Brand").Trim())
+                var newBrands = productUploadForBrands.AsEnumerable().Where(a => !Common.UploadBrands.Select(b => b.Name).Contains(a.Field<object>("Brand")?.ToString()))
+                                              .GroupBy(brand => brand.Field<object>("Brand")?.ToString().Trim())
                                               .Select(group => group.First()).ToList();
 
                 List<Brand> bulkInsertBrands = new List<Brand>();
@@ -315,7 +315,7 @@ namespace GoodsEnterprise.Web.Pages
                 {
                     var bulkInsertBrand = new Brand()
                     {
-                        Name = brand.Field<string>("Brand"),
+                        Name = brand.Field<object>("Brand")?.ToString(),
                         CreatedDate = DateTime.UtcNow,
                         IsActive = true,
                         IsDelete = false
@@ -347,8 +347,8 @@ namespace GoodsEnterprise.Web.Pages
                 {
                     return;
                 }
-                var newCategories = productUploadForCategories.AsEnumerable().Where(a => !Common.UploadCategories.Select(c => c.Name).Contains(a.Field<string>("Category")))
-                              .GroupBy(category => category.Field<string>("Category"))
+                var newCategories = productUploadForCategories.AsEnumerable().Where(a => !Common.UploadCategories.Select(c => c.Name).Contains(a.Field<object>("Category")?.ToString()))
+                              .GroupBy(category => category.Field<object>("Category")?.ToString())
                               .Select(group => group.First()).ToList();
 
                 List<Category> bulkInsertCategories = new List<Category>();
@@ -356,7 +356,7 @@ namespace GoodsEnterprise.Web.Pages
                 {
                     var bulkInsertCategory = new Category()
                     {
-                        Name = category.Field<string>("Category"),
+                        Name = category.Field<object>("Category")?.ToString(),
                         CreatedDate = DateTime.UtcNow,
                         IsActive = true,
                         IsDelete = false
@@ -388,8 +388,8 @@ namespace GoodsEnterprise.Web.Pages
                 {
                     return;
                 }
-                var newSubCategories = productUploadForSubCategories.AsEnumerable().Where(a => !Common.UploadSubCategories.Select(c => c.Name).Contains(a.Field<string>("SubCategory")))
-                              .GroupBy(subCategory => subCategory.Field<string>("SubCategory"))
+                var newSubCategories = productUploadForSubCategories.AsEnumerable().Where(a => !Common.UploadSubCategories.Select(c => c.Name).Contains(a.Field<object>("SubCategory")?.ToString()))
+                              .GroupBy(subCategory => subCategory.Field<object>("SubCategory")?.ToString())
                               .Select(group => group.First()).ToList();
 
                 List<SubCategory> bulkInsertSubCategories = new List<SubCategory>();
@@ -397,7 +397,7 @@ namespace GoodsEnterprise.Web.Pages
                 {
                     var bulkInsertSubCategory = new SubCategory()
                     {
-                        Name = subCategory.Field<string>("SubCategory"),
+                        Name = subCategory.Field<object>("SubCategory")?.ToString(),
                         CreatedDate = DateTime.UtcNow,
                         IsActive = true,
                         IsDelete = false
@@ -429,8 +429,8 @@ namespace GoodsEnterprise.Web.Pages
                 {
                     return;
                 }
-                var newSuppliers = productUploadForSuppliers.AsEnumerable().Where(a => !Common.UploadSuppliers.Select(c => c.Name).Contains(a.Field<string>("Supplier")))
-                              .GroupBy(supplier => supplier.Field<string>("Supplier"))
+                var newSuppliers = productUploadForSuppliers.AsEnumerable().Where(a => !Common.UploadSuppliers.Select(c => c.Name).Contains(a.Field<object>("Supplier")?.ToString()))
+                              .GroupBy(supplier => supplier.Field<object>("Supplier")?.ToString())
                               .Select(group => group.First()).ToList();
 
                 List<Supplier> bulkInsertSuppliers = new List<Supplier>();
@@ -438,7 +438,7 @@ namespace GoodsEnterprise.Web.Pages
                 {
                     var bulkInsertSupplier = new Supplier()
                     {
-                        Name = supplier.Field<string>("Supplier"),
+                        Name = supplier.Field<object>("Supplier")?.ToString(),
                         CreatedDate = DateTime.UtcNow,
                         IsActive = true,
                         IsDelete = false
