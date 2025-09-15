@@ -52,6 +52,8 @@ namespace GoodsEnterprise.Model.Models
         public DateTime? ExpriyDate { get; set; }
         public string ProductName { get; set; }
         public string ProductDescription { get; set; }
+        public string Seebelow { get; set; }
+        public string Seebelow1 { get; set; }
         public int? TaxslabId { get; set; }
 
         public virtual Tax Taxslab { get; set; }

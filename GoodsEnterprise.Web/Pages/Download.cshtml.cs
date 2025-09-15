@@ -87,8 +87,10 @@ namespace GoodsEnterprise.Web.Pages
                                                             Modifiedby = pd.Modifiedby,
                                                             IsActive = pd.IsActive,
                                                             IsDelete = pd.IsDelete,
-                                                            ExpriyDate = pd.ExpriyDate
-                                                        }).ToList();
+                                                            ExpriyDate = pd.ExpriyDate,
+                                                            Seebelow = pd.Seebelow,
+                                                            Seebelow1 = pd.Seebelow1
+                                                          }).ToList();
 
                 ExportToExcel(ProductDownloads.ToDataTable());
                 ViewData["SuccessMsg"] = $"{Constants.SuccessUpload}";

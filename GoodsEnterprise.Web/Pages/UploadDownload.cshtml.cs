@@ -91,7 +91,7 @@ namespace GoodsEnterprise.Web.Pages
                     {
                         messages += msg + "<br />";
                     }
-                    ViewData["ValidationMsg"] = "Below Mandatory columns are missing" + "<br />" + messages;
+                    ViewData["ValidationMsg"] = $"Below Mandatory columns are missing<br /><div style='max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9;'>{messages}</div>";
                     return Page();
                 }
 
@@ -109,7 +109,7 @@ namespace GoodsEnterprise.Web.Pages
                     {
                         messages += msg + "<br />";
                     }
-                    ViewData["ValidationMsg"] = "Below Outer EAN has duplicate values, please correct it and retry" + "<br />" + messages;
+                    ViewData["ValidationMsg"] = $"Below Outer EAN has duplicate values, please correct it and retry<br /><div style='max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9;'>{messages}</div>";
                     return Page();
                 }               
 
@@ -130,8 +130,38 @@ namespace GoodsEnterprise.Web.Pages
                     {
                         messages += msg + "<br />";
                     }
-                    ViewData["ValidationMsg"] = "Mandatory fields are missing in the below Row number, please correct it and retry" + "<br />" + messages;
+                    ViewData["ValidationMsg"] = $"Mandatory fields are missing in the below Row number, please correct it and retry<br /><div style='max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9;'>{messages}</div>";
                     return Page();
+                }
+
+                // Validate Expiry Date format
+                if (productUpload.Columns.Contains("Expriy Date"))
+                {
+                    List<int> invalidDateRows = new List<int>();
+                    
+                    for (int i = 0; i < productUpload.Rows.Count; i++)
+                    {
+                        var expiryDateValue = productUpload.Rows[i]["Expriy Date"];
+                        
+                        if (expiryDateValue != null && !string.IsNullOrWhiteSpace(expiryDateValue.ToString()))
+                        {
+                            if (!DateTime.TryParse(expiryDateValue.ToString(), out DateTime parsedDate))
+                            {
+                                invalidDateRows.Add(i + 2); // +2 because Excel rows start from 1 and we have header row
+                            }
+                        }
+                    }
+                    
+                    if (invalidDateRows.Count > 0)
+                    {
+                        string messages = string.Empty;
+                        foreach (int rowNum in invalidDateRows)
+                        {
+                            messages += rowNum + "<br />";
+                        }
+                        ViewData["ValidationMsg"] = $"Invalid date format found in Expiry Date column at the below Row numbers, please correct it and retry<br /><div style='max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9;'>{messages}</div>";
+                        return Page();
+                    }
                 }
 
                 await LoadProducts();
@@ -149,7 +179,7 @@ namespace GoodsEnterprise.Web.Pages
                         {
                             messages += msg + "<br />";
                         }
-                        ViewData["ValidationMsg"] = "Below Outer EAN are already exists, please correct it and retry" + "<br />" + messages;
+                        ViewData["ValidationMsg"] = $"Below Outer EAN are already exists, please correct it and retry<br /><div style='max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9;'>{messages}</div>";
                         return Page();
                     }
                 }

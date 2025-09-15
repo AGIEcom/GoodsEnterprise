@@ -43,6 +43,8 @@ namespace GoodsEnterprise.Model.Models
         public decimal? PromotionCost { get; set; }
         public DateTime? PromotionCostStartDate { get; set; }
         public DateTime? PromotionCostEndDate { get; set; }
+        public string Seebelow { get; set; }
+        public string Seebelow1 { get; set; }
 
     }
 }

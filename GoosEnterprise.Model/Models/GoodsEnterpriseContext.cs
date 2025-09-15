@@ -433,6 +433,12 @@ namespace GoodsEnterprise.Model.Models
                 entity.Property(e => e.ProductDescription)
                     .HasMaxLength(500)
                     .IsUnicode(false);
+                entity.Property(e => e.Seebelow)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+                entity.Property(e => e.Seebelow1)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.ProductName)
                     .HasMaxLength(250)
