@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -10,9 +10,12 @@ namespace GoodsEnterprise.Model.Models
         public int Id { get; set; }
         public string Code { get; set; }
         public string ProductName { get; set; }
+        public string CategoryName { get; set; }
+        public string BrandName { get; set; }
         public string OuterEan { get; set; }
         public int FilterTotalCount { get; set; }
         public string Status { get; set; }
+        public DateTime? ModifiedDate { get; set; }
     }
 
     public class PromotionCostList

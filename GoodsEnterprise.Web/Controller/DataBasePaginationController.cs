@@ -1,4 +1,4 @@
-﻿using GoodsEnterprise.DataAccess.Interface;
+using GoodsEnterprise.DataAccess.Interface;
 using GoodsEnterprise.Model.Models;
 using JqueryDataTables.ServerSide.AspNetCoreWeb.Models;
 using Microsoft.AspNetCore.Http;
@@ -33,17 +33,47 @@ namespace GoodsEnterprise.Web.Controller
             try
             {
                 
-                List<ProductList> lstproduct = new List<ProductList>(); 
+                List<ProductList> lstproduct = new List<ProductList>();
+                
+                // Extract SearchBy parameter from AdditionalValues
+                string searchBy = "All";
+                if (param.AdditionalValues != null && param.AdditionalValues.Any())
+                {
+                    searchBy = param.AdditionalValues.FirstOrDefault()?.ToString() ?? "All";
+                }
+                
+                // Map column indices to column names
+                string[] columnNames = { "code", "productName", "categoryName", "brandName", "outerEan", "modifiedDate", "status" };
+                string sortColumn = "modifiedDate"; // Always default to modifiedDate
+                
+                if (param.Order != null && param.Order.Any())
+                {
+                    int columnIndex = param.Order[0].Column;
+                    if (columnIndex >= 0 && columnIndex < columnNames.Length)
+                    {
+                        // Only override default if user explicitly clicked a column header
+                        // For initial page load, keep modifiedDate as default
+                        if (param.Start > 0 || !string.IsNullOrEmpty(param.Search?.Value))
+                        {
+                            sortColumn = columnNames[columnIndex];
+                        }
+                        else
+                        {
+                            // First page load - force modifiedDate sorting
+                            sortColumn = "modifiedDate";
+                        }
+                    }
+                }
+
                 DBPaginationParams dBPaginationParams = new DBPaginationParams()
                 {
-
                     sortOrder = param.Order[0].Dir.ToString(),
-                    sortColumn = param.SortOrder.Split(" ")[0],
-                    OffsetValue = param.Draw,
+                    sortColumn = !string.IsNullOrEmpty(param.SortOrder) ? param.SortOrder.Split(' ')[0] : sortColumn,
+                    OffsetValue = param.Start,
                     PagingSize = param.Length,
                     SearchText = param.Search.Value,
+                    SearchBy = searchBy,
                     StoredProcuder= "SPUI_GetProductDetails"
-
                 };
 
                 lstproduct = await _product.GetAllWithPaginationAsync(dBPaginationParams);

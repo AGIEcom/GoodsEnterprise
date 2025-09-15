@@ -1,6 +1,13 @@
 $(document).ready(function () {
     ProductGridDataLoading();
     PromotionPriceGridDataLoading();
+    
+    // Reload table when search filter changes
+    $('#searchByDropdown').on('change', function() {
+        if ($.fn.DataTable.isDataTable('#tblProductMaster')) {
+            $('#tblProductMaster').DataTable().ajax.reload();
+        }
+    });
 
     function ProductGridDataLoading() {
 
@@ -10,16 +17,32 @@ $(document).ready(function () {
             serverSide: true,
             responsive: true,
             lengthMenu: [10, 20, 50],
+            dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
 
-            "order": [[1, "desc"]],
+            //"order": [[6, "desc"]],
+            "order": [[6, "desc"]],
             "deferRender": true,
             'columnDefs': [{
 
-                'targets': [4], /* column index */
+                'targets': [7], /* column index */
 
                 'orderable': false, /* true or false */
 
             }],
+            initComplete: function() {
+                // Move the search input next to the SearchBy dropdown
+                var searchInput = $('#tblProductMaster_filter');
+                var searchByContainer = $('#searchByDropdown').closest('.col-md-3').next('.col-md-9');
+                searchInput.appendTo(searchByContainer);
+                
+                // Style the search input to be inline
+                searchInput.find('input').addClass('form-control').css({
+                    'display': 'inline-block',
+                    'width': 'auto',
+                    'margin-left': '10px'
+                });
+                searchInput.find('label').css('display', 'inline-block');
+            },
             ajax: {
                 type: "POST",
                 url: './api/DataBasePagination/getproductdata',
@@ -31,11 +54,14 @@ $(document).ready(function () {
                 async: true,
                 data: function (data) {
                     let additionalValues = [];
-                    //additionalValues[0] = $("#txtfromDate").val();
-                    //additionalValues[1] = $("#txtToDate").val();
-                    //var Appic = GetApplication();
-                    //additionalValues[2] = Appic;
-                    //data.AdditionalValues = additionalValues;
+                    additionalValues[0] = $("#searchByDropdown").val() || "All";
+                    data.AdditionalValues = additionalValues;
+                    
+                    // Force modifiedDate sorting on initial load
+                    if (data.start === 0 && (!data.search || !data.search.value)) {
+                        data.SortOrder = "modifiedDate DESC";
+                    }
+                    
                     return JSON.stringify(data);
                 },
                 error: function (jqXHR, exception) {
@@ -58,7 +84,7 @@ $(document).ready(function () {
 
                 }
             },
-            columns: [
+            columns: [               
                 {
                     data: "code",
                     name: "Code"
@@ -68,12 +94,30 @@ $(document).ready(function () {
                     name: "ProductName"
                 },
                 {
+                    data: "categoryName",
+                    name: "CategoryName"
+                },
+                {
+                    data: "brandName",
+                    name: "BrandName"
+                },
+                {
                     data: "outerEan",
                     name: "OuterEan"
                 },
                 {
                     data: "status",
                     name: "Status"
+                },  
+                {
+                    data: "modifiedDate",
+                    name: "ModifiedDate",
+                    render: function (data, type, row) {
+                        if (type === 'display' && data) {
+                            return new Date(data).toLocaleDateString('en-GB');
+                        }
+                        return data;
+                    }
                 },
                 {
                     data: "id",
