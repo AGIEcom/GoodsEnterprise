@@ -7,7 +7,7 @@ $(document).ready(function () {
             { 'targets': [3], 'orderable': false },
             { 'searchable': false, "targets": [1, 2, 3] }
         ],
-        "order": [],       
+        "order": [],
         lengthMenu: [5, 10, 20, 50],
         "pageLength": 10
     });
@@ -18,7 +18,7 @@ $(document).ready(function () {
         ],
         "order": [],
         lengthMenu: [5, 10, 20, 50]
-    }); 
+    });
 
     $('#tblSubCategoryMaster').DataTable({
         'columnDefs': [
@@ -97,21 +97,21 @@ $("#lnkCreateBrand").click(function () {
 });
 
 $(".brand-submit").click(function () {
-        var brandName = $('#txtBrand').val();
-        var error = false;
-        $(".text-danger").remove();
+    var brandName = $('#txtBrand').val();
+    var error = false;
+    $(".text-danger").remove();
 
-        if (brandName.length < 1) {
-            $('#txtBrand').after('<span class="text-danger">Brand name is required</span>');
-            error = true;
-        }
+    if (brandName.length < 1) {
+        $('#txtBrand').after('<span class="text-danger">Brand name is required</span>');
+        error = true;
+    }
 
-        if (error == true) {
-            return false;
-        }
-        else {
-            return true;
-        }
+    if (error == true) {
+        return false;
+    }
+    else {
+        return true;
+    }
 });
 $(".btn-brand-delete").click(function () {
     var result = confirm("Want to delete?");
@@ -127,8 +127,7 @@ function fileValidation() {
         document.getElementById('fileUpload');
 
     var filePath = fileInput.value;
-    if (filePath == '')
-    {
+    if (filePath == '') {
         return true;
     }
     // Allowing file type
@@ -140,8 +139,7 @@ function fileValidation() {
         fileInput.value = '';
         return false;
     }
-    else
-    {
+    else {
         $("#imgPath").css("display", "none");
     }
 }
@@ -567,7 +565,7 @@ var menuIcons = {
 
 var getMenuItem = function (itemData) {
     var menuIcon = menuIcons[itemData.name] || '<svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path></svg>';
-    
+
     var item = "";
     if (itemData.SubMenu) {
         // Parent menu item with submenu
@@ -625,7 +623,7 @@ var getMenuItem = function (itemData) {
             )
         );
     }
-    
+
     // Add submenu if exists
     if (itemData.SubMenu) {
         var subList = $("<ul>", {
@@ -639,11 +637,11 @@ var getMenuItem = function (itemData) {
         });
         item.append(subList);
     }
-    
+
     return item;
 };
 
- 
+
 
 var $menu = $("#mainmenu");
 $.getJSON("Menu/Menu.json", function (data) {
@@ -654,64 +652,66 @@ $.getJSON("Menu/Menu.json", function (data) {
             });
         }
     });
-    
-    // After menu is loaded, set up click handlers for dropdown toggles
-    $('.menu-link[data-toggle="collapse"]').on('click', function(e) {
-        e.preventDefault();
-        var $this = $(this);
-        var isExpanded = $this.attr('aria-expanded') === 'true';
-        
-        // Toggle aria-expanded
-        $this.attr('aria-expanded', !isExpanded);
-        
-        // Find the submenu
-        var $submenu = $this.parent().find('.submenu, .collapse');
-        
-        if (isExpanded) {
-            $submenu.removeClass('show').hide();
-        } else {
-            $submenu.addClass('show').show();
-        }
-    });
-    
+
+    // Submenu toggle handlers are now handled in modern-interactions.js
+    // Removed duplicate event handlers to prevent conflicts
+
     // Load active menu after menu is built
-    loadActiveMenu();
+    setTimeout(function () {
+        loadActiveMenu();
+    }, 500);
 });
 //End
 $(document).ready(function () {
-    // Sidebar toggle is handled in modern-interactions.js
-    // No duplicate event handlers needed here
+    loadActiveMenu();
+});
+// Sidebar toggle is handled in modern-interactions.js
+// No duplicate event handlers needed here
 
-    function loadActiveMenu() {
-        var currentPath = window.location.pathname;
-        var url = currentPath.split('/').pop() || currentPath;
-        
-        // Remove active class from all menu items
-        $('.menu-link').removeClass('active');
-        $('.menu-item').removeClass('active');
-        
-        // Handle special cases for submenu items
-        if (url === 'all-promotion-cost' || url === 'all-product' || url === 'all-base-cost') {
-            // Activate parent Product menu and expand submenu
-            var productMenu = $('.menu-link[data-toggle="collapse"]');
-            if (productMenu.length) {
-                productMenu.addClass('active');
-                productMenu.attr('aria-expanded', 'true');
-                
-                // Find and show the submenu
-                var submenu = productMenu.parent().find('.submenu, .collapse');
-                submenu.addClass('show').show();
-                
-                // Also activate the specific submenu item
-                setTimeout(function() {
-                    $('.submenu-link[href*="' + url + '"]').addClass('active');
-                }, 100);
-            }
+function loadActiveMenu() {
+    var currentPath = window.location.pathname;
+    var url = currentPath.split('/').pop() || currentPath;
+
+    // Remove active class from all menu items
+    $('.menu-link').removeClass('active');
+    $('.menu-item').removeClass('active');
+
+    // Handle special cases for submenu items
+    if (url === 'all-promotion-cost' || url === 'all-product' || url === 'all-base-cost') {
+        // Activate parent Product menu and expand submenu
+        var productMenu = $('.menu-link[data-toggle="collapse"]');
+        if (productMenu.length) {
+            productMenu.addClass('active');
+            productMenu.attr('aria-expanded', 'true');
+
+            // Find and show the submenu
+            var submenu = productMenu.parent().find('.submenu, .collapse');
+            submenu.addClass('show').show();
+
+            // Also activate the specific submenu item
+            // setTimeout(function () {
+            $('.submenu-link[href*="' + url + '"]').addClass('active');
+            //  }, 100);
+
+        }
+        // Update page title based on active menu
+        const submenuLink = document.querySelector(`.submenu-link[href*="${url}"]`);
+        var activeMenu = $('.submenu-link.active .menu-text').first();
+        if (submenuLink && $('#currentPageTitle').length) {
+            $('#currentPageTitle').text(submenuLink.textContent);
+        }
+    } else {
+        // Find and activate the matching menu item
+        var matchingLink = $('.menu-link[href*="' + url + '"]').first();
+        if (matchingLink.length) {
+            matchingLink.addClass('active');
         } else {
-            // Find and activate the matching menu item
-            var matchingLink = $('.menu-link[href*="' + url + '"]').first();
-            if (matchingLink.length) {
-                matchingLink.addClass('active');
+            // Special handling for UploadDownload page (default after login)
+            if (url.toLowerCase() === 'uploaddownload' || url.toLowerCase() === '') {
+                var importMenu = $('.menu-text:contains("Import")').parent();
+                if (importMenu.length) {
+                    importMenu.addClass('active');
+                }
             } else {
                 // Try to match by page name patterns
                 var pagePatterns = {
@@ -719,15 +719,17 @@ $(document).ready(function () {
                     'Category': ['category', 'all-category'],
                     'SubCategory': ['subcategory', 'all-subcategory'],
                     'Product': ['product', 'all-product'],
+                    'Base Cost': ['basecost', 'all-base-cost'],
+                    'Promotion Cost': ['promotioncost', 'all-promotion-cost'],
                     'Tax': ['tax', 'all-tax'],
                     'Supplier': ['supplier', 'all-supplier'],
                     'Role': ['role', 'all-role'],
                     'Admin': ['admin', 'all-admin'],
                     'Customer': ['customer', 'all-customer'],
-                    'Import': ['uploaddownload', 'upload'],
+                    'Import': ['uploaddownload', 'upload', 'import'],
                     'Export': ['download', 'export']
                 };
-                
+
                 for (var menuName in pagePatterns) {
                     var patterns = pagePatterns[menuName];
                     for (var i = 0; i < patterns.length; i++) {
@@ -739,14 +741,16 @@ $(document).ready(function () {
                 }
             }
         }
-        
         // Update page title based on active menu
         var activeMenu = $('.menu-link.active .menu-text').first();
         if (activeMenu.length && $('#currentPageTitle').length) {
             $('#currentPageTitle').text(activeMenu.text());
         }
     }
-});
+
+
+}
+
 //Cascade dropdown
 //$(function () {
 //    $("#selectProductBrand").on("change", function () {

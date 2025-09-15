@@ -1,22 +1,22 @@
 // Modern UI Interactions for GoodsEnterprise
-(function() {
+(function () {
     'use strict';
 
     // Form submission with loading states
     function initFormSubmissions() {
         const forms = document.querySelectorAll('form');
-        
+
         forms.forEach(form => {
-            form.addEventListener('submit', function(e) {
+            form.addEventListener('submit', function (e) {
                 const submitBtn = form.querySelector('button[type="submit"]');
                 if (submitBtn && !submitBtn.classList.contains('btn-loading')) {
                     // Add loading state
                     submitBtn.classList.add('btn-loading');
                     submitBtn.disabled = true;
-                    
+
                     // Store original text
                     const originalText = submitBtn.innerHTML;
-                    
+
                     // Reset after 10 seconds as fallback
                     setTimeout(() => {
                         submitBtn.classList.remove('btn-loading');
@@ -31,16 +31,16 @@
     // Enhanced delete confirmations
     function initDeleteConfirmations() {
         const deleteButtons = document.querySelectorAll('.btn-admin-delete, .btn-category-delete, .btn-brand-delete');
-        
+
         deleteButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
+            button.addEventListener('click', function (e) {
                 e.preventDefault();
-                
-                const entityName = this.getAttribute('asp-route-firstName') || 
-                                 this.getAttribute('asp-route-categoryName') || 
-                                 this.getAttribute('asp-route-brandName') || 
-                                 'this item';
-                
+
+                const entityName = this.getAttribute('asp-route-firstName') ||
+                    this.getAttribute('asp-route-categoryName') ||
+                    this.getAttribute('asp-route-brandName') ||
+                    'this item';
+
                 showModernConfirm(
                     'Delete Confirmation',
                     `Are you sure you want to delete "${entityName}"? This action cannot be undone.`,
@@ -137,14 +137,14 @@
     // Form validation enhancements
     function initFormValidation() {
         const inputs = document.querySelectorAll('.modern-form-input, .modern-select');
-        
+
         inputs.forEach(input => {
             // Real-time validation feedback
-            input.addEventListener('blur', function() {
+            input.addEventListener('blur', function () {
                 validateField(this);
             });
 
-            input.addEventListener('input', function() {
+            input.addEventListener('input', function () {
                 // Clear error state on input
                 if (this.classList.contains('error')) {
                     this.classList.remove('error');
@@ -159,7 +159,7 @@
         const value = field.value.trim();
         const isRequired = field.hasAttribute('required');
         const fieldType = field.type;
-        
+
         // Remove existing error
         field.classList.remove('error');
         const existingError = field.parentNode.querySelector('.error-message');
@@ -211,7 +211,7 @@
     // Auto-hide success alerts
     function initAutoHideAlerts() {
         const successAlerts = document.querySelectorAll('.modern-alert-success');
-        
+
         successAlerts.forEach(alert => {
             if (alert.style.display !== 'none') {
                 setTimeout(() => {
@@ -251,7 +251,7 @@
 
     // Keyboard navigation enhancements
     function initKeyboardNavigation() {
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             // Escape key to close modals
             if (e.key === 'Escape') {
                 const backdrop = document.querySelector('.modal-backdrop');
@@ -259,7 +259,7 @@
                     backdrop.click();
                 }
             }
-            
+
             // Enter key on buttons
             if (e.key === 'Enter' && e.target.classList.contains('modern-btn')) {
                 e.target.click();
@@ -273,13 +273,13 @@
         const sidebarToggle = document.getElementById('sidebarCollapse');
         const menuLinks = document.querySelectorAll('.menu-link');
         const pageTitle = document.getElementById('currentPageTitle');
-        
+
         // Sidebar toggle functionality
         if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', function() {
+            sidebarToggle.addEventListener('click', function () {
                 sidebar.classList.toggle('sidebar-collapsed');
                 this.classList.toggle('active');
-                
+
                 // Also toggle content areas
                 const content = document.getElementById('content');
                 const contentHeader = document.getElementById('contentHeader');
@@ -291,17 +291,20 @@
                 }
             });
         }
-        
-        // Set active menu item based on current page
-        setActiveMenuItem();
-        
+
+        // Set active menu item based on current page with delay to ensure menu is loaded
+        setTimeout(function() {
+            setActiveMenuItem();
+        }, 800);
+
+
         function setActiveMenuItem() {
             const currentPath = window.location.pathname;
             const url = currentPath.split('/').pop() || currentPath;
-            
+
             // Remove active class from all menu items
             menuLinks.forEach(link => link.classList.remove('active'));
-            
+
             // Handle special cases for submenu items (Product submenu)
             if (url === 'all-promotion-cost' || url === 'all-product' || url === 'all-base-cost') {
                 // Find and activate parent Product menu
@@ -309,14 +312,14 @@
                 if (productMenu) {
                     productMenu.classList.add('active');
                     productMenu.setAttribute('aria-expanded', 'true');
-                    
+
                     // Find submenu - check for both .submenu and .collapse classes
                     const submenu = productMenu.parentElement.querySelector('.submenu, .collapse');
                     if (submenu) {
                         submenu.classList.add('show');
                         submenu.style.display = 'block';
                     }
-                    
+
                     // Also activate the specific submenu item
                     const submenuLink = document.querySelector(`.submenu-link[href*="${url}"]`);
                     if (submenuLink) {
@@ -325,7 +328,7 @@
                 }
                 return; // Exit early for submenu items
             }
-            
+
             // Handle regular menu items - first try direct URL match
             let matchFound = false;
             menuLinks.forEach(link => {
@@ -335,68 +338,78 @@
                     matchFound = true;
                 }
             });
-            
+
             // If no direct match found, try pattern matching
             if (!matchFound) {
-                const pagePatterns = {
-                    'Brand': ['brand', 'all-brand'],
-                    'Category': ['category', 'all-category'],
-                    'SubCategory': ['subcategory', 'all-subcategory'],
-                    'Tax': ['tax', 'all-tax'],
-                    'Supplier': ['supplier', 'all-supplier'],
-                    'Role': ['role', 'all-role'],
-                    'Admin': ['admin', 'all-admin'],
-                    'Customer': ['customer', 'all-customer'],
-                    'Import': ['uploaddownload', 'upload'],
-                    'Export': ['download', 'export']
-                };
-                
-                for (const [menuName, patterns] of Object.entries(pagePatterns)) {
-                    for (const pattern of patterns) {
-                        if (url.toLowerCase().includes(pattern)) {
-                            // Find menu link by text content
-                            const menuLink = Array.from(menuLinks).find(link => {
-                                const menuText = link.querySelector('.menu-text');
-                                return menuText && menuText.textContent.trim() === menuName;
-                            });
-                            if (menuLink) {
-                                menuLink.classList.add('active');
-                                matchFound = true;
-                                break;
+                // Special handling for UploadDownload page (default after login)
+                if (url.toLowerCase() === 'uploaddownload' || url.toLowerCase() === '') {
+                    const importMenu = Array.from(menuLinks).find(link => {
+                        const menuText = link.querySelector('.menu-text');
+                        return menuText && menuText.textContent.trim() === 'Import';
+                    });
+                    if (importMenu) {
+                        importMenu.classList.add('active');
+                        matchFound = true;
+                    }
+                }
+
+                if (!matchFound) {
+                    var pagePatterns = {
+                        'Brand': ['brand', 'all-brand'],
+                        'Category': ['category', 'all-category'],
+                        'SubCategory': ['subcategory', 'all-subcategory'],
+                        'Product': ['product', 'all-product'],
+                        'Tax': ['tax', 'all-tax'],
+                        'Supplier': ['supplier', 'all-supplier'],
+                        'Role': ['role', 'all-role'],
+                        'Admin': ['admin', 'all-admin'],
+                        'Customer': ['customer', 'all-customer'],
+                        'Import': ['uploaddownload', 'upload', 'import'],
+                        'Export': ['download', 'export']
+                    };
+
+                    for (const [menuName, patterns] of Object.entries(pagePatterns)) {
+                        for (const pattern of patterns) {
+                            if (url.toLowerCase().includes(pattern)) {
+                                // Find menu link by text content
+                                const menuLink = Array.from(menuLinks).find(link => {
+                                    const menuText = link.querySelector('.menu-text');
+                                    return menuText && menuText.textContent.trim() === menuName;
+                                });
+                                if (menuLink) {
+                                    menuLink.classList.add('active');
+                                    matchFound = true;
+                                    break;
+                                }
                             }
                         }
+                        if (matchFound) break;
                     }
-                    if (matchFound) break;
                 }
             }
-            
+
             // Update page title based on active menu
             const activeMenu = document.querySelector('.menu-link.active .menu-text');
             if (activeMenu && pageTitle) {
                 pageTitle.textContent = activeMenu.textContent;
             }
+            const submenuLink = document.querySelector(`.submenu-link[href*="${url}"]`);
+            if (submenuLink && activeMenu.textContent=="") { 
+                pageTitle.textContent = submenuLink.textContent;
+            }
         }
-        
-        // Handle menu link clicks
+
+        // Handle menu link clicks - separate handlers for regular links and submenu toggles
         menuLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                // Don't prevent default for actual navigation
-                // Remove active class from all links
-                menuLinks.forEach(l => l.classList.remove('active'));
-                // Add active class to clicked link
-                this.classList.add('active');
-                
-                // Update page title
-                if (pageTitle) {
-                    const menuText = this.querySelector('.menu-text').textContent;
-                    pageTitle.textContent = menuText;
-                }
-                
-                // Handle submenu toggle
-                if (this.hasAttribute('data-toggle') && this.getAttribute('data-toggle') === 'collapse') {
+            if (link.hasAttribute('data-toggle') && link.getAttribute('data-toggle') === 'collapse') {
+                // Handle submenu toggle links
+                link.addEventListener('click', function (e) {
                     e.preventDefault();
+                    e.stopPropagation();
+                    
                     const isExpanded = this.getAttribute('aria-expanded') === 'true';
                     this.setAttribute('aria-expanded', !isExpanded);
+                    
                     const submenu = this.parentElement.querySelector('.submenu, .collapse');
                     if (submenu) {
                         if (isExpanded) {
@@ -407,12 +420,40 @@
                             submenu.style.display = 'block';
                         }
                     }
-                }
-            });
+                    
+                    // Update active state for parent menu
+                    menuLinks.forEach(l => {
+                        if (!l.hasAttribute('data-toggle')) {
+                            l.classList.remove('active');
+                        }
+                    });
+                    this.classList.add('active');
+                    
+                    // Update page title
+                    if (pageTitle) {
+                        const menuText = this.querySelector('.menu-text').textContent;
+                        pageTitle.textContent = menuText;
+                    }
+                });
+            } else {
+                // Handle regular navigation links
+                link.addEventListener('click', function (e) {
+                    // Remove active class from all links
+                    menuLinks.forEach(l => l.classList.remove('active'));
+                    // Add active class to clicked link
+                    this.classList.add('active');
+
+                    // Update page title
+                    if (pageTitle) {
+                        const menuText = this.querySelector('.menu-text').textContent;
+                        pageTitle.textContent = menuText;
+                    }
+                });
+            }
         });
-        
+
         // Close sidebar on mobile when clicking outside
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (window.innerWidth <= 768) {
                 if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
                     sidebar.classList.add('sidebar-collapsed');
@@ -428,9 +469,9 @@
                 }
             }
         });
-        
+
         // Handle window resize
-        window.addEventListener('resize', function() {
+        window.addEventListener('resize', function () {
             if (window.innerWidth > 768) {
                 sidebar.classList.remove('sidebar-collapsed');
                 sidebarToggle.classList.remove('active');
@@ -445,22 +486,22 @@
             }
         });
     }
-    
+
     // User dropdown functionality
     function initUserDropdown() {
         const userMenuBtn = document.querySelector('.modern-user-menu-btn');
         const userDropdown = document.querySelector('.modern-user-dropdown');
-        
+
         if (userMenuBtn && userDropdown) {
-            userMenuBtn.addEventListener('click', function(e) {
+            userMenuBtn.addEventListener('click', function (e) {
                 e.stopPropagation();
                 const isExpanded = this.getAttribute('aria-expanded') === 'true';
                 this.setAttribute('aria-expanded', !isExpanded);
                 userDropdown.style.display = isExpanded ? 'none' : 'block';
             });
-            
+
             // Close dropdown when clicking outside
-            document.addEventListener('click', function() {
+            document.addEventListener('click', function () {
                 userMenuBtn.setAttribute('aria-expanded', 'false');
                 userDropdown.style.display = 'none';
             });
@@ -478,7 +519,7 @@
         initKeyboardNavigation();
         initSidebarNavigation();
         initUserDropdown();
-        
+
         // Add fade-in animation to cards
         document.querySelectorAll('.modern-card').forEach(card => {
             card.classList.add('fade-in');
