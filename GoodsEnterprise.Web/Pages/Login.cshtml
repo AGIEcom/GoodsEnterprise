@@ -98,15 +98,18 @@
                 <input type="password" id="password" class="modern-form-input" placeholder="Enter your password" asp-for="objAdmin.Password" required>
             </div>
             
-            <button type="submit" class="modern-btn modern-btn-primary" style="width: 100%; margin-bottom: 1rem;">
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                </svg>
-                Sign In
-            </button>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="modern-form-group mb-0">
+                    <input type="checkbox" id="remember" class="modern-checkbox">
+                    <label for="remember" class="modern-checkbox-label">Remember me</label>
+                </div>
+                <button type="submit" class="modern-btn modern-btn-primary" style="width: auto; padding: 0.5rem 1.5rem;">
+                    Sign In
+                </button>
+            </div>
             
-            <div style="text-align: center;">
-                <a href="#" style="color: #3182ce; text-decoration: none; font-size: 0.9rem;">
+            <div class="text-center mt-3">
+                <a href="#" class="text-primary" data-toggle="modal" data-target="#forgotPasswordModal">
                     Forgot your password?
                 </a>
             </div>
@@ -114,8 +117,96 @@
     </div>
 </div>
 
+<!-- Forgot Password Modal -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1" role="dialog" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="forgotPasswordModalLabel">Reset Your Password</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="forgotPasswordForm" method="post" asp-page-handler="ForgotPassword">
+                <div class="modal-body">
+                    <div class="modern-form-group">
+                        <label for="forgotEmail" class="modern-form-label">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20" style="margin-right: 0.5rem;">
+                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                            </svg>
+                            Email Address
+                        </label>
+                        <input type="email" id="forgotEmail" name="email" class="modern-form-input" placeholder="Enter your email address" required>
+                    </div>
+                    <div id="forgotPasswordMessage" class="mt-2" style="display: none;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="modern-btn modern-btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="modern-btn modern-btn-primary">Send Reset Link</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script src="~/js/modern-interactions.js" asp-append-version="true"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#forgotPasswordForm').on('submit', function(e) {
+            e.preventDefault();
+            const email = $('#forgotEmail').val();
+            const messageDiv = $('#forgotPasswordMessage');
+            
+            // Show loading state
+            messageDiv.removeClass('text-danger text-success')
+                .addClass('text-muted')
+                .html('Sending reset link...')
+                .show();
+
+            // Submit form via AJAX
+            $.ajax({
+                url: '/Login?handler=ForgotPassword',
+                type: 'POST',
+                data: $(this).serialize(),
+                headers: {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function(response) {
+                    if (response.success) {
+                        messageDiv.removeClass('text-muted text-danger')
+                            .addClass('text-success')
+                            .html('Password reset link has been sent to your email.');
+                        
+                        // Clear the form and hide the modal after 3 seconds
+                        setTimeout(function() {
+                            $('#forgotEmail').val('');
+                            $('#forgotPasswordModal').modal('hide');
+                            messageDiv.hide();
+                        }, 3000);
+                    } else {
+                        messageDiv.removeClass('text-muted text-success')
+                            .addClass('text-danger')
+                            .html(response.message || 'An error occurred. Please try again.');
+                    }
+                },
+                error: function() {
+                    messageDiv.removeClass('text-muted text-success')
+                        .addClass('text-danger')
+                        .html('An error occurred. Please try again.');
+                }
+            });
+        });
+
+        // Reset the form when modal is closed
+        $('#forgotPasswordModal').on('hidden.bs.modal', function () {
+            $('#forgotPasswordForm')[0].reset();
+            $('#forgotPasswordMessage').hide();
+        });
+    });
+</script>
 </body>
 </html>

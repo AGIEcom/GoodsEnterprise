@@ -11,6 +11,7 @@ namespace GoodsEnterprise.Model.Models
         {
             BaseCosts = new HashSet<BaseCost>();
             PromotionCosts = new HashSet<PromotionCost>();
+            Products = new HashSet<Product>();
         }
 
         public int Id { get; set; }
@@ -32,5 +33,6 @@ namespace GoodsEnterprise.Model.Models
 
         public virtual ICollection<BaseCost> BaseCosts { get; set; }
         public virtual ICollection<PromotionCost> PromotionCosts { get; set; }
+        public virtual ICollection<Product> Products { get; set; }
     }
 }

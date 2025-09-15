@@ -14,6 +14,7 @@ namespace GoodsEnterprise.Model.Models
             CustomerFavourites = new HashSet<CustomerFavourite>();
             OrderDetails = new HashSet<OrderDetail>();
             PromotionCosts = new HashSet<PromotionCost>();
+            Supplier = new Supplier();
         }
 
         public int Id { get; set; }
@@ -48,6 +49,7 @@ namespace GoodsEnterprise.Model.Models
         public int? Modifiedby { get; set; }
         public bool IsActive { get; set; }
         public bool IsDelete { get; set; }
+        public bool isTaxable { get; set; }
         public int? SupplierId { get; set; }
         public DateTime? ExpriyDate { get; set; }
         public string ProductName { get; set; }
@@ -60,5 +62,6 @@ namespace GoodsEnterprise.Model.Models
         public virtual ICollection<CustomerFavourite> CustomerFavourites { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<PromotionCost> PromotionCosts { get; set; }
+        public virtual Supplier Supplier { get; set; }
     }
 }

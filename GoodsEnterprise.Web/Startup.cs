@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using GoodsEnterprise.Web.Services;
 
 namespace GoodsEnterprise
 {
@@ -46,6 +47,21 @@ namespace GoodsEnterprise
             services.AddMvc().AddRazorPagesOptions(options =>
             {
                 options.Conventions.AddPageRoute("/Login", "");
+                options.Conventions.AddPageRoute("/ResetPassword", "reset-password");
+            });
+
+            // Register email service
+            services.AddTransient<IEmailService, GmailEmailService>();
+            
+            // Add HttpContextAccessor
+            services.AddHttpContextAccessor();
+            
+            // Add session support
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
             });
             services.AddDbContext<GoodsEnterpriseContext>(options =>
             options.UseSqlServer(

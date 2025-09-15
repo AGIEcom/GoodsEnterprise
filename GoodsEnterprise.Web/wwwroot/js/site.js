@@ -1,6 +1,49 @@
 // Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
-//datatable initilaze
+// Function to handle DataTable resizing
+//function resizeDataTables() {
+//    $('.dataTable').each(function() {
+//        const $table = $(this);
+//        if ($.fn.DataTable.isDataTable($table)) {
+//            try {
+//                const table = $table.DataTable();
+//                if (table) {
+//                    table.columns.adjust().responsive.recalc();
+//                }
+//            } catch (e) {
+//                console.warn('Error resizing DataTable:', e);
+//            }
+//        }
+//    });
+//}
+
+//// Call this when showing a tab or modal containing a DataTable
+//function onTableShown() {
+//    setTimeout(function() {
+//        resizeDataTables();
+//    }, 300);
+//}
+
+// Initialize DataTables with responsive and autoWidth options
+function initDataTable(selector, options = {}) {
+    const defaultOptions = {
+        responsive: true,
+        autoWidth: true,
+        destroy: true, // Allow reinitialization
+        scrollX: true,
+        scrollCollapse: true,
+        lengthMenu: [5, 10, 20, 50],
+        pageLength: 10,
+        ...options
+    };
+    
+    if ($.fn.DataTable.isDataTable(selector)) {
+        $(selector).DataTable().destroy();
+    }
+    
+    return $(selector).DataTable(defaultOptions);
+}
+//datatable initialization
 $(document).ready(function () {
     $('#tblBrandMaster').DataTable({
         'columnDefs': [
@@ -84,6 +127,9 @@ $(document).ready(function () {
     });
 });
 //end
+
+ 
+// End of file
 
 var emailReg = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
 var passwordReg = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{5,25}$/;
@@ -664,6 +710,8 @@ $.getJSON("Menu/Menu.json", function (data) {
 //End
 $(document).ready(function () {
     loadActiveMenu();
+    $(window).trigger('resize');
+
 });
 // Sidebar toggle is handled in modern-interactions.js
 // No duplicate event handlers needed here
@@ -733,7 +781,7 @@ function loadActiveMenu() {
                 for (var menuName in pagePatterns) {
                     var patterns = pagePatterns[menuName];
                     for (var i = 0; i < patterns.length; i++) {
-                        if (url.toLowerCase().includes(patterns[i])) {
+                        if (url.toLowerCase() == patterns[i].toLowerCase()) {
                             $('.menu-text:contains("' + menuName + '")').parent().addClass('active');
                             break;
                         }
@@ -801,5 +849,114 @@ function isDecimal(evt) {
     }
     return true;
 }
+
+// Function to validate positive decimal numbers with up to 2 decimal places
+function validatePositiveDecimal(input) {
+    // Get cursor position before any changes
+    const cursorPosition = input.selectionStart;
+    let value = input.value;
+    
+    // Remove any non-numeric characters except the first decimal point
+    let newValue = value.replace(/[^0-9.]/g, '');
+    
+    // Handle multiple decimal points
+    const parts = newValue.split('.');
+    if (parts.length > 2) {
+        // If more than one decimal point, keep only the first one
+        newValue = parts[0] + '.' + parts.slice(1).join('');
+    }
+    
+    // Limit to 2 decimal places
+    if (parts.length === 2 && parts[1].length > 2) {
+        newValue = parts[0] + '.' + parts[1].substring(0, 2);
+    }
+    
+    // Prevent leading zeros (e.g., 001.23 becomes 1.23)
+    if (parts[0] && parts[0].length > 1 && parts[0].startsWith('0') && !parts[0].startsWith('0.')) {
+        newValue = parseFloat(newValue).toString();
+    }
+    
+    // Update the input value
+    input.value = newValue;
+    
+    // Maintain cursor position
+    const diff = newValue.length - value.length;
+    const newCursorPosition = Math.max(0, Math.min(cursorPosition + diff, newValue.length));
+    
+    // Use setTimeout to ensure the cursor position is set after the value is updated
+    setTimeout(() => {
+        input.setSelectionRange(newCursorPosition, newCursorPosition);
+    }, 0);
+    
+    // Validate the final value
+    const numericValue = parseFloat(newValue);
+    if (isNaN(numericValue) || numericValue < 0) {
+        input.value = '';
+    }
+    
+    return true;
+}
+
+// Add event listener for decimal input fields
+document.addEventListener('DOMContentLoaded', function() {
+    const decimalInputs = document.querySelectorAll('input[type="number"][onkeypress*="validatePositiveDecimal"]');
+    decimalInputs.forEach(input => {
+        // Replace onkeypress with oninput for better real-time validation
+        input.removeAttribute('onkeypress');
+        input.addEventListener('input', function(e) {
+            validatePositiveDecimal(this);
+        });
+    });
+});
+
 //End
+
+// Initialize date picker
+document.addEventListener('DOMContentLoaded', function () {
+    const expiryDateInput = document.querySelector(".datepicker"); //document.getElementById('datepicker');
+
+    // Format the date for display when the page loads
+    if (expiryDateInput && expiryDateInput.value) {
+        const date = new Date(expiryDateInput.value);
+        if (!isNaN(date.getTime())) {
+            expiryDateInput.value = date.toISOString().split('T')[0];
+        }
+    } else {
+        // Set min date to today if no value is set
+        expiryDateInput.min = new Date().toISOString().split('T')[0];
+    }
+
+    // Add input validation
+    if (expiryDateInput) {
+        expiryDateInput.addEventListener('change', function () {
+            const selectedDate = new Date(this.value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (selectedDate < today) {
+                alert('Expiry date cannot be in the past');
+                this.value = '';
+            }
+        });
+    }
+});
+
+function toggleTaxSlab() {
+    var checkBox = document.getElementById("txtIsTaxable");
+    var dropdown = document.querySelector(".divTax");
+    var selectElement = document.getElementById("selectProductTax");
+
+    if (checkBox.checked) {
+        dropdown.style.display = "block";
+        if (selectElement) {
+            selectElement.disabled = false;
+        }
+    } else {
+        dropdown.style.display = "none";
+        if (selectElement) {
+            selectElement.disabled = true;
+            selectElement.value = "";
+        }
+    }
+}
 

@@ -293,7 +293,7 @@
         }
 
         // Set active menu item based on current page with delay to ensure menu is loaded
-        setTimeout(function() {
+        setTimeout(function () {
             setActiveMenuItem();
         }, 800);
 
@@ -370,7 +370,8 @@
 
                     for (const [menuName, patterns] of Object.entries(pagePatterns)) {
                         for (const pattern of patterns) {
-                            if (url.toLowerCase().includes(pattern)) {
+                            //  if (url.toLowerCase().includes(pattern)) {
+                            if (url.toLowerCase() == pattern.toLowerCase()) {
                                 // Find menu link by text content
                                 const menuLink = Array.from(menuLinks).find(link => {
                                     const menuText = link.querySelector('.menu-text');
@@ -394,7 +395,7 @@
                 pageTitle.textContent = activeMenu.textContent;
             }
             const submenuLink = document.querySelector(`.submenu-link[href*="${url}"]`);
-            if (submenuLink && activeMenu.textContent=="") { 
+            if (submenuLink && activeMenu.textContent == "") {
                 pageTitle.textContent = submenuLink.textContent;
             }
         }
@@ -406,10 +407,10 @@
                 link.addEventListener('click', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    
+
                     const isExpanded = this.getAttribute('aria-expanded') === 'true';
                     this.setAttribute('aria-expanded', !isExpanded);
-                    
+
                     const submenu = this.parentElement.querySelector('.submenu, .collapse');
                     if (submenu) {
                         if (isExpanded) {
@@ -420,7 +421,7 @@
                             submenu.style.display = 'block';
                         }
                     }
-                    
+
                     // Update active state for parent menu
                     menuLinks.forEach(l => {
                         if (!l.hasAttribute('data-toggle')) {
@@ -428,7 +429,7 @@
                         }
                     });
                     this.classList.add('active');
-                    
+
                     // Update page title
                     if (pageTitle) {
                         const menuText = this.querySelector('.menu-text').textContent;

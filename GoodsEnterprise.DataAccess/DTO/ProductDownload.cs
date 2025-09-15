@@ -38,6 +38,7 @@ namespace GoodsEnterprise.Model.Models
         public int? Modifiedby { get; set; }
         public bool IsActive { get; set; }
         public bool IsDelete { get; set; }
+        public bool isTaxable { get; set; }
         public string Supplier { get; set; }
         public DateTime? ExpriyDate { get; set; }
         public decimal? PromotionCost { get; set; }

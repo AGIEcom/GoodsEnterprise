@@ -450,7 +450,12 @@ namespace GoodsEnterprise.Model.Models
                     .WithMany(p => p.Products)
                     .HasForeignKey(d => d.TaxslabId)
                     .HasConstraintName("FK_Product_Tax");
-            });
+                modelBuilder.Entity<Product>()
+                        .HasOne(p => p.Supplier)
+                        .WithMany(s => s.Products)
+                        .HasForeignKey(p => p.SupplierId)
+                        .OnDelete(DeleteBehavior.SetNull);
+                           });
 
             modelBuilder.Entity<PromotionCost>(entity =>
             {
