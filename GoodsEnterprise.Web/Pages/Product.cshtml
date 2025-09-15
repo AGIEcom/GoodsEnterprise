@@ -55,14 +55,38 @@
             </svg>
             Create New Product
         </a>
+        
         <div class="modern-table-container" style="max-height: 500px; overflow-y: auto;">
+            <div class="row mb-3 align-items-end">
+                <div class="col-md-3">
+                    <div class="modern-form-group">
+                        <label for="searchByDropdown" class="modern-form-label">Search By</label>
+                        <select id="searchByDropdown" class="modern-select" style="width: auto; min-width: 140px;">
+                            <option value="All">All Fields</option>
+                            <option value="ProductName">Product Name</option>
+                            <option value="CategoryName">Category Name</option>
+                            <option value="BrandName">Brand Name</option>
+                            <option value="Code">Product Code</option>
+                            <option value="OuterEan">Outer EAN</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div id="tblProductMaster_filter" class="dataTables_filter" style="text-align: left;">
+                        <!-- DataTables search input will be moved here -->
+                    </div>
+                </div>
+            </div>
             <table class="modern-table" id="tblProductMaster">
                 <thead>
                     <tr>
                         <th scope="col">Product Code</th>
                         <th scope="col">Product Name</th>
-                        <th scope="col">OuterEan</th>
+                        <th scope="col">Category Name</th>
+                        <th scope="col">Brand Name</th>
+                        <th scope="col">OuterEan</th>                   
                         <th scope="col">Status</th>
+                        <th scope="col">Modified Date</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>

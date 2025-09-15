@@ -1,196 +1,12 @@
-USE [GoodsEnterprise]
-GO
-/****** Object:  StoredProcedure [dbo].[usp_INSERTPROMOTIONCOST]    Script Date: 16-01-2022 22:31:02 ******/
-DROP PROCEDURE [dbo].[usp_INSERTPROMOTIONCOST]
-GO
-/****** Object:  StoredProcedure [dbo].[USP_GetSubCategories]    Script Date: 16-01-2022 22:31:02 ******/
-DROP PROCEDURE [dbo].[USP_GetSubCategories]
-GO
-/****** Object:  StoredProcedure [dbo].[USP_GetCategories]    Script Date: 16-01-2022 22:31:02 ******/
-DROP PROCEDURE [dbo].[USP_GetCategories]
-GO
-/****** Object:  StoredProcedure [dbo].[USP_GetBrands]    Script Date: 16-01-2022 22:31:02 ******/
-DROP PROCEDURE [dbo].[USP_GetBrands]
-GO
-/****** Object:  StoredProcedure [dbo].[SPUI_GetPromotionCostDetails]    Script Date: 16-01-2022 22:31:02 ******/
-DROP PROCEDURE [dbo].[SPUI_GetPromotionCostDetails]
-GO
-/****** Object:  StoredProcedure [dbo].[SPUI_GetProductDetails]    Script Date: 16-01-2022 22:31:02 ******/
-DROP PROCEDURE [dbo].[SPUI_GetProductDetails]
-GO
-ALTER TABLE [dbo].[PromotionCost] DROP CONSTRAINT [FK_PromotionCost_Supplier]
-GO
-ALTER TABLE [dbo].[PromotionCost] DROP CONSTRAINT [FK_PromotionCost_PromotionCost]
-GO
-ALTER TABLE [dbo].[Product] DROP CONSTRAINT [FK_Product_Tax]
-GO
-ALTER TABLE [dbo].[OrderDetail] DROP CONSTRAINT [FK__OrderDeta__Produ__5DCAEF64]
-GO
-ALTER TABLE [dbo].[OrderDetail] DROP CONSTRAINT [FK__OrderDeta__Order__5CD6CB2B]
-GO
-ALTER TABLE [dbo].[Order] DROP CONSTRAINT [FK__Order__Status]
-GO
-ALTER TABLE [dbo].[Order] DROP CONSTRAINT [FK__Order__CustomerI__59FA5E80]
-GO
-ALTER TABLE [dbo].[CustomerFavourite] DROP CONSTRAINT [FK__CustomerF__Produ__5629CD9C]
-GO
-ALTER TABLE [dbo].[CustomerFavourite] DROP CONSTRAINT [FK__CustomerF__Custo__5CD6CB2B]
-GO
-ALTER TABLE [dbo].[CustomerBasket] DROP CONSTRAINT [FK__CustomerB__Produ__52593CB8]
-GO
-ALTER TABLE [dbo].[CustomerBasket] DROP CONSTRAINT [FK__CustomerB__Custo__5AEE82B9]
-GO
-ALTER TABLE [dbo].[Customer] DROP CONSTRAINT [FK__Customer__RoleId__59FA5E80]
-GO
-ALTER TABLE [dbo].[BaseCost] DROP CONSTRAINT [FK_BaseCost_Supplier]
-GO
-ALTER TABLE [dbo].[BaseCost] DROP CONSTRAINT [FK_BaseCost_Product]
-GO
-ALTER TABLE [dbo].[Admin] DROP CONSTRAINT [FK__Admin__RoleId__59063A47]
-GO
-ALTER TABLE [dbo].[Tax] DROP CONSTRAINT [DF_Tax_IsDelete]
-GO
-ALTER TABLE [dbo].[Tax] DROP CONSTRAINT [DF_Tax_IsActive]
-GO
-ALTER TABLE [dbo].[Supplier] DROP CONSTRAINT [DF_Supplier_IsDelete]
-GO
-ALTER TABLE [dbo].[Supplier] DROP CONSTRAINT [DF_Supplier_IsActive]
-GO
-ALTER TABLE [dbo].[SubCategory] DROP CONSTRAINT [DF_SubCategory_IsDelete]
-GO
-ALTER TABLE [dbo].[SubCategory] DROP CONSTRAINT [DF_SubCategory_IsActive]
-GO
-ALTER TABLE [dbo].[Status] DROP CONSTRAINT [DF_Status_IsDelete]
-GO
-ALTER TABLE [dbo].[Status] DROP CONSTRAINT [DF_Status_IsActive]
-GO
-ALTER TABLE [dbo].[Role] DROP CONSTRAINT [DF_Role_IsDelete]
-GO
-ALTER TABLE [dbo].[Role] DROP CONSTRAINT [DF_Role_IsActive]
-GO
-ALTER TABLE [dbo].[PromotionCost] DROP CONSTRAINT [DF_PromotionCost_CreatedDate]
-GO
-ALTER TABLE [dbo].[PromotionCost] DROP CONSTRAINT [DF_PromotionCost_IsActive]
-GO
-ALTER TABLE [dbo].[Product] DROP CONSTRAINT [Default_IsDelete]
-GO
-ALTER TABLE [dbo].[Product] DROP CONSTRAINT [Default_IsActive]
-GO
-ALTER TABLE [dbo].[OrderDetail] DROP CONSTRAINT [DF_OrderDetail_IsDelete]
-GO
-ALTER TABLE [dbo].[OrderDetail] DROP CONSTRAINT [DF_OrderDetail_IsActive]
-GO
-ALTER TABLE [dbo].[Order] DROP CONSTRAINT [DF_Order_IsDelete]
-GO
-ALTER TABLE [dbo].[Order] DROP CONSTRAINT [DF_Order_IsActive]
-GO
-ALTER TABLE [dbo].[CustomerFavourite] DROP CONSTRAINT [DF_CustomerFavourite_IsDelete]
-GO
-ALTER TABLE [dbo].[CustomerFavourite] DROP CONSTRAINT [DF_CustomerFavourite_IsActive]
-GO
-ALTER TABLE [dbo].[CustomerBasket] DROP CONSTRAINT [DF_CustomerBasket_IsDelete]
-GO
-ALTER TABLE [dbo].[CustomerBasket] DROP CONSTRAINT [DF_CustomerBasket_IsActive]
-GO
-ALTER TABLE [dbo].[Customer] DROP CONSTRAINT [DF_Customer_IsDelete]
-GO
-ALTER TABLE [dbo].[Customer] DROP CONSTRAINT [DF_Customer_IsActive]
-GO
-ALTER TABLE [dbo].[Category] DROP CONSTRAINT [DF_Category_IsDelete]
-GO
-ALTER TABLE [dbo].[Category] DROP CONSTRAINT [DF_Category_IsActive]
-GO
-ALTER TABLE [dbo].[Brand] DROP CONSTRAINT [DF_Brand_IsDelete]
-GO
-ALTER TABLE [dbo].[Brand] DROP CONSTRAINT [DF_Brand_IsActive]
-GO
-ALTER TABLE [dbo].[BaseCost] DROP CONSTRAINT [DF_BaseCost_CreatedDate]
-GO
-ALTER TABLE [dbo].[Admin] DROP CONSTRAINT [DF_Admin_IsDelete]
-GO
-ALTER TABLE [dbo].[Admin] DROP CONSTRAINT [DF_Admin_IsActive]
-GO
-ALTER TABLE [dbo].[Admin] DROP CONSTRAINT [Default_Admin_EmailSubscribed]
-GO
-/****** Object:  Table [dbo].[Tax]    Script Date: 16-01-2022 22:31:02 ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Tax]') AND type in (N'U'))
-DROP TABLE [dbo].[Tax]
-GO
-/****** Object:  Table [dbo].[Supplier]    Script Date: 16-01-2022 22:31:02 ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Supplier]') AND type in (N'U'))
-DROP TABLE [dbo].[Supplier]
-GO
-/****** Object:  Table [dbo].[SubCategory]    Script Date: 16-01-2022 22:31:02 ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SubCategory]') AND type in (N'U'))
-DROP TABLE [dbo].[SubCategory]
-GO
-/****** Object:  Table [dbo].[Status]    Script Date: 16-01-2022 22:31:02 ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Status]') AND type in (N'U'))
-DROP TABLE [dbo].[Status]
-GO
-/****** Object:  Table [dbo].[Role]    Script Date: 16-01-2022 22:31:02 ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Role]') AND type in (N'U'))
-DROP TABLE [dbo].[Role]
-GO
-/****** Object:  Table [dbo].[PromotionCost]    Script Date: 16-01-2022 22:31:02 ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PromotionCost]') AND type in (N'U'))
-DROP TABLE [dbo].[PromotionCost]
-GO
-/****** Object:  Table [dbo].[Product]    Script Date: 16-01-2022 22:31:02 ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Product]') AND type in (N'U'))
-DROP TABLE [dbo].[Product]
-GO
-/****** Object:  Table [dbo].[OrderDetail]    Script Date: 16-01-2022 22:31:02 ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[OrderDetail]') AND type in (N'U'))
-DROP TABLE [dbo].[OrderDetail]
-GO
-/****** Object:  Table [dbo].[Order]    Script Date: 16-01-2022 22:31:02 ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Order]') AND type in (N'U'))
-DROP TABLE [dbo].[Order]
-GO
-/****** Object:  Table [dbo].[CustomerFavourite]    Script Date: 16-01-2022 22:31:02 ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CustomerFavourite]') AND type in (N'U'))
-DROP TABLE [dbo].[CustomerFavourite]
-GO
-/****** Object:  Table [dbo].[CustomerBasket]    Script Date: 16-01-2022 22:31:02 ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CustomerBasket]') AND type in (N'U'))
-DROP TABLE [dbo].[CustomerBasket]
-GO
-/****** Object:  Table [dbo].[Customer]    Script Date: 16-01-2022 22:31:02 ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Customer]') AND type in (N'U'))
-DROP TABLE [dbo].[Customer]
-GO
-/****** Object:  Table [dbo].[Category]    Script Date: 16-01-2022 22:31:02 ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Category]') AND type in (N'U'))
-DROP TABLE [dbo].[Category]
-GO
-/****** Object:  Table [dbo].[Brand]    Script Date: 16-01-2022 22:31:02 ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Brand]') AND type in (N'U'))
-DROP TABLE [dbo].[Brand]
-GO
-/****** Object:  Table [dbo].[BaseCost]    Script Date: 16-01-2022 22:31:02 ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[BaseCost]') AND type in (N'U'))
-DROP TABLE [dbo].[BaseCost]
-GO
-/****** Object:  Table [dbo].[Admin]    Script Date: 16-01-2022 22:31:02 ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Admin]') AND type in (N'U'))
-DROP TABLE [dbo].[Admin]
-GO
-/****** Object:  UserDefinedTableType [dbo].[UDTType_PromotionCost]    Script Date: 16-01-2022 22:31:02 ******/
-DROP TYPE [dbo].[UDTType_PromotionCost]
-GO
 USE [master]
 GO
-/****** Object:  Database [GoodsEnterprise]    Script Date: 16-01-2022 22:31:02 ******/
-DROP DATABASE [GoodsEnterprise]
-GO
-/****** Object:  Database [GoodsEnterprise]    Script Date: 16-01-2022 22:31:02 ******/
+/****** Object:  Database [GoodsEnterprise]    Script Date: 14-09-2025 11:06:47 ******/
 CREATE DATABASE [GoodsEnterprise]
  CONTAINMENT = NONE
  ON  PRIMARY 
 ( NAME = N'GoodsEnterprise', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\GoodsEnterprise.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
  LOG ON 
-( NAME = N'GoodsEnterprise_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\GoodsEnterprise_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+( NAME = N'GoodsEnterprise_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\GoodsEnterprise_log.ldf' , SIZE = 73728KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
  WITH CATALOG_COLLATION = DATABASE_DEFAULT
 GO
 ALTER DATABASE [GoodsEnterprise] SET COMPATIBILITY_LEVEL = 150
@@ -266,7 +82,12 @@ ALTER DATABASE [GoodsEnterprise] SET QUERY_STORE = OFF
 GO
 USE [GoodsEnterprise]
 GO
-/****** Object:  UserDefinedTableType [dbo].[UDTType_PromotionCost]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  User [IIS APPPOOL\Test1]    Script Date: 14-09-2025 11:06:49 ******/
+CREATE USER [IIS APPPOOL\Test1] FOR LOGIN [IIS APPPOOL\Test1] WITH DEFAULT_SCHEMA=[dbo]
+GO
+ALTER ROLE [db_owner] ADD MEMBER [IIS APPPOOL\Test1]
+GO
+/****** Object:  UserDefinedTableType [dbo].[UDTType_PromotionCost]    Script Date: 14-09-2025 11:06:49 ******/
 CREATE TYPE [dbo].[UDTType_PromotionCost] AS TABLE(
 	[Product] [varchar](500) NULL,
 	[OuterBarcode] [varchar](20) NULL,
@@ -280,7 +101,7 @@ CREATE TYPE [dbo].[UDTType_PromotionCost] AS TABLE(
 	[Supplier] [varchar](500) NULL
 )
 GO
-/****** Object:  Table [dbo].[Admin]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  Table [dbo].[Admin]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -306,7 +127,7 @@ CREATE TABLE [dbo].[Admin](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[BaseCost]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  Table [dbo].[BaseCost]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -330,7 +151,7 @@ CREATE TABLE [dbo].[BaseCost](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Brand]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  Table [dbo].[Brand]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -353,7 +174,7 @@ CREATE TABLE [dbo].[Brand](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Category]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  Table [dbo].[Category]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -368,13 +189,15 @@ CREATE TABLE [dbo].[Category](
 	[Modifiedby] [int] NULL,
 	[IsActive] [bit] NOT NULL,
 	[IsDelete] [bit] NOT NULL,
+	[ImageUrl_500] [varchar](200) NULL,
+	[ImageUrl_200] [varchar](200) NULL,
  CONSTRAINT [PK_Category] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Customer]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  Table [dbo].[Customer]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -386,7 +209,7 @@ CREATE TABLE [dbo].[Customer](
 	[Address1] [varchar](250) NULL,
 	[Address2] [varchar](250) NULL,
 	[CompanyName] [varchar](250) NULL,
-	[CompanyEmail] [varchar](250) NULL,
+	[CompanyEmail] [varchar](50) NULL,
 	[CompanyPhone] [varchar](15) NULL,
 	[CompanyFax] [varchar](15) NULL,
 	[ContactPerson] [varchar](250) NULL,
@@ -414,7 +237,7 @@ CREATE TABLE [dbo].[Customer](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CustomerBasket]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  Table [dbo].[CustomerBasket]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -435,7 +258,7 @@ CREATE TABLE [dbo].[CustomerBasket](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CustomerFavourite]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  Table [dbo].[CustomerFavourite]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -456,7 +279,7 @@ CREATE TABLE [dbo].[CustomerFavourite](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Order]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  Table [dbo].[Order]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -482,7 +305,7 @@ CREATE TABLE [dbo].[Order](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[OrderDetail]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  Table [dbo].[OrderDetail]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -505,7 +328,7 @@ CREATE TABLE [dbo].[OrderDetail](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Product]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  Table [dbo].[Product]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -554,7 +377,7 @@ CREATE TABLE [dbo].[Product](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PromotionCost]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  Table [dbo].[PromotionCost]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -576,13 +399,14 @@ CREATE TABLE [dbo].[PromotionCost](
 	[CreatedBy] [int] NULL,
 	[Modifiedby] [int] NULL,
 	[ModifiedDate] [datetime] NULL,
+	[IsDelete] [bit] NOT NULL,
  CONSTRAINT [PK_PromotionCost] PRIMARY KEY CLUSTERED 
 (
 	[PromotionCostID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Role]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  Table [dbo].[Role]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -602,7 +426,7 @@ CREATE TABLE [dbo].[Role](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Status]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  Table [dbo].[Status]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -622,7 +446,7 @@ CREATE TABLE [dbo].[Status](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[SubCategory]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  Table [dbo].[SubCategory]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -643,7 +467,7 @@ CREATE TABLE [dbo].[SubCategory](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Supplier]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  Table [dbo].[Supplier]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -671,7 +495,7 @@ CREATE TABLE [dbo].[Supplier](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Tax]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  Table [dbo].[Tax]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -736,6 +560,8 @@ GO
 ALTER TABLE [dbo].[PromotionCost] ADD  CONSTRAINT [DF_PromotionCost_IsActive]  DEFAULT ((1)) FOR [IsActive]
 GO
 ALTER TABLE [dbo].[PromotionCost] ADD  CONSTRAINT [DF_PromotionCost_CreatedDate]  DEFAULT (getdate()) FOR [CreatedDate]
+GO
+ALTER TABLE [dbo].[PromotionCost] ADD  CONSTRAINT [DF_PromotionCost_IsDelete]  DEFAULT ((0)) FOR [IsDelete]
 GO
 ALTER TABLE [dbo].[Role] ADD  CONSTRAINT [DF_Role_IsActive]  DEFAULT ((0)) FOR [IsActive]
 GO
@@ -830,50 +656,38 @@ REFERENCES [dbo].[Supplier] ([Id])
 GO
 ALTER TABLE [dbo].[PromotionCost] CHECK CONSTRAINT [FK_PromotionCost_Supplier]
 GO
-/****** Object:  StoredProcedure [dbo].[SPUI_GetProductDetails]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  StoredProcedure [dbo].[SPUI_GetHomePageBrands]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
--- =============================================
--- Author:		<Author,,Name>
--- Create date: <Create Date,,>
--- Description:	<Description,,>
--- =============================================
-CREATE   PROCEDURE [dbo].[SPUI_GetProductDetails]
- @OffsetValue int,
-@PagingSize int,
-@sortOrder varchar(10),
-@sortColumn varchar(100),
-
-@SearchText varchar(250)
- 
+CREATE    PROCEDURE [dbo].[SPUI_GetHomePageBrands]
 AS
 BEGIN
-	DECLARE @FilterTotalCount INT=0
-	SET @FilterTotalCount =(SELECT COUNT(*)
-	FROM Product[A] INNER JOIN Brand[B] ON A.BrandId=B.Id
-	INNER JOIN Category[C] ON A.CategoryId=C.Id
-	LEFT JOIN SubCategory[D] ON A.SubCategoryId=D.Id
-	WHERE A.IsActive=1 AND B.IsActive=1 AND C.IsActive=1 AND ISNULL(D.IsActive,1)=1)
 
-	SELECT a.Code,A.OuterEAN, CASE WHEN A.IsActive=1 THEN 'Active' ELSE 'InActive' end Status,A.Id
---	,A.ProductName,
---	A.ProductDescription,A.BrandId,A.CategoryId,A.SubCategoryId,InnerEAN,UnitSize,UPC,LayerQuantity,PalletQuantity,CasePrice,
---ShelfLifeInWeeks,PackHeight,PackDepth,PackWidth,NetCaseWeightKg,GrossCaseWeightKg,CaseWidthMm,CaseHeightMm,CaseDepthMm
---,PalletWeightKg,PalletWidthMeter,PalletHeightMeter,PalletDepthMeter,Image,A.CreatedDate,A.Createdby,A.ExpriyDate
-,@FilterTotalCount AS FilterTotalCount
---,A.IsActive,A.IsDelete,A.Modifiedby,A.ModifiedDate,A.SupplierId
-	FROM Product[A] INNER JOIN Brand[B] ON A.BrandId=B.Id
-	INNER JOIN Category[C] ON A.CategoryId=C.Id
-	LEFT JOIN SubCategory[D] ON A.SubCategoryId=D.Id
-	WHERE A.IsActive=1 AND B.IsActive=1 AND C.IsActive=1 AND ISNULL(D.IsActive,1)=1
-	ORDER BY A.Id
-	OFFSET ((@OffsetValue - 1) * @PagingSize) ROWS
-	FETCH NEXT @PagingSize ROWS ONLY;
+  SELECT prd.BrandId AS BrandId, brd.Name AS BrandName, COUNT(prd.id) AS ProductCount FROM Brand brd WITH (NOLOCK) JOIN Product prd WITH (NOLOCK) ON brd.Id = prd.BrandId
+  WHERE brd.IsDelete = 0 and brd.IsActive = 1 and prd.IsDelete = 0 and prd.IsActive = 1
+  GROUP BY prd.BrandId, brd.Name
+
+END
+ 
+GO
+/****** Object:  StoredProcedure [dbo].[SPUI_GetHomePageCategories]    Script Date: 14-09-2025 11:06:49 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE   PROCEDURE [dbo].[SPUI_GetHomePageCategories]
+AS
+BEGIN
+
+  SELECT prd.CategoryId AS CategoryId, cat.Name AS CategoryName, COUNT(prd.id) AS ProductCount FROM Category cat WITH (NOLOCK) JOIN Product prd  WITH (NOLOCK) ON cat.Id = prd.CategoryId
+  WHERE cat.IsDelete = 0 and cat.IsActive = 1 and prd.IsDelete = 0 and prd.IsActive = 1
+  GROUP BY prd.CategoryId, cat.Name
+
 END
 GO
-/****** Object:  StoredProcedure [dbo].[SPUI_GetPromotionCostDetails]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  StoredProcedure [dbo].[SPUI_GetProductDetails]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -883,7 +697,105 @@ GO
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-CREATE PROCEDURE [dbo].[SPUI_GetPromotionCostDetails]
+CREATE   PROCEDURE [dbo].[SPUI_GetProductDetails] --1, 10, 'DESC', 'productName', '', 'All'
+           @OffsetValue int,
+    @PagingSize int,
+    @sortOrder varchar(10),
+    @sortColumn varchar(100),
+    @SearchText varchar(250),
+    @SearchBy varchar(50) = 'All'
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    DECLARE @sql NVARCHAR(MAX)
+    DECLARE @countSql NVARCHAR(MAX)
+    DECLARE @whereClause NVARCHAR(MAX) = ''
+    DECLARE @orderClause NVARCHAR(MAX) = ''
+    
+    -- Build WHERE clause for search based on SearchBy parameter
+    IF @SearchText IS NOT NULL AND @SearchText != ''
+    BEGIN
+        IF @SearchBy = 'ProductName'
+            SET @whereClause = ' WHERE A.ProductName LIKE ''%' + @SearchText + '%'''
+        ELSE IF @SearchBy = 'CategoryName'
+            SET @whereClause = ' WHERE C.Name LIKE ''%' + @SearchText + '%'''
+        ELSE IF @SearchBy = 'BrandName'
+            SET @whereClause = ' WHERE B.Name LIKE ''%' + @SearchText + '%'''
+        ELSE IF @SearchBy = 'Code'
+            SET @whereClause = ' WHERE A.Code LIKE ''%' + @SearchText + '%'''
+        ELSE IF @SearchBy = 'OuterEan'
+            SET @whereClause = ' WHERE A.OuterEAN LIKE ''%' + @SearchText + '%'''
+        ELSE -- Default to 'All' - search across all fields
+            SET @whereClause = ' WHERE (A.Code LIKE ''%' + @SearchText + '%'' 
+                                OR A.ProductName LIKE ''%' + @SearchText + '%''
+                                OR C.Name LIKE ''%' + @SearchText + '%''
+                                OR B.Name LIKE ''%' + @SearchText + '%''
+                                OR A.OuterEAN LIKE ''%' + @SearchText + '%'')'
+    END
+    
+    -- Build ORDER BY clause
+    SET @orderClause = ' ORDER BY '
+    
+    IF @sortColumn = 'code'
+        SET @orderClause = @orderClause + 'A.Code'
+    ELSE IF @sortColumn = 'productName'
+        SET @orderClause = @orderClause + 'A.ProductName'
+    ELSE IF @sortColumn = 'categoryName'
+        SET @orderClause = @orderClause + 'C.Name'
+    ELSE IF @sortColumn = 'brandName'
+        SET @orderClause = @orderClause + 'B.Name'
+    ELSE IF @sortColumn = 'outerEan'
+        SET @orderClause = @orderClause + 'A.OuterEan'
+    ELSE IF @sortColumn = 'status'
+        SET @orderClause = @orderClause + 'A.Status'
+    ELSE
+        SET @orderClause = @orderClause + 'A.Code'
+    
+    SET @orderClause = @orderClause + ' ' + @sortOrder
+    
+    -- Main query with FilterTotalCount as subquery
+    SET @sql = '
+    WITH ProductData AS (
+        SELECT A.Code, 
+               A.ProductName, 
+               C.Name AS CategoryName, 
+               B.Name AS BrandName, 
+               A.OuterEAN, 
+               CASE WHEN A.IsActive = 1 THEN ''Active'' ELSE ''InActive'' END AS Status,
+               A.Id
+        FROM Product A
+        LEFT JOIN Brand B ON A.BrandId = B.Id
+        LEFT JOIN Category C ON A.CategoryId = C.Id'
+    + @whereClause + '
+    ),
+    TotalCount AS (
+        SELECT COUNT(*) AS FilterTotalCount FROM ProductData
+    )
+    SELECT p.*, t.FilterTotalCount
+    FROM ProductData p
+    CROSS JOIN TotalCount t'
+    + @orderClause + '
+    OFFSET ' + CAST(@OffsetValue AS VARCHAR(10)) + ' ROWS
+    FETCH NEXT ' + CAST(@PagingSize AS VARCHAR(10)) + ' ROWS ONLY'
+    
+    -- Execute main query
+    EXEC sp_executesql @sql
+    
+END
+
+GO
+/****** Object:  StoredProcedure [dbo].[SPUI_GetPromotionCostDetails]    Script Date: 14-09-2025 11:06:49 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[SPUI_GetPromotionCostDetails]  --1,  5, 'asc', 'PromotionCostID', null
  @OffsetValue int,
 @PagingSize int,
 @sortOrder varchar(10),
@@ -894,20 +806,23 @@ AS
 BEGIN
 	DECLARE @FilterTotalCount INT=0
 	SET @FilterTotalCount =(select COUNT(*) from (
+	--select  A.ProductID,A.PromotionCost,A.PromotionCostID,A.SupplierID,C.Name[SupplierName],B.ProductName,A.StartDate,A.EndDate from PromotionCost[A] inner join Product[B] On A.ProductID=B.Id
 	select  A.ProductID,A.PromotionCost,A.PromotionCostID,A.SupplierID,C.Name[SupplierName],B.ProductName,A.StartDate,A.EndDate from PromotionCost[A] inner join Product[B] On A.ProductID=B.Id
+	
 	inner join Supplier[C] On A.SupplierID=C.Id
-	where A.IsActive=1
+	where A.IsActive=1 and A.IsDelete = 0
 	group by A.ProductID,A.PromotionCost,A.PromotionCostID,A.SupplierID,C.Name,B.ProductName ,A.StartDate,A.EndDate
 	) M ) 
 
 
-	select distinct A.ProductID,A.PromotionCost,A.PromotionCostID,A.SupplierID,C.Name[SupplierName],B.ProductName,A.StartDate,A.EndDate ,
-	CASE WHEN A.IsActive=1 THEN 'Active' ELSE 'InActive' end Status
+	--select distinct A.ProductID,A.PromotionCost,A.PromotionCostID,A.SupplierID,C.Name[SupplierName],B.ProductName,A.StartDate,A.EndDate ,
+	select distinct C.Name[SupplierName],B.ProductName,A.PromotionCost,A.StartDate,A.EndDate,
+	CASE WHEN A.IsActive=1 THEN 'Active' ELSE 'InActive' end Status, A.PromotionCostID
 	,@FilterTotalCount AS FilterTotalCount 
 	from PromotionCost[A] 
 	inner join Product[B] On A.ProductID=B.Id
 	inner join Supplier[C] On A.SupplierID=C.Id
-	where A.IsActive=1
+	where A.IsActive=1 and A.IsDelete = 0
 	 
 	order by A.EndDate desc
 	OFFSET ((@OffsetValue - 1) * @PagingSize) ROWS
@@ -915,8 +830,10 @@ BEGIN
 
  
 END
+
+
 GO
-/****** Object:  StoredProcedure [dbo].[USP_GetBrands]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  StoredProcedure [dbo].[USP_GetBrands]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -965,7 +882,7 @@ SELECT @TotalRecords = COUNT(Id) FROM Brand WITH (NOLOCK)
 END
 
 GO
-/****** Object:  StoredProcedure [dbo].[USP_GetCategories]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  StoredProcedure [dbo].[USP_GetCategories]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1014,7 +931,7 @@ SELECT @TotalRecords = COUNT(Id) FROM Category WITH (NOLOCK)
 END
 
 GO
-/****** Object:  StoredProcedure [dbo].[USP_GetSubCategories]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  StoredProcedure [dbo].[USP_GetSubCategories]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1063,7 +980,7 @@ SELECT @TotalRecords = COUNT(Id) FROM SubCategory WITH (NOLOCK)
 END
 
 GO
-/****** Object:  StoredProcedure [dbo].[usp_INSERTPROMOTIONCOST]    Script Date: 16-01-2022 22:31:04 ******/
+/****** Object:  StoredProcedure [dbo].[usp_INSERTPROMOTIONCOST]    Script Date: 14-09-2025 11:06:49 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1078,13 +995,16 @@ CREATE   PROCEDURE [dbo].[usp_INSERTPROMOTIONCOST]
 	@CREATEDBY INT
 AS
 BEGIN
-	INSERT INTO PromotionCost(ProductID,PromotionCost,StartDate,EndDate,SelloutStartDate,SelloutEndDate,BonusDescription,SellOutDescription,Remark,SupplierID,IsActive,CreatedDate,CreatedBy)
-	SELECT b.Id,A.PromotionCost,[StartDate],[EndDate],[SelloutStartDate],[SelloutEndDate],[BonusDescription],[SellOutDescription],'' ,C.Id,1,GETDATE(),@CREATEDBY
+	INSERT INTO PromotionCost(ProductID,StartDate,EndDate,SelloutStartDate,SelloutEndDate,BonusDescription,SellOutDescription,Remark,PromotionCost,SupplierID,IsActive,CreatedDate,CreatedBy)
+	SELECT b.Id,A.[StartDate],A.[EndDate],A.[SelloutStartDate],A.[SelloutEndDate],A.[BonusDescription],A.[SellOutDescription],'', A.PromotionCost, C.Id,1,GETDATE(),@CREATEDBY
 	FROM @UDTType_PromotionCost[A] INNER JOIN Product[B] ON A.OuterBarcode=b.OuterEAN
 	INNER JOIN Supplier[C] ON A.Supplier=C.Name
 	--WHERE PromotionCost.ProductID NOT IN 
 	select 1
 END
+
+
+
 GO
 USE [master]
 GO

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,6 +12,7 @@ namespace GoodsEnterprise.Model.Models
         public int OffsetValue { get; set; }
         public int PagingSize { get; set; }
         public string SearchText { get; set; }
+        public string SearchBy { get; set; }
 
         public string StoredProcuder { get; set; }
     }
