@@ -1,32 +1,66 @@
+// Make sure initDataTable is available globally
+if (typeof initDataTable !== 'function') {
+    //console.error('initDataTable function is not available. Make sure site.js is loaded first.');
+}
+
 $(document).ready(function () {
+    // Initialize tables
     ProductGridDataLoading();
     PromotionPriceGridDataLoading();
-    
+   
     // Reload table when search filter changes
     $('#searchByDropdown').on('change', function() {
-        if ($.fn.DataTable.isDataTable('#tblProductMaster')) {
-            $('#tblProductMaster').DataTable().ajax.reload();
+        const table = $('#tblProductMaster').DataTable();
+        if (table) {
+            table.ajax.reload(null, false); // false = don't reset paging
+            
+            // Refresh the table after data is loaded
+            table.on('draw', function() {
+                if (typeof resizeDataTables === 'function') {
+                    resizeDataTables();
+                }
+            });
         }
+    });
+    
+    // Handle window resize for DataTables in this file
+    let resizeTimer;
+    $(window).on('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+            if (typeof resizeDataTables === 'function') {
+                resizeDataTables();
+            }
+        }, 250);
     });
 
     function ProductGridDataLoading() {
+        // Destroy existing DataTable if it exists
+        if ($.fn.DataTable.isDataTable('#tblProductMaster')) {
+            $('#tblProductMaster').DataTable().destroy();
+        }
 
-        tbl_barangay = $('#tblProductMaster').dataTable({
-
+        // Initialize with our custom function
+        tbl_barangay = initDataTable('#tblProductMaster', {
             processing: true,
             serverSide: true,
             responsive: true,
+            autoWidth: true,
+            scrollX: true,
+            scrollCollapse: true,
             lengthMenu: [10, 20, 50],
             dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
-
-            //"order": [[6, "desc"]],
-            "order": [[6, "desc"]],
-            "deferRender": true,
-            'columnDefs': [{
-
-                'targets': [7], /* column index */
-
-                'orderable': false, /* true or false */
+            order: [[6, "desc"]],
+            deferRender: true,
+            drawCallback: function() {
+                // Handle resizing after table draw
+                if (typeof resizeDataTables === 'function') {
+                    resizeDataTables();
+                }
+            },
+            columnDefs: [{
+                targets: [7], /* column index */
+                orderable: false, /* true or false */
 
             }],
             initComplete: function() {
@@ -229,21 +263,35 @@ $(document).ready(function () {
     //}
 
     function PromotionPriceGridDataLoading() {
-        if (!$('#tblPromotionCost').length) return console.error('#tblPromotionCost not found');
-
-        if ($.fn.DataTable.isDataTable('#tblPromotionCost')) {
-            $('#tblPromotionCost').DataTable().clear().destroy();
+        if (!$('#tblPromotionCost').length) {
+            //console.error('#tblPromotionCost not found');
+            return;
         }
 
-        tbl_barangay = $('#tblPromotionCost').DataTable({
+        // Initialize with our custom function
+        tbl_barangay = initDataTable('#tblPromotionCost', {
             processing: true,
             serverSide: true,
             responsive: true,
-            destroy: true,
+            autoWidth: true,
+            scrollX: true,
+            scrollCollapse: true,
             lengthMenu: [10, 20, 50],
             order: [[1, "desc"]],
             deferRender: true,
-            columnDefs: [{ targets: [6], orderable: false }], // action column is index 6 (0..6)
+            drawCallback: function() {
+                // Handle resizing after table draw
+                if (typeof resizeDataTables === 'function') {
+                    resizeDataTables();
+                }
+            },
+            columnDefs: [
+                { 
+                    targets: [6], // action column is index 6 (0..6)
+                    orderable: false,
+                    className: 'text-nowrap' // Prevent action buttons from wrapping
+                }
+            ],
             ajax: {
                 type: "POST",
                 url: './api/DataBasePagination/getpromotioncostdata',

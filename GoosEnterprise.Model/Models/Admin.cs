@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 #nullable disable
@@ -21,6 +21,8 @@ namespace GoodsEnterprise.Model.Models
         public int? Modifiedby { get; set; }
         public bool IsActive { get; set; }
         public bool IsDelete { get; set; }
+        public string ResetPasswordToken { get; set; }
+        public DateTime? ResetPasswordExpiry { get; set; }
 
         public virtual Role Role { get; set; }
     }

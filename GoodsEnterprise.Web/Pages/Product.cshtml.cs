@@ -21,13 +21,14 @@ namespace GoodsEnterprise.Web.Pages
         /// </summary>
         /// <param name="product"></param>
         public ProductModel(IGeneralRepository<Product> product, IGeneralRepository<Category> category,
-            IGeneralRepository<SubCategory> subCategory, IGeneralRepository<Brand> brand,IGeneralRepository<Tax> tax)
+            IGeneralRepository<SubCategory> subCategory, IGeneralRepository<Brand> brand,IGeneralRepository<Tax> tax, IGeneralRepository<Supplier> supplier)
         {
             _product = product;
             _category = category;
             _subCategory = subCategory;
             _brand = brand;
             _tax = tax;
+            _supplier = supplier;
         }
 
         private readonly IGeneralRepository<Product> _product;
@@ -35,6 +36,7 @@ namespace GoodsEnterprise.Web.Pages
         private readonly IGeneralRepository<SubCategory> _subCategory;
         private readonly IGeneralRepository<Tax> _tax;
         private readonly IGeneralRepository<Brand> _brand;
+        private readonly IGeneralRepository<Supplier> _supplier;
 
         [BindProperty()]
         public Product objProduct { get; set; }
@@ -50,6 +52,7 @@ namespace GoodsEnterprise.Web.Pages
         public SelectList selectCategories { get; set; } = new SelectList("");
         public SelectList selectSubCategories { get; set; } = new SelectList("");
         public SelectList selectTaxSlab { get; set; } = new SelectList("");
+        public SelectList selectSupplier { get; set; } = new SelectList("");
 
         /// <summary>
         /// OnGetAsync
@@ -69,6 +72,7 @@ namespace GoodsEnterprise.Web.Pages
                 await LoadCategory();
                 await LoadSubCategoryByCategoryId();
                 await LoadTaxSlab();
+                await loadSupplier();
                 if (objProduct == null)
                 {
                     objProduct = new Product();
@@ -103,13 +107,22 @@ namespace GoodsEnterprise.Web.Pages
                 await LoadBrand();
                 await LoadCategory();
                 await LoadSubCategoryByCategoryId();
+                await LoadTaxSlab();
+                await loadSupplier();
                 ViewData["PageType"] = "Edit";
                 ViewData["PagePrimaryID"] = objProduct.Id;
                 ViewData["ImagePath"] = objProduct.Image;
                 if (objProduct.TaxslabId == 0)
+                {
                     ViewData["IsTaxable"] = false;
+                    objProduct.isTaxable = false;
+                }
                 else
+                {
                     ViewData["IsTaxable"] = true;
+                    objProduct.isTaxable = true;
+                }
+                   
             }
             catch (Exception ex)
             {
@@ -150,6 +163,8 @@ namespace GoodsEnterprise.Web.Pages
                 await LoadBrand();
                 await LoadCategory();
                 await LoadSubCategoryByCategoryId();
+                await LoadTaxSlab();
+                await loadSupplier();
                 objProduct = await _product.GetAsync(filter: x => x.Id == productId && x.IsDelete != true);
                 ViewData["PageType"] = "Edit";
                 ViewData["PagePrimaryID"] = objProduct.Id;
@@ -241,6 +256,8 @@ namespace GoodsEnterprise.Web.Pages
                     await LoadBrand();
                     await LoadCategory();
                     await LoadSubCategoryByCategoryId();
+                    await LoadTaxSlab();
+                    await loadSupplier();
                     return Page();
                 }
             }
@@ -310,6 +327,8 @@ namespace GoodsEnterprise.Web.Pages
             {
                 selectTaxSlab = new SelectList(await _tax.GetAllAsync(filter: x => x.IsDelete != true),
                                           "Id", "Name", null);
+
+
             }
             catch (Exception ex)
             {
@@ -317,7 +336,26 @@ namespace GoodsEnterprise.Web.Pages
                 throw;
             }
         }
-        
+        private async Task loadSupplier()
+        {
+
+            try
+            {
+                selectSupplier = new SelectList(
+                            await _supplier.GetAllAsync(filter: x => !x.IsDelete),
+                            "Id",
+                            "Name",
+                            objProduct?.SupplierId
+                        );
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Error in loadSupplier(), Product");
+                throw;
+            }
+        }
+
+
     }
 }
 

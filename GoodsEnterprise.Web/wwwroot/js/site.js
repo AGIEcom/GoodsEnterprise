@@ -1,13 +1,56 @@
 // Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
-//datatable initilaze
+// Function to handle DataTable resizing
+//function resizeDataTables() {
+//    $('.dataTable').each(function() {
+//        const $table = $(this);
+//        if ($.fn.DataTable.isDataTable($table)) {
+//            try {
+//                const table = $table.DataTable();
+//                if (table) {
+//                    table.columns.adjust().responsive.recalc();
+//                }
+//            } catch (e) {
+//                console.warn('Error resizing DataTable:', e);
+//            }
+//        }
+//    });
+//}
+
+//// Call this when showing a tab or modal containing a DataTable
+//function onTableShown() {
+//    setTimeout(function() {
+//        resizeDataTables();
+//    }, 300);
+//}
+
+// Initialize DataTables with responsive and autoWidth options
+function initDataTable(selector, options = {}) {
+    const defaultOptions = {
+        responsive: true,
+        autoWidth: true,
+        destroy: true, // Allow reinitialization
+        scrollX: true,
+        scrollCollapse: true,
+        lengthMenu: [5, 10, 20, 50],
+        pageLength: 10,
+        ...options
+    };
+    
+    if ($.fn.DataTable.isDataTable(selector)) {
+        $(selector).DataTable().destroy();
+    }
+    
+    return $(selector).DataTable(defaultOptions);
+}
+//datatable initialization
 $(document).ready(function () {
     $('#tblBrandMaster').DataTable({
         'columnDefs': [
             { 'targets': [3], 'orderable': false },
             { 'searchable': false, "targets": [1, 2, 3] }
         ],
-        "order": [],       
+        "order": [],
         lengthMenu: [5, 10, 20, 50],
         "pageLength": 10
     });
@@ -18,7 +61,7 @@ $(document).ready(function () {
         ],
         "order": [],
         lengthMenu: [5, 10, 20, 50]
-    }); 
+    });
 
     $('#tblSubCategoryMaster').DataTable({
         'columnDefs': [
@@ -85,6 +128,9 @@ $(document).ready(function () {
 });
 //end
 
+ 
+// End of file
+
 var emailReg = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
 var passwordReg = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{5,25}$/;
 
@@ -97,21 +143,21 @@ $("#lnkCreateBrand").click(function () {
 });
 
 $(".brand-submit").click(function () {
-        var brandName = $('#txtBrand').val();
-        var error = false;
-        $(".text-danger").remove();
+    var brandName = $('#txtBrand').val();
+    var error = false;
+    $(".text-danger").remove();
 
-        if (brandName.length < 1) {
-            $('#txtBrand').after('<span class="text-danger">Brand name is required</span>');
-            error = true;
-        }
+    if (brandName.length < 1) {
+        $('#txtBrand').after('<span class="text-danger">Brand name is required</span>');
+        error = true;
+    }
 
-        if (error == true) {
-            return false;
-        }
-        else {
-            return true;
-        }
+    if (error == true) {
+        return false;
+    }
+    else {
+        return true;
+    }
 });
 $(".btn-brand-delete").click(function () {
     var result = confirm("Want to delete?");
@@ -127,8 +173,7 @@ function fileValidation() {
         document.getElementById('fileUpload');
 
     var filePath = fileInput.value;
-    if (filePath == '')
-    {
+    if (filePath == '') {
         return true;
     }
     // Allowing file type
@@ -140,8 +185,7 @@ function fileValidation() {
         fileInput.value = '';
         return false;
     }
-    else
-    {
+    else {
         $("#imgPath").css("display", "none");
     }
 }
@@ -567,7 +611,7 @@ var menuIcons = {
 
 var getMenuItem = function (itemData) {
     var menuIcon = menuIcons[itemData.name] || '<svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path></svg>';
-    
+
     var item = "";
     if (itemData.SubMenu) {
         // Parent menu item with submenu
@@ -625,7 +669,7 @@ var getMenuItem = function (itemData) {
             )
         );
     }
-    
+
     // Add submenu if exists
     if (itemData.SubMenu) {
         var subList = $("<ul>", {
@@ -639,11 +683,11 @@ var getMenuItem = function (itemData) {
         });
         item.append(subList);
     }
-    
+
     return item;
 };
 
- 
+
 
 var $menu = $("#mainmenu");
 $.getJSON("Menu/Menu.json", function (data) {
@@ -654,64 +698,68 @@ $.getJSON("Menu/Menu.json", function (data) {
             });
         }
     });
-    
-    // After menu is loaded, set up click handlers for dropdown toggles
-    $('.menu-link[data-toggle="collapse"]').on('click', function(e) {
-        e.preventDefault();
-        var $this = $(this);
-        var isExpanded = $this.attr('aria-expanded') === 'true';
-        
-        // Toggle aria-expanded
-        $this.attr('aria-expanded', !isExpanded);
-        
-        // Find the submenu
-        var $submenu = $this.parent().find('.submenu, .collapse');
-        
-        if (isExpanded) {
-            $submenu.removeClass('show').hide();
-        } else {
-            $submenu.addClass('show').show();
-        }
-    });
-    
+
+    // Submenu toggle handlers are now handled in modern-interactions.js
+    // Removed duplicate event handlers to prevent conflicts
+
     // Load active menu after menu is built
-    loadActiveMenu();
+    setTimeout(function () {
+        loadActiveMenu();
+    }, 500);
 });
 //End
 $(document).ready(function () {
-    // Sidebar toggle is handled in modern-interactions.js
-    // No duplicate event handlers needed here
+    loadActiveMenu();
+    $(window).trigger('resize');
 
-    function loadActiveMenu() {
-        var currentPath = window.location.pathname;
-        var url = currentPath.split('/').pop() || currentPath;
-        
-        // Remove active class from all menu items
-        $('.menu-link').removeClass('active');
-        $('.menu-item').removeClass('active');
-        
-        // Handle special cases for submenu items
-        if (url === 'all-promotion-cost' || url === 'all-product' || url === 'all-base-cost') {
-            // Activate parent Product menu and expand submenu
-            var productMenu = $('.menu-link[data-toggle="collapse"]');
-            if (productMenu.length) {
-                productMenu.addClass('active');
-                productMenu.attr('aria-expanded', 'true');
-                
-                // Find and show the submenu
-                var submenu = productMenu.parent().find('.submenu, .collapse');
-                submenu.addClass('show').show();
-                
-                // Also activate the specific submenu item
-                setTimeout(function() {
-                    $('.submenu-link[href*="' + url + '"]').addClass('active');
-                }, 100);
-            }
+});
+// Sidebar toggle is handled in modern-interactions.js
+// No duplicate event handlers needed here
+
+function loadActiveMenu() {
+    var currentPath = window.location.pathname;
+    var url = currentPath.split('/').pop() || currentPath;
+
+    // Remove active class from all menu items
+    $('.menu-link').removeClass('active');
+    $('.menu-item').removeClass('active');
+
+    // Handle special cases for submenu items
+    if (url === 'all-promotion-cost' || url === 'all-product' || url === 'all-base-cost') {
+        // Activate parent Product menu and expand submenu
+        var productMenu = $('.menu-link[data-toggle="collapse"]');
+        if (productMenu.length) {
+            productMenu.addClass('active');
+            productMenu.attr('aria-expanded', 'true');
+
+            // Find and show the submenu
+            var submenu = productMenu.parent().find('.submenu, .collapse');
+            submenu.addClass('show').show();
+
+            // Also activate the specific submenu item
+            // setTimeout(function () {
+            $('.submenu-link[href*="' + url + '"]').addClass('active');
+            //  }, 100);
+
+        }
+        // Update page title based on active menu
+        const submenuLink = document.querySelector(`.submenu-link[href*="${url}"]`);
+        var activeMenu = $('.submenu-link.active .menu-text').first();
+        if (submenuLink && $('#currentPageTitle').length) {
+            $('#currentPageTitle').text(submenuLink.textContent);
+        }
+    } else {
+        // Find and activate the matching menu item
+        var matchingLink = $('.menu-link[href*="' + url + '"]').first();
+        if (matchingLink.length) {
+            matchingLink.addClass('active');
         } else {
-            // Find and activate the matching menu item
-            var matchingLink = $('.menu-link[href*="' + url + '"]').first();
-            if (matchingLink.length) {
-                matchingLink.addClass('active');
+            // Special handling for UploadDownload page (default after login)
+            if (url.toLowerCase() === 'uploaddownload' || url.toLowerCase() === '') {
+                var importMenu = $('.menu-text:contains("Import")').parent();
+                if (importMenu.length) {
+                    importMenu.addClass('active');
+                }
             } else {
                 // Try to match by page name patterns
                 var pagePatterns = {
@@ -719,19 +767,21 @@ $(document).ready(function () {
                     'Category': ['category', 'all-category'],
                     'SubCategory': ['subcategory', 'all-subcategory'],
                     'Product': ['product', 'all-product'],
+                    'Base Cost': ['basecost', 'all-base-cost'],
+                    'Promotion Cost': ['promotioncost', 'all-promotion-cost'],
                     'Tax': ['tax', 'all-tax'],
                     'Supplier': ['supplier', 'all-supplier'],
                     'Role': ['role', 'all-role'],
                     'Admin': ['admin', 'all-admin'],
                     'Customer': ['customer', 'all-customer'],
-                    'Import': ['uploaddownload', 'upload'],
+                    'Import': ['uploaddownload', 'upload', 'import'],
                     'Export': ['download', 'export']
                 };
-                
+
                 for (var menuName in pagePatterns) {
                     var patterns = pagePatterns[menuName];
                     for (var i = 0; i < patterns.length; i++) {
-                        if (url.toLowerCase().includes(patterns[i])) {
+                        if (url.toLowerCase() == patterns[i].toLowerCase()) {
                             $('.menu-text:contains("' + menuName + '")').parent().addClass('active');
                             break;
                         }
@@ -739,14 +789,16 @@ $(document).ready(function () {
                 }
             }
         }
-        
         // Update page title based on active menu
         var activeMenu = $('.menu-link.active .menu-text').first();
         if (activeMenu.length && $('#currentPageTitle').length) {
             $('#currentPageTitle').text(activeMenu.text());
         }
     }
-});
+
+
+}
+
 //Cascade dropdown
 //$(function () {
 //    $("#selectProductBrand").on("change", function () {
@@ -797,5 +849,114 @@ function isDecimal(evt) {
     }
     return true;
 }
+
+// Function to validate positive decimal numbers with up to 2 decimal places
+function validatePositiveDecimal(input) {
+    // Get cursor position before any changes
+    const cursorPosition = input.selectionStart;
+    let value = input.value;
+    
+    // Remove any non-numeric characters except the first decimal point
+    let newValue = value.replace(/[^0-9.]/g, '');
+    
+    // Handle multiple decimal points
+    const parts = newValue.split('.');
+    if (parts.length > 2) {
+        // If more than one decimal point, keep only the first one
+        newValue = parts[0] + '.' + parts.slice(1).join('');
+    }
+    
+    // Limit to 2 decimal places
+    if (parts.length === 2 && parts[1].length > 2) {
+        newValue = parts[0] + '.' + parts[1].substring(0, 2);
+    }
+    
+    // Prevent leading zeros (e.g., 001.23 becomes 1.23)
+    if (parts[0] && parts[0].length > 1 && parts[0].startsWith('0') && !parts[0].startsWith('0.')) {
+        newValue = parseFloat(newValue).toString();
+    }
+    
+    // Update the input value
+    input.value = newValue;
+    
+    // Maintain cursor position
+    const diff = newValue.length - value.length;
+    const newCursorPosition = Math.max(0, Math.min(cursorPosition + diff, newValue.length));
+    
+    // Use setTimeout to ensure the cursor position is set after the value is updated
+    setTimeout(() => {
+        input.setSelectionRange(newCursorPosition, newCursorPosition);
+    }, 0);
+    
+    // Validate the final value
+    const numericValue = parseFloat(newValue);
+    if (isNaN(numericValue) || numericValue < 0) {
+        input.value = '';
+    }
+    
+    return true;
+}
+
+// Add event listener for decimal input fields
+document.addEventListener('DOMContentLoaded', function() {
+    const decimalInputs = document.querySelectorAll('input[type="number"][onkeypress*="validatePositiveDecimal"]');
+    decimalInputs.forEach(input => {
+        // Replace onkeypress with oninput for better real-time validation
+        input.removeAttribute('onkeypress');
+        input.addEventListener('input', function(e) {
+            validatePositiveDecimal(this);
+        });
+    });
+});
+
 //End
+
+// Initialize date picker
+document.addEventListener('DOMContentLoaded', function () {
+    const expiryDateInput = document.querySelector(".datepicker"); //document.getElementById('datepicker');
+
+    // Format the date for display when the page loads
+    if (expiryDateInput && expiryDateInput.value) {
+        const date = new Date(expiryDateInput.value);
+        if (!isNaN(date.getTime())) {
+            expiryDateInput.value = date.toISOString().split('T')[0];
+        }
+    } else {
+        // Set min date to today if no value is set
+        expiryDateInput.min = new Date().toISOString().split('T')[0];
+    }
+
+    // Add input validation
+    if (expiryDateInput) {
+        expiryDateInput.addEventListener('change', function () {
+            const selectedDate = new Date(this.value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (selectedDate < today) {
+                alert('Expiry date cannot be in the past');
+                this.value = '';
+            }
+        });
+    }
+});
+
+function toggleTaxSlab() {
+    var checkBox = document.getElementById("txtIsTaxable");
+    var dropdown = document.querySelector(".divTax");
+    var selectElement = document.getElementById("selectProductTax");
+
+    if (checkBox.checked) {
+        dropdown.style.display = "block";
+        if (selectElement) {
+            selectElement.disabled = false;
+        }
+    } else {
+        dropdown.style.display = "none";
+        if (selectElement) {
+            selectElement.disabled = true;
+            selectElement.value = "";
+        }
+    }
+}
 

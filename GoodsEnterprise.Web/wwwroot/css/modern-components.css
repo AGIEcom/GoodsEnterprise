@@ -18,9 +18,9 @@
     position: relative;
     width: 80px;
     height: 30px;
-    background: linear-gradient(145deg, #e74c3c, #c0392b);
+    background: linear-gradient(145deg, #64748b, #475569);
     border-radius: 20px;
-    box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
+    box-shadow: 0 3px 10px rgba(100, 116, 139, 0.3);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     overflow: hidden;
 }
@@ -42,7 +42,7 @@
 
 .toggle-slider::before {
     content: "✕";
-    color: #e74c3c;
+    color: #64748b;
     font-weight: bold;
     font-size: 12px;
     transition: all 0.3s ease;
@@ -71,8 +71,8 @@
 
 /* Checked State */
 .modern-checkbox:checked + .modern-toggle-label .toggle-switch {
-    background: linear-gradient(145deg, #27ae60, #229954);
-    box-shadow: 0 3px 10px rgba(39, 174, 96, 0.3);
+    background: linear-gradient(145deg, #1e40af, #1d4ed8);
+    box-shadow: 0 3px 10px rgba(30, 64, 175, 0.3);
 }
 
 .modern-checkbox:checked + .modern-toggle-label .toggle-slider {
@@ -81,7 +81,7 @@
 
 .modern-checkbox:checked + .modern-toggle-label .toggle-slider::before {
     content: "✓";
-    color: #27ae60;
+    color: #1e40af;
 }
 
 .modern-checkbox:checked + .modern-toggle-label .toggle-text-off {
@@ -99,12 +99,12 @@
 }
 
 .modern-checkbox:checked + .modern-toggle-label .toggle-switch:hover {
-    box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
 }
 
 /* Focus State for Accessibility */
 .modern-checkbox:focus + .modern-toggle-label .toggle-switch {
-    outline: 2px solid #007bff;
+    outline: 2px solid #1e40af;
     outline-offset: 2px;
 }
 
@@ -116,7 +116,7 @@
 
 .modern-form-label {
     font-weight: 600;
-    color: #2d3748;
+    color: #1e293b;
     margin-bottom: 0.5rem;
     display: block;
     font-size: 0.95rem;
@@ -134,8 +134,8 @@
 
 .modern-form-input:focus {
     outline: none;
-    border-color: #3182ce;
-    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+    border-color: #1e40af;
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
     transform: translateY(-1px);
 }
 
@@ -157,8 +157,8 @@
 
 .modern-select:focus {
     outline: none;
-    border-color: #3182ce;
-    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+    border-color: #1e40af;
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
 }
 
 /* Modern Buttons */
@@ -177,43 +177,43 @@
 }
 
 .modern-btn-primary {
-    background: linear-gradient(145deg, #3182ce, #2c5282);
+    background: linear-gradient(145deg, #1e40af, #1d4ed8);
     color: white;
-    box-shadow: 0 4px 15px rgba(49, 130, 206, 0.3);
+    box-shadow: 0 4px 15px rgba(30, 64, 175, 0.3);
 }
 
 .modern-btn-primary:hover {
-    background: linear-gradient(145deg, #2c5282, #2a4365);
+    background: linear-gradient(145deg, #1d4ed8, #1e3a8a);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(49, 130, 206, 0.4);
+    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
     color: white;
     text-decoration: none;
 }
 
 .modern-btn-secondary {
-    background: linear-gradient(145deg, #718096, #4a5568);
+    background: linear-gradient(145deg, #64748b, #475569);
     color: white;
-    box-shadow: 0 4px 15px rgba(113, 128, 150, 0.3);
+    box-shadow: 0 4px 15px rgba(100, 116, 139, 0.3);
 }
 
 .modern-btn-secondary:hover {
-    background: linear-gradient(145deg, #4a5568, #2d3748);
+    background: linear-gradient(145deg, #475569, #334155);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(113, 128, 150, 0.4);
+    box-shadow: 0 6px 20px rgba(100, 116, 139, 0.4);
     color: white;
     text-decoration: none;
 }
 
 .modern-btn-danger {
-    background: linear-gradient(145deg, #e53e3e, #c53030);
+    background: linear-gradient(145deg, #dc2626, #b91c1c);
     color: white;
-    box-shadow: 0 4px 15px rgba(229, 62, 62, 0.3);
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
 }
 
 .modern-btn-danger:hover {
-    background: linear-gradient(145deg, #c53030, #9c2626);
+    background: linear-gradient(145deg, #b91c1c, #991b1b);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(229, 62, 62, 0.4);
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
     color: white;
     text-decoration: none;
 }
@@ -242,7 +242,7 @@
 .modern-card-title {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #2d3748;
+    color: #1e293b;
     margin: 0;
 }
 

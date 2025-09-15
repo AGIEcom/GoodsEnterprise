@@ -8,24 +8,39 @@ using Newtonsoft.Json;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
+using GoodsEnterprise.Web.Services;
+using Microsoft.Extensions.Configuration;
 
 namespace GoodsEnterprise.Web.Pages
 {
     public class LoginModel : PageModel
     {
         private readonly IGeneralRepository<Admin> _admin;
+        private readonly IEmailService _emailService;
+        public IConfiguration Configuration { get; }
         /// <summary>
         /// LoginModel
         /// </summary>
         /// <param name="admin"></param>
-        public LoginModel(IGeneralRepository<Admin> admin)
+        /// <param name="emailService"></param>
+        public LoginModel(IGeneralRepository<Admin> admin, IEmailService emailService, IConfiguration configuration)
         {
             _admin = admin;
+            _emailService = emailService;
+            Configuration = configuration;
         }
+
+        [BindProperty]
+        public ForgotPasswordModel ForgotPasswordModel { get; set; }
         [BindProperty()]
         public Admin objAdmin { get; set; }
 
@@ -72,5 +87,77 @@ namespace GoodsEnterprise.Web.Pages
                 throw;
             }
         }
+
+        /// <summary>
+        /// Handles the forgot password request
+        /// </summary>
+        public async Task<IActionResult> OnPostForgotPasswordAsync()
+        {
+            try
+            {
+                var email = Request.Form["email"].ToString();
+                
+                if (string.IsNullOrWhiteSpace(email) || !email.Contains("@"))
+                {
+                    return new JsonResult(new { success = false, message = "Please enter a valid email address." });
+                }
+
+                var admin = await _admin.GetAsync(filter: x => x.Email == email && !x.IsDelete);
+                
+                if (admin == null)
+                {
+                    // Don't reveal that the user doesn't exist
+                    return new JsonResult(new { 
+                        success = true, 
+                        message = "If your email is registered with us, you will receive a password reset link." 
+                    });
+                }
+
+                // Generate a password reset token
+                var token = Guid.NewGuid().ToString();
+                admin.ResetPasswordToken = token;
+                admin.ResetPasswordExpiry = DateTime.UtcNow.AddHours(24); // Token valid for 24 hours
+                admin.ModifiedDate = DateTime.UtcNow;
+                
+                await _admin.UpdateAsync(admin);
+
+                // Get the base URL from configuration or use the current request                
+                var baseUrl = Configuration["Application:ResetPasswordUrl"] ??
+                             $"{Request.Scheme}://{Request.Host}";
+
+                // Send email with reset link
+                var resetLink = $"{baseUrl}/reset-password?email={Uri.EscapeDataString(admin.Email)}&token={Uri.EscapeDataString(token)}";
+
+                try
+                {
+                    await _emailService.SendPasswordResetEmailAsync(admin.Email, resetLink);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error sending password reset email to {Email}", admin.Email);
+                    // Continue anyway to not reveal if the email exists
+                }
+
+                return new JsonResult(new { 
+                    success = true, 
+                    message = "If your email is registered with us, you will receive a password reset link." 
+                });
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Error in OnPostForgotPasswordAsync(), Email: {ForgotPasswordModel?.Email}");
+                return new JsonResult(new { 
+                    success = false, 
+                    message = "An error occurred while processing your request. Please try again later." 
+                });
+            }
+        }
+    }
+
+    public class ForgotPasswordModel
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
     }
 }
