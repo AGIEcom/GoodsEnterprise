@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -40,7 +40,7 @@ namespace GoodsEnterprise.Model.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseSqlServer("Server=.;Database=GoodsEnterprise;Integrated Security=True;");
             }
         }
@@ -76,6 +76,12 @@ namespace GoodsEnterprise.Model.Models
 
                 entity.Property(e => e.Password)
                     .IsRequired()
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ResetPasswordExpiry).HasColumnType("datetime");
+
+                entity.Property(e => e.ResetPasswordToken)
                     .HasMaxLength(500)
                     .IsUnicode(false);
 
@@ -446,6 +452,8 @@ namespace GoodsEnterprise.Model.Models
 
                 entity.Property(e => e.TaxslabId).HasColumnName("TaxslabID");
 
+                entity.Property(e => e.isTaxable);
+
                 entity.Property(e => e.UnitSize)
                     .HasMaxLength(25)
                     .IsUnicode(false);
@@ -456,11 +464,11 @@ namespace GoodsEnterprise.Model.Models
                     .WithMany(p => p.Products)
                     .HasForeignKey(d => d.TaxslabId)
                     .HasConstraintName("FK_Product_Tax");
-                modelBuilder.Entity<Product>()
-                        .HasOne(p => p.Supplier)
-                        .WithMany(s => s.Products)
-                        .HasForeignKey(p => p.SupplierId)
-                        .OnDelete(DeleteBehavior.SetNull);
+                //modelBuilder.Entity<Product>()
+                //        .HasOne(p => p.Supplier)
+                //        .WithMany(s => s.Products)
+                //        .HasForeignKey(p => p.SupplierId)
+                //        .OnDelete(DeleteBehavior.SetNull);
                            });
 
             modelBuilder.Entity<PromotionCost>(entity =>

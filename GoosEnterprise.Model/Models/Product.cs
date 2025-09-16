@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 #nullable disable
@@ -14,7 +14,7 @@ namespace GoodsEnterprise.Model.Models
             CustomerFavourites = new HashSet<CustomerFavourite>();
             OrderDetails = new HashSet<OrderDetail>();
             PromotionCosts = new HashSet<PromotionCost>();
-            Supplier = new Supplier();
+            Supplier = new HashSet<Supplier>();
         }
 
         public int Id { get; set; }
@@ -64,6 +64,6 @@ namespace GoodsEnterprise.Model.Models
         public virtual ICollection<CustomerFavourite> CustomerFavourites { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual ICollection<PromotionCost> PromotionCosts { get; set; }
-        public virtual Supplier Supplier { get; set; }
+        public virtual ICollection<Supplier> Supplier { get; set; }
     }
 }

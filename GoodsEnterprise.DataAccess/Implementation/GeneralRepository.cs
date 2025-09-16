@@ -136,6 +136,7 @@ namespace GoodsEnterprise.DataAccess.Implementation
             entities.Add(entity);
             var dbEntityEntry = context.Entry(entity);
             dbEntityEntry.Property("CreatedDate").CurrentValue = DateTime.UtcNow;
+            dbEntityEntry.Property("ModifiedDate").CurrentValue = DateTime.UtcNow;
             await context.SaveChangesAsync();
         }
         /// <summary>

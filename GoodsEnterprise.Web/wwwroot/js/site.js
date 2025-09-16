@@ -171,9 +171,14 @@ $(".btn-brand-delete").click(function () {
 function fileValidation() {
     var fileInput =
         document.getElementById('fileUpload');
+    var selectedFileName = document.getElementById('selectedFileName');
 
     var filePath = fileInput.value;
     if (filePath == '') {
+        // Hide file name display when no file is selected
+        if (selectedFileName) {
+            selectedFileName.style.display = 'none';
+        }
         return true;
     }
     // Allowing file type
@@ -183,10 +188,23 @@ function fileValidation() {
     if (!allowedExtensions.exec(filePath)) {
         alert('Invalid file type, Only jpg, jpeg, png are allowed');
         fileInput.value = '';
+        // Hide file name display when file is cleared
+        if (selectedFileName) {
+            selectedFileName.style.display = 'none';
+        }
         return false;
     }
     else {
         $("#imgPath").css("display", "none");
+        
+        // Show selected file name
+        if (selectedFileName && fileInput.files && fileInput.files[0]) {
+            var fileNameText = selectedFileName.querySelector('.file-name-text');
+            if (fileNameText) {
+                fileNameText.textContent = fileInput.files[0].name;
+                selectedFileName.style.display = 'flex';
+            }
+        }
     }
 }
 
