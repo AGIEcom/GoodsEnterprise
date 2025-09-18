@@ -1029,12 +1029,66 @@ CREATE   PROCEDURE [dbo].[usp_INSERTPROMOTIONCOST]
 	@CREATEDBY INT
 AS
 BEGIN
-	INSERT INTO PromotionCost(ProductID,StartDate,EndDate,SelloutStartDate,SelloutEndDate,BonusDescription,SellOutDescription,Remark,PromotionCost,SupplierID,IsActive,CreatedDate,CreatedBy)
-	SELECT b.Id,A.[StartDate],A.[EndDate],A.[SelloutStartDate],A.[SelloutEndDate],A.[BonusDescription],A.[SellOutDescription],'', A.PromotionCost, C.Id,1,GETDATE(),@CREATEDBY
-	FROM @UDTType_PromotionCost[A] INNER JOIN Product[B] ON A.OuterBarcode=b.OuterEAN
-	INNER JOIN Supplier[C] ON A.Supplier=C.Name
-	--WHERE PromotionCost.ProductID NOT IN 
-	select 1
+	SET NOCOUNT ON;
+	
+	DECLARE @InsertedCount INT = 0;
+	DECLARE @ErrorCount INT = 0;
+	
+	BEGIN TRY
+		-- Insert promotion costs with proper joins and error handling
+		INSERT INTO PromotionCost(
+			ProductID, StartDate, EndDate, SelloutStartDate, SelloutEndDate, 
+			BonusDescription, SellOutDescription, Remark, PromotionCost, 
+			SupplierID, IsActive, CreatedDate, CreatedBy
+		)
+		SELECT 
+			B.Id as ProductID,
+			A.StartDate,
+			A.EndDate,
+			A.SelloutStartDate,
+			A.SelloutEndDate,
+			A.BonusDescription,
+			A.SellOutDescription,
+			ISNULL(A.Product, '') as Remark,
+			A.PromotionCost,
+			C.Id as SupplierID,
+			1 as IsActive,
+			GETDATE() as CreatedDate,
+			@CREATEDBY as CreatedBy
+		FROM @UDTType_PromotionCost A 
+		INNER JOIN Product B ON A.OuterBarcode = B.OuterEan
+		INNER JOIN Supplier C ON A.Supplier = C.Name
+		WHERE A.PromotionCost IS NOT NULL 
+		  AND A.StartDate IS NOT NULL 
+		  AND A.EndDate IS NOT NULL
+		  AND B.Id IS NOT NULL 
+		  AND C.Id IS NOT NULL;
+		
+		SET @InsertedCount = @@ROWCOUNT;
+		
+		-- Log successful insertion
+		PRINT 'Successfully inserted ' + CAST(@InsertedCount AS VARCHAR(10)) + ' promotion cost records.';
+		
+		-- Return success status
+		SELECT @InsertedCount as InsertedRecords, 0 as ErrorCount, 'Success' as Status;
+		
+	END TRY
+	BEGIN CATCH
+		SET @ErrorCount = 1;
+		
+		-- Log error details
+		DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+		DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+		DECLARE @ErrorState INT = ERROR_STATE();
+		
+		PRINT 'Error in usp_INSERTPROMOTIONCOST: ' + @ErrorMessage;
+		
+		-- Return error status
+		SELECT 0 as InsertedRecords, @ErrorCount as ErrorCount, @ErrorMessage as Status;
+		
+		-- Re-throw the error for proper handling
+		RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+	END CATCH
 END
 
 

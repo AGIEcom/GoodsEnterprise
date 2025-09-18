@@ -195,32 +195,50 @@ namespace GoodsEnterprise.DataAccess.Implementation
         {
             try
             {
-                Dictionary<string, SqlParameter> sqlParameters = new Dictionary<string, SqlParameter>();
-                sqlParameters.Add("@UDTType_PromotionCost", new SqlParameter("@UDTType_PromotionCost", SqlDbType.Structured)
+                // Create parameters in the correct order
+                var udtParameter = new SqlParameter("@UDTType_PromotionCost", SqlDbType.Structured)
                 {
-                    //TypeName = commenParameters.SPName,
                     TypeName = "dbo.UDTType_PromotionCost",
                     Value = datatable
-                });
+                };
 
-                sqlParameters.Add("@CREATEDBY", new SqlParameter("@CREATEDBY", commenParameters.CreatedBy));
-                ////var result = await entities.FromSqlRaw($"{commenParameters.SPName} {string.Join(",", sqlParameters?.Keys)}", sqlParameters?.Values.ToArray()).ToListAsync();
-                //var result = await entities.FromSqlRaw("EXEC dbo.usp_INSERTPROMOTIONCOST @UDTType_PromotionCost, @CREATEDBY", sqlParameters?.Values.ToArray()).ToListAsync();
-                ////pagination.TotalRecords = Convert.ToInt32(totalRecordsParam.Value);
+                var createdByParameter = new SqlParameter("@CREATEDBY", SqlDbType.Int)
+                {
+                    Value = commenParameters.CreatedBy
+                };
 
-                //return Convert.ToBoolean(result[0]);
+                // Log the data being sent for debugging
+                Console.WriteLine($"Sending {datatable.Rows.Count} rows to stored procedure");
+                Console.WriteLine($"CreatedBy: {commenParameters.CreatedBy}");
+                
+                if (datatable.Rows.Count > 0)
+                {
+                    var firstRow = datatable.Rows[0];
+                    Console.WriteLine($"Sample data - Product: '{firstRow["Product"]}', OuterBarcode: '{firstRow["OuterBarcode"]}', PromotionCost: '{firstRow["PromotionCost"]}', Supplier: '{firstRow["Supplier"]}'");
+                }
 
+                // Execute the stored procedure with parameters in correct order
                 int rowsAffected = await context.Database.ExecuteSqlRawAsync(
-                "EXEC dbo.usp_INSERTPROMOTIONCOST @UDTType_PromotionCost, @CREATEDBY",
-                sqlParameters?.Values.ToArray());
+                    "EXEC dbo.usp_INSERTPROMOTIONCOST @UDTType_PromotionCost, @CREATEDBY",
+                    udtParameter, createdByParameter);
 
+                Console.WriteLine($"Stored procedure returned: {rowsAffected} rows affected");
+                
                 // rowsAffected = number of rows affected by the insert
                 return rowsAffected > 0;
 
             }
             catch (Exception ex)
             {
-                return false;
+                Console.WriteLine($"Error in PostValueUsingUDTT: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                }
+                
+                throw; // Re-throw to let the calling code handle it
             }
         }
     }
