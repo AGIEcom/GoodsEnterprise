@@ -277,7 +277,7 @@
                 <div class="col-md-3">
                     <div class="modern-form-group">
                         <label for="txtShelfLifeInWeeks" class="modern-form-label">Shelf Life (Weeks)</label>
-                        <input asp-for="objProduct.ShelfLifeInWeeks" type="number" onkeypress="return event.charCode >= 48" min="0" class="modern-form-input" id="txtShelfLifeInWeeks">
+                        <input asp-for="objProduct.ShelfLifeInWeeks" type="number" onkeypress="return preventZero(event)" oninput="validateShelfLife(this)" onpaste="handleShelfLifePaste(event)" min="1" class="modern-form-input" id="txtShelfLifeInWeeks">
                     </div>
                 </div>
 
@@ -513,6 +513,65 @@
         
         fileInput.value = '';
         selectedFileName.style.display = 'none';
+    }
+
+    function preventZero(event) {
+        // Allow numbers 1-9 (charCode 49-57), backspace (8), delete (46), tab (9), arrow keys, etc.
+        // Prevent zero (charCode 48)
+        if (event.charCode === 48) {
+            return false;
+        }
+        // Allow other numeric characters and control keys
+        return (event.charCode >= 49 && event.charCode <= 57) || event.charCode === 0;
+    }
+
+    function validateShelfLife(input) {
+        // Remove any leading zeros and ensure value is not 0
+        let value = input.value;
+        
+        // Remove leading zeros
+        value = value.replace(/^0+/, '');
+        
+        // If empty after removing zeros, set to empty
+        if (value === '') {
+            input.value = '';
+            return;
+        }
+        
+        // Convert to number and check if it's 0
+        let numValue = parseInt(value);
+        if (numValue === 0 || isNaN(numValue)) {
+            input.value = '';
+            return;
+        }
+        
+        // Update the input value without leading zeros
+        input.value = numValue.toString();
+    }
+
+    function handleShelfLifePaste(event) {
+        // Prevent default paste behavior
+        event.preventDefault();
+        
+        // Get pasted data
+        let pastedData = (event.clipboardData || window.clipboardData).getData('text');
+        
+        // Remove non-numeric characters except for the first character
+        pastedData = pastedData.replace(/[^0-9]/g, '');
+        
+        // Remove leading zeros
+        pastedData = pastedData.replace(/^0+/, '');
+        
+        // If empty after cleaning, don't paste anything
+        if (pastedData === '') {
+            return;
+        }
+        
+        // Convert to number and validate
+        let numValue = parseInt(pastedData);
+        if (numValue > 0 && !isNaN(numValue)) {
+            event.target.value = numValue.toString();
+        }
     }
 </script>
  
