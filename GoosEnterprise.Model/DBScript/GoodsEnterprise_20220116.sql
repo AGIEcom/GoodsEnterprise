@@ -1,6 +1,5 @@
-USE [master]
-GO
-/****** Object:  Database [GoodsEnterprise]    Script Date: 14-09-2025 11:06:47 ******/
+
+/****** Object:  Database [GoodsEnterprise]    Script Date: 18-09-2025 10:04:05 ******/
 CREATE DATABASE [GoodsEnterprise]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -82,12 +81,12 @@ ALTER DATABASE [GoodsEnterprise] SET QUERY_STORE = OFF
 GO
 USE [GoodsEnterprise]
 GO
-/****** Object:  User [IIS APPPOOL\Test1]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  User [IIS APPPOOL\Test1]    Script Date: 18-09-2025 10:04:05 ******/
 CREATE USER [IIS APPPOOL\Test1] FOR LOGIN [IIS APPPOOL\Test1] WITH DEFAULT_SCHEMA=[dbo]
 GO
 ALTER ROLE [db_owner] ADD MEMBER [IIS APPPOOL\Test1]
 GO
-/****** Object:  UserDefinedTableType [dbo].[UDTType_PromotionCost]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  UserDefinedTableType [dbo].[UDTType_PromotionCost]    Script Date: 18-09-2025 10:04:06 ******/
 CREATE TYPE [dbo].[UDTType_PromotionCost] AS TABLE(
 	[Product] [varchar](500) NULL,
 	[OuterBarcode] [varchar](20) NULL,
@@ -101,7 +100,7 @@ CREATE TYPE [dbo].[UDTType_PromotionCost] AS TABLE(
 	[Supplier] [varchar](500) NULL
 )
 GO
-/****** Object:  Table [dbo].[Admin]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  Table [dbo].[Admin]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -121,13 +120,15 @@ CREATE TABLE [dbo].[Admin](
 	[Modifiedby] [int] NULL,
 	[IsActive] [bit] NOT NULL,
 	[IsDelete] [bit] NOT NULL,
+	[ResetPasswordToken] [varchar](500) NULL,
+	[ResetPasswordExpiry] [datetime] NULL,
  CONSTRAINT [PK_Admin] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[BaseCost]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  Table [dbo].[BaseCost]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -151,7 +152,7 @@ CREATE TABLE [dbo].[BaseCost](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Brand]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  Table [dbo].[Brand]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -174,7 +175,7 @@ CREATE TABLE [dbo].[Brand](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Category]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  Table [dbo].[Category]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -197,7 +198,7 @@ CREATE TABLE [dbo].[Category](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Customer]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  Table [dbo].[Customer]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -237,7 +238,7 @@ CREATE TABLE [dbo].[Customer](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CustomerBasket]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  Table [dbo].[CustomerBasket]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -258,7 +259,7 @@ CREATE TABLE [dbo].[CustomerBasket](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CustomerFavourite]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  Table [dbo].[CustomerFavourite]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -279,7 +280,7 @@ CREATE TABLE [dbo].[CustomerFavourite](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Order]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  Table [dbo].[Order]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -305,7 +306,7 @@ CREATE TABLE [dbo].[Order](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[OrderDetail]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  Table [dbo].[OrderDetail]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -328,7 +329,7 @@ CREATE TABLE [dbo].[OrderDetail](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Product]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  Table [dbo].[Product]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -371,13 +372,16 @@ CREATE TABLE [dbo].[Product](
 	[ProductName] [varchar](250) NULL,
 	[ProductDescription] [varchar](500) NULL,
 	[TaxslabID] [int] NULL,
+	[seebelow] [varchar](500) NULL,
+	[seebelow1] [varchar](500) NULL,
+	[isTaxable] [bit] NOT NULL,
  CONSTRAINT [PK_Product] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[PromotionCost]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  Table [dbo].[PromotionCost]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -406,7 +410,7 @@ CREATE TABLE [dbo].[PromotionCost](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Role]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  Table [dbo].[Role]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -426,7 +430,7 @@ CREATE TABLE [dbo].[Role](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Status]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  Table [dbo].[Status]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -446,7 +450,7 @@ CREATE TABLE [dbo].[Status](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[SubCategory]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  Table [dbo].[SubCategory]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -467,7 +471,7 @@ CREATE TABLE [dbo].[SubCategory](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Supplier]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  Table [dbo].[Supplier]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -489,13 +493,20 @@ CREATE TABLE [dbo].[Supplier](
 	[Modifiedby] [int] NULL,
 	[IsActive] [bit] NOT NULL,
 	[IsDelete] [bit] NOT NULL,
+	[IsPreferred] [bit] NULL,
+	[LeadTimeDays] [int] NULL,
+	[MoqCase] [varchar](100) NULL,
+	[LastCost] [decimal](18, 0) NULL,
+	[Incoterm] [varchar](200) NULL,
+	[ValidFrom] [datetime] NULL,
+	[ValidTo] [datetime] NULL,
  CONSTRAINT [PK_Supplier] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Tax]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  Table [dbo].[Tax]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -556,6 +567,8 @@ GO
 ALTER TABLE [dbo].[Product] ADD  CONSTRAINT [Default_IsActive]  DEFAULT ((0)) FOR [IsActive]
 GO
 ALTER TABLE [dbo].[Product] ADD  CONSTRAINT [Default_IsDelete]  DEFAULT ((0)) FOR [IsDelete]
+GO
+ALTER TABLE [dbo].[Product] ADD  DEFAULT ((0)) FOR [isTaxable]
 GO
 ALTER TABLE [dbo].[PromotionCost] ADD  CONSTRAINT [DF_PromotionCost_IsActive]  DEFAULT ((1)) FOR [IsActive]
 GO
@@ -656,7 +669,7 @@ REFERENCES [dbo].[Supplier] ([Id])
 GO
 ALTER TABLE [dbo].[PromotionCost] CHECK CONSTRAINT [FK_PromotionCost_Supplier]
 GO
-/****** Object:  StoredProcedure [dbo].[SPUI_GetHomePageBrands]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  StoredProcedure [dbo].[SPUI_GetHomePageBrands]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -672,7 +685,7 @@ BEGIN
 END
  
 GO
-/****** Object:  StoredProcedure [dbo].[SPUI_GetHomePageCategories]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  StoredProcedure [dbo].[SPUI_GetHomePageCategories]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -687,7 +700,7 @@ BEGIN
 
 END
 GO
-/****** Object:  StoredProcedure [dbo].[SPUI_GetProductDetails]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  StoredProcedure [dbo].[SPUI_GetProductDetails]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -697,8 +710,8 @@ GO
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-CREATE   PROCEDURE [dbo].[SPUI_GetProductDetails] --1, 10, 'DESC', 'productName', '', 'All'
-           @OffsetValue int,
+CREATE   PROCEDURE [dbo].[SPUI_GetProductDetails]  --0, 10, 'DESC', 'ModifiedDate', '', 'All'
+                                           @OffsetValue int,
     @PagingSize int,
     @sortOrder varchar(10),
     @sortColumn varchar(100),
@@ -708,84 +721,92 @@ AS
 BEGIN
     SET NOCOUNT ON;
     
-    DECLARE @sql NVARCHAR(MAX)
-    DECLARE @countSql NVARCHAR(MAX)
-    DECLARE @whereClause NVARCHAR(MAX) = ''
-    DECLARE @orderClause NVARCHAR(MAX) = ''
+    -- Declare variables
+    DECLARE @WhereCondition NVARCHAR(MAX) = ''
+    DECLARE @OrderByClause NVARCHAR(50) = 'P.ModifiedDate'
+    DECLARE @TotalRecords INT = 0
     
-    -- Build WHERE clause for search based on SearchBy parameter
-    IF @SearchText IS NOT NULL AND @SearchText != ''
+    -- Build search condition based on SearchBy parameter
+    IF @SearchText IS NOT NULL AND LTRIM(RTRIM(@SearchText)) != ''
     BEGIN
+        SET @SearchText = '%' + LTRIM(RTRIM(@SearchText)) + '%'
+        
         IF @SearchBy = 'ProductName'
-            SET @whereClause = ' WHERE A.ProductName LIKE ''%' + @SearchText + '%'''
+            SET @WhereCondition = 'AND P.ProductName LIKE @SearchText'
         ELSE IF @SearchBy = 'CategoryName'
-            SET @whereClause = ' WHERE C.Name LIKE ''%' + @SearchText + '%'''
+            SET @WhereCondition = 'AND C.Name LIKE @SearchText'
         ELSE IF @SearchBy = 'BrandName'
-            SET @whereClause = ' WHERE B.Name LIKE ''%' + @SearchText + '%'''
+            SET @WhereCondition = 'AND B.Name LIKE @SearchText'
         ELSE IF @SearchBy = 'Code'
-            SET @whereClause = ' WHERE A.Code LIKE ''%' + @SearchText + '%'''
+            SET @WhereCondition = 'AND P.Code LIKE @SearchText'
         ELSE IF @SearchBy = 'OuterEan'
-            SET @whereClause = ' WHERE A.OuterEAN LIKE ''%' + @SearchText + '%'''
-        ELSE -- Default to 'All' - search across all fields
-            SET @whereClause = ' WHERE (A.Code LIKE ''%' + @SearchText + '%'' 
-                                OR A.ProductName LIKE ''%' + @SearchText + '%''
-                                OR C.Name LIKE ''%' + @SearchText + '%''
-                                OR B.Name LIKE ''%' + @SearchText + '%''
-                                OR A.OuterEAN LIKE ''%' + @SearchText + '%'')'
+            SET @WhereCondition = 'AND P.OuterEAN LIKE @SearchText'
+        ELSE -- 'All' - search across all fields
+            SET @WhereCondition = 'AND (P.Code LIKE @SearchText OR P.ProductName LIKE @SearchText OR C.Name LIKE @SearchText OR B.Name LIKE @SearchText OR P.OuterEAN LIKE @SearchText)'
     END
     
     -- Build ORDER BY clause
-    SET @orderClause = ' ORDER BY '
-    
     IF @sortColumn = 'code'
-        SET @orderClause = @orderClause + 'A.Code'
+        SET @OrderByClause = 'P.Code'
     ELSE IF @sortColumn = 'productName'
-        SET @orderClause = @orderClause + 'A.ProductName'
+        SET @OrderByClause = 'P.ProductName'
     ELSE IF @sortColumn = 'categoryName'
-        SET @orderClause = @orderClause + 'C.Name'
+        SET @OrderByClause = 'C.Name'
     ELSE IF @sortColumn = 'brandName'
-        SET @orderClause = @orderClause + 'B.Name'
+        SET @OrderByClause = 'B.Name'
     ELSE IF @sortColumn = 'outerEan'
-        SET @orderClause = @orderClause + 'A.OuterEan'
+        SET @OrderByClause = 'P.OuterEAN'
     ELSE IF @sortColumn = 'status'
-        SET @orderClause = @orderClause + 'A.Status'
+        SET @OrderByClause = 'P.IsActive'
+    ELSE IF @sortColumn = 'modifiedDate'
+        SET @OrderByClause = 'P.ModifiedDate'
     ELSE
-        SET @orderClause = @orderClause + 'A.Code'
+        SET @OrderByClause = 'P.ModifiedDate'
     
-    SET @orderClause = @orderClause + ' ' + @sortOrder
+    -- Get total count for pagination
+    DECLARE @CountSQL NVARCHAR(MAX) = '
+        SELECT @TotalRecords = COUNT(*)
+        FROM Product P
+        LEFT JOIN Brand B ON P.BrandId = B.Id
+        LEFT JOIN Category C ON P.CategoryId = C.Id
+        WHERE P.IsDelete = 0 ' + @WhereCondition
     
-    -- Main query with FilterTotalCount as subquery
-    SET @sql = '
-    WITH ProductData AS (
-        SELECT A.Code, 
-               A.ProductName, 
-               C.Name AS CategoryName, 
-               B.Name AS BrandName, 
-               A.OuterEAN, 
-               CASE WHEN A.IsActive = 1 THEN ''Active'' ELSE ''InActive'' END AS Status,
-               A.Id
-        FROM Product A
-        LEFT JOIN Brand B ON A.BrandId = B.Id
-        LEFT JOIN Category C ON A.CategoryId = C.Id'
-    + @whereClause + '
-    ),
-    TotalCount AS (
-        SELECT COUNT(*) AS FilterTotalCount FROM ProductData
-    )
-    SELECT p.*, t.FilterTotalCount
-    FROM ProductData p
-    CROSS JOIN TotalCount t'
-    + @orderClause + '
-    OFFSET ' + CAST(@OffsetValue AS VARCHAR(10)) + ' ROWS
-    FETCH NEXT ' + CAST(@PagingSize AS VARCHAR(10)) + ' ROWS ONLY'
+    EXEC sp_executesql @CountSQL, 
+        N'@SearchText NVARCHAR(255), @TotalRecords INT OUTPUT', 
+        @SearchText = @SearchText, 
+        @TotalRecords = @TotalRecords OUTPUT
     
-    -- Execute main query
-    EXEC sp_executesql @sql
+    -- Main query with pagination - returns columns matching ProductList model
+    DECLARE @MainSQL NVARCHAR(MAX) = '
+        SELECT 
+            P.Id,		
+            P.Code,
+            ISNULL(P.ProductName,'''') AS ProductName,
+            ISNULL(C.Name, '''') AS CategoryName,
+            ISNULL(B.Name, '''') AS BrandName,
+            P.OuterEAN AS OuterEan,
+			P.ModifiedDate AS ModifiedDate,
+            CASE WHEN P.IsActive = 1 THEN ''Active'' ELSE ''InActive'' END AS Status,
+            @TotalRecords AS FilterTotalCount
+        FROM Product P
+        LEFT JOIN Brand B ON P.BrandId = B.Id
+        LEFT JOIN Category C ON P.CategoryId = C.Id
+        WHERE P.IsDelete = 0 ' + @WhereCondition + '
+        ORDER BY CASE WHEN ' + @OrderByClause + ' IS NULL THEN 1 ELSE 0 END ASC, ' + @OrderByClause + ' ' + ISNULL(@sortOrder, 'DESC') + '
+        OFFSET @OffsetValue ROWS
+        FETCH NEXT @PagingSize ROWS ONLY'
     
+    EXEC sp_executesql @MainSQL,
+        N'@SearchText NVARCHAR(255), @OffsetValue INT, @PagingSize INT, @TotalRecords INT',
+        @SearchText = @SearchText,
+        @OffsetValue = @OffsetValue,
+        @PagingSize = @PagingSize,
+        @TotalRecords = @TotalRecords
+        
 END
 
 GO
-/****** Object:  StoredProcedure [dbo].[SPUI_GetPromotionCostDetails]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  StoredProcedure [dbo].[SPUI_GetPromotionCostDetails]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -833,7 +854,7 @@ END
 
 
 GO
-/****** Object:  StoredProcedure [dbo].[USP_GetBrands]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  StoredProcedure [dbo].[USP_GetBrands]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -882,7 +903,7 @@ SELECT @TotalRecords = COUNT(Id) FROM Brand WITH (NOLOCK)
 END
 
 GO
-/****** Object:  StoredProcedure [dbo].[USP_GetCategories]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  StoredProcedure [dbo].[USP_GetCategories]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -931,7 +952,7 @@ SELECT @TotalRecords = COUNT(Id) FROM Category WITH (NOLOCK)
 END
 
 GO
-/****** Object:  StoredProcedure [dbo].[USP_GetSubCategories]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  StoredProcedure [dbo].[USP_GetSubCategories]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -980,7 +1001,7 @@ SELECT @TotalRecords = COUNT(Id) FROM SubCategory WITH (NOLOCK)
 END
 
 GO
-/****** Object:  StoredProcedure [dbo].[usp_INSERTPROMOTIONCOST]    Script Date: 14-09-2025 11:06:49 ******/
+/****** Object:  StoredProcedure [dbo].[usp_INSERTPROMOTIONCOST]    Script Date: 18-09-2025 10:04:06 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON

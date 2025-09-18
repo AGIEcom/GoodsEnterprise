@@ -78,56 +78,67 @@
         <div class="modern-card-header">
             <h2 class="modern-card-title">Promotion Cost Management</h2>
         </div>
-        <a asp-page-handler="Create" id="lnkCreateProduct" class="modern-btn modern-btn-primary mb-3">
-            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
-            </svg>
-            Create New Promotion Cost
-        </a>
-    </div>
-
-    <div class="modern-card mt-4">
-        <div class="modern-card-header">
-            <h3 class="modern-card-title">Bulk Import/Export</h3>
-            <p class="modern-card-subtitle">Upload Excel file to import promotion costs</p>
-        </div>
-        <form id="UploadDownloadform" method="post" enctype="multipart/form-data" asp-page-handler="SubmitUpload">
-            <div class="file-upload-container">
-                <div class="file-upload-area" onclick="document.getElementById('productFileUpload').click()">
-                    <div class="upload-icon">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="17,8 12,3 7,8"></polyline>
-                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                        </svg>
-                    </div>
-                    <div class="upload-text">
-                        <span class="upload-title">Click to upload Excel file</span>
-                        <span class="upload-subtitle">or drag and drop</span>
-                    </div>
-                    <div class="upload-formats">XLS, XLSX files only</div>
-                </div>
-                <input type="file" id="productFileUpload" class="fileUpload-hidden d-none" asp-for="Upload" accept=".xls, .xlsx" onchange="promotionCostFileValidation()">
-                <div id="selectedPromotionFileName" class="selected-file-name" style="display: none;">
-                    <span class="file-name-text"></span>
-                    <button type="button" class="remove-file-btn" onclick="clearPromotionSelectedFile()">&times;</button>
-                </div>
-            </div>
-            <div class="modern-form-actions mt-3">
-                <button type="submit" class="modern-btn modern-btn-primary UploadDownload-submit">
+        
+        <!-- Top row with Create button on left and Bulk Import/Export on right -->
+        <div class="d-flex justify-content-between align-items-start mb-4">
+            <!-- Left side - Create New Promotion Cost -->
+            <div>
+                <a asp-page-handler="Create" id="lnkCreateProduct" class="modern-btn modern-btn-primary">
                     <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
                     </svg>
-                    Import Data
-                </button>
+                    Create New Promotion Cost
+                </a>
             </div>
-        </form>
-    </div>
+            
+            <!-- Right side - Bulk Import/Export -->
+            <div class="d-flex align-items-center" style="gap: 15px;">
+                <div class="text-end">
+                    <h5 class="mb-1">Bulk Import</h5>
+                    <small class="text-muted">Upload Excel file to import promotion costs</small>
+                </div>
+                <form id="UploadDownloadform" method="post" enctype="multipart/form-data" asp-page-handler="SubmitUpload" class="d-flex align-items-center" style="gap: 10px;">
+                    <div class="file-upload-container" style="margin: 0;">
+                        <div class="file-upload-area d-flex align-items-center" onclick="document.getElementById('productFileUpload').click()" style="padding: 8px 15px; min-height: auto; border: 2px dashed #ddd; border-radius: 6px; cursor: pointer; background: #f8f9fa;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17,8 12,3 7,8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                            <span style="font-size: 14px;">Choose Excel File (XLS, XLSX)</span>
+                        </div>
+                        <input type="file" id="productFileUpload" class="fileUpload-hidden d-none" asp-for="Upload" accept=".xls, .xlsx" onchange="promotionCostFileValidation()">
+                        <div id="selectedPromotionFileName" class="selected-file-name mt-2" style="display: none; padding: 5px 10px; font-size: 12px;">
+                            <span class="file-name-text"></span>
+                            <button type="button" class="remove-file-btn" onclick="clearPromotionSelectedFile()">&times;</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="modern-btn modern-btn-primary UploadDownload-submit">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20" class="me-1">
+                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                        Import Data
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div style="max-height: 500px; overflow-y: auto; overflow-x: hidden;" class="container table-responsive py-5">
+            <table class="table table-bordered table-hover display" style="width:100%" id="tblPromotionCost">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">SupplierName</th>
+                        <th scope="col">ProductName</th>
+                        <th scope="col">PromotionCost</th>
+                        <th scope="col">StartDate</th>
+                        <th scope="col">EndDate</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
 
-    <div style="max-height: 500px; overflow-y: auto; overflow-x: hidden;" class="container table-responsive py-5">
-        <table class="table table-bordered table-hover display" style="width:100%" id="tblPromotionCost">
-            <thead class="thead-dark">
-                <tr>
+            </table>
+        </div>
                     <th scope="col">SupplierName</th>
                     <th scope="col">ProductName</th>
                     <th scope="col">PromotionCost</th>
