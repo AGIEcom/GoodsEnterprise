@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -19,7 +19,6 @@ namespace GoodsEnterprise.Web.Utilities
 
         }
         public const string StatusMessage = "StatusMessage";
-        public const string UploadPath = @"\wwwroot\UploadedImages\";
         public const string SavePath = @"\UploadedImages\";
         public const string Brand = "Brand";
         public const string Category = "Category";
@@ -36,7 +35,7 @@ namespace GoodsEnterprise.Web.Utilities
         public const string SuccessUpload = "Prodcuts uploaded sucessfully";
         public const string FailureUpload = "Some problem occured while uploading the file, please contact Administrator";
 
-        public static readonly string[] ProductMandatoryFields = { "Product Code" , "Category", "Brand", "Supplier", "Inner EAN", "Outer EAN", "Product Description", "UPC", "Unit Size", "Lyr Qty", "Plt Qty", "Case Price", "IsActive", "Expriy Date" };
+        public static readonly string[] ProductMandatoryFields = { "Product Code" , "Category", "Brand", "Supplier", "Inner EAN", "Outer EAN", "Product Description", "UPC", "Unit Size", "Lyr Qty", "Plt Qty", "Case Price", "IsActive", "Expriy Date", "Image" };
 
         public static readonly string[] ProductFieldsDownload = { "Code", "Brand", "Category", "SubCategory", "Supplier", "InnerEan", "OuterEan", "PackSize", "Upc", "LayerQuantity", "PalletQuantity", "Height", "Weight",
         "Width", "NetWeight", "Depth", "IsActive", "ExpriyDate"};

@@ -19,6 +19,47 @@
     }
    
 }
+<link href="/css/common.css" rel="stylesheet" asp-append-version="true" />
+
+<style>
+    .selected-file-name {
+        margin-top: 10px;
+        padding: 8px 12px;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+    }
+    
+    .file-name-text {
+        color: #495057;
+        font-weight: 500;
+    }
+    
+    .remove-file-btn {
+        background: none;
+        border: none;
+        color: #dc3545;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 0;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .remove-file-btn:hover {
+        background-color: #dc3545;
+        color: white;
+        border-radius: 50%;
+    }
+</style>
+
 @Html.AntiForgeryToken()
 
 
@@ -66,7 +107,11 @@
                     </div>
                     <div class="upload-formats">XLS, XLSX files only</div>
                 </div>
-                <input type="file" id="productFileUpload" class="fileUpload-hidden d-none" asp-for="Upload" accept=".xls, .xlsx" onchange="productFileValidation()">
+                <input type="file" id="productFileUpload" class="fileUpload-hidden d-none" asp-for="Upload" accept=".xls, .xlsx" onchange="promotionCostFileValidation()">
+                <div id="selectedPromotionFileName" class="selected-file-name" style="display: none;">
+                    <span class="file-name-text"></span>
+                    <button type="button" class="remove-file-btn" onclick="clearPromotionSelectedFile()">&times;</button>
+                </div>
             </div>
             <div class="modern-form-actions mt-3">
                 <button type="submit" class="modern-btn modern-btn-primary UploadDownload-submit">

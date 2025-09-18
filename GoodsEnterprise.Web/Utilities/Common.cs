@@ -1,5 +1,6 @@
-﻿using GoodsEnterprise.Model.Models;
+using GoodsEnterprise.Model.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -25,17 +26,20 @@ namespace GoodsEnterprise.Web.Utilities
         /// <param name="Upload"></param>
         /// <param name="name"></param>
         /// <param name="folderName"></param>
+        /// <param name="configuration"></param>
         /// <param name="isImage500"></param>
         /// <param name="isImage200"></param>
         /// <returns></returns>
-        public static async Task<Tuple<string, string>> UploadImages(IFormFile Upload, string name, string folderName, bool isImage500 = true, bool isImage200 = true)
+        public static async Task<Tuple<string, string>> UploadImages(IFormFile Upload, string name, string folderName, IConfiguration configuration, bool isImage500 = true, bool isImage200 = true)
         {
             string saveImage500 = string.Empty;
             string saveImage200 = string.Empty;
 
             if (Upload != null)
             {
-                string uploadImageFolderPath = Path.Combine($"{Directory.GetCurrentDirectory()}{Constants.UploadPath + folderName}");
+                string uploadPath = configuration["Application:UploadPath"];
+                //string uploadImageFolderPath = Path.Combine($"{Directory.GetCurrentDirectory()}{uploadPath + folderName}");
+                string uploadImageFolderPath = Path.Combine($"{uploadPath}{folderName}");
                 if (!Directory.Exists(uploadImageFolderPath))
                 {
                     Directory.CreateDirectory(uploadImageFolderPath);
@@ -54,14 +58,16 @@ namespace GoodsEnterprise.Web.Utilities
                         {
                             Image imageResized500 = image.ResizeImage(250, 250);
                             imageResized500.Save(uploadImage500);
-                            saveImage500 = Path.Combine(Constants.SavePath, folderName, fileName500);
+                            //saveImage500 = Path.Combine(Constants.SavePath, folderName, fileName500);
+                            saveImage500 = uploadImage500;
                         }
                         //image.CompressImage(500, uploadImage);
                         if (isImage200)
                         {
                             Image imageResized200 = image.ResizeToThumbnail();
                             imageResized200.Save(uploadImage200);
-                            saveImage200 = Path.Combine(Constants.SavePath, folderName, fileName200);
+                            //saveImage200 = Path.Combine(Constants.SavePath, folderName, fileName200);
+                            saveImage200 = uploadImage200;
                         }
                     }
                 }

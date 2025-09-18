@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using GoodsEnterprise.Model.Models;
 using GoodsEnterprise.Web.Utilities;
 using Microsoft.AspNetCore.Http;
@@ -76,6 +76,7 @@ namespace GoodsEnterprise.Web.Maaper
             //.ForMember(d => d.Seebelow, o => o.MapFrom(s => Convert.ToString(string.IsNullOrEmpty(Convert.ToString(s["See below"])) ? "" : s["See below"])))
             .ForMember(d => d.Seebelow, o => o.MapFrom(s => Convert.ToString(s["See below"])))
             .ForMember(d => d.Seebelow1, o => o.MapFrom(s => Convert.ToString(string.IsNullOrEmpty(Convert.ToString(s["See below1"])) ? "" : s["See below1"])))
+            .ForMember(d => d.Image, o => o.MapFrom(s => Convert.ToString(string.IsNullOrEmpty(Convert.ToString(s["Image"])) ? "" : s["Image"])))
             //.ForMember(d => d.Createdby, o => o.MapFrom(s => DateTime.UtcNow))
             .ForMember(d => d.IsActive, o => o.MapFrom(s => true))
             .ForMember(d => d.IsDelete, o => o.MapFrom(s => false))

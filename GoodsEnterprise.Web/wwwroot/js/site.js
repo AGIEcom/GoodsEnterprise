@@ -978,3 +978,96 @@ function toggleTaxSlab() {
     }
 }
 
+// Promotion Cost file validation function
+function promotionCostFileValidation() {
+    var fileInput = document.getElementById('productFileUpload');
+    var selectedFileName = document.getElementById('selectedPromotionFileName');
+
+    var filePath = fileInput.value;
+    if (filePath == '') {
+        // Hide file name display when no file is selected
+        if (selectedFileName) {
+            selectedFileName.style.display = 'none';
+        }
+        return true;
+    }
+    // Allowing file type
+    var allowedExtensions = /(\.xls|\.xlsx)$/i;
+
+    if (!allowedExtensions.exec(filePath)) {
+        alert('Invalid file type, Only xls, xlsx are allowed');
+        fileInput.value = '';
+        // Hide file name display when file is cleared
+        if (selectedFileName) {
+            selectedFileName.style.display = 'none';
+        }
+        return false;
+    }
+    else {
+        // Show selected file name
+        if (selectedFileName && fileInput.files && fileInput.files[0]) {
+            var fileNameText = selectedFileName.querySelector('.file-name-text');
+            if (fileNameText) {
+                fileNameText.textContent = fileInput.files[0].name;
+                selectedFileName.style.display = 'flex';
+            }
+        }
+        return true;
+    }
+}
+
+// Upload Download file validation function
+function uploadDownloadFileValidation() {
+    var fileInput = document.getElementById('productFileUpload');
+    var selectedFileName = document.getElementById('selectedUploadFileName');
+
+    var filePath = fileInput.value;
+    if (filePath == '') {
+        // Hide file name display when no file is selected
+        if (selectedFileName) {
+            selectedFileName.style.display = 'none';
+        }
+        return true;
+    }
+    // Allowing file type
+    var allowedExtensions = /(\.xls|\.xlsx)$/i;
+
+    if (!allowedExtensions.exec(filePath)) {
+        alert('Invalid file type, Only xls, xlsx are allowed');
+        fileInput.value = '';
+        // Hide file name display when file is cleared
+        if (selectedFileName) {
+            selectedFileName.style.display = 'none';
+        }
+        return false;
+    }
+    else {
+        // Show selected file name
+        if (selectedFileName && fileInput.files && fileInput.files[0]) {
+            var fileNameText = selectedFileName.querySelector('.file-name-text');
+            if (fileNameText) {
+                fileNameText.textContent = fileInput.files[0].name;
+                selectedFileName.style.display = 'flex';
+            }
+        }
+        return true;
+    }
+}
+
+// Clear selected file functions
+function clearPromotionSelectedFile() {
+    var fileInput = document.getElementById('productFileUpload');
+    var selectedFileName = document.getElementById('selectedPromotionFileName');
+    
+    fileInput.value = '';
+    selectedFileName.style.display = 'none';
+}
+
+function clearUploadSelectedFile() {
+    var fileInput = document.getElementById('productFileUpload');
+    var selectedFileName = document.getElementById('selectedUploadFileName');
+    
+    fileInput.value = '';
+    selectedFileName.style.display = 'none';
+}
+

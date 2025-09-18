@@ -4,6 +4,7 @@ using GoodsEnterprise.Web.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Serilog;
 using System;
@@ -24,12 +25,15 @@ namespace GoodsEnterprise.Web.Pages
         /// BrandModel
         /// </summary>
         /// <param name="brand"></param>
-        public BrandModel(IGeneralRepository<Brand> brand)
+        /// <param name="configuration"></param>
+        public BrandModel(IGeneralRepository<Brand> brand, IConfiguration configuration)
         {
             _brand = brand;
+            _configuration = configuration;
         }
 
         private readonly IGeneralRepository<Brand> _brand;
+        private readonly IConfiguration _configuration;
 
         [BindProperty()]
         public Brand objBrand { get; set; }
@@ -127,7 +131,7 @@ namespace GoodsEnterprise.Web.Pages
                 }
                 ViewData["PageType"] = "Edit";
                 ViewData["PagePrimaryID"] = objBrand.Id;
-                ViewData["ImagePath"] = objBrand.ImageUrl500;
+                ViewData["ImagePath"] = GetImageUrl(objBrand.ImageUrl500);
             }
             catch (Exception ex)
             {
@@ -168,7 +172,7 @@ namespace GoodsEnterprise.Web.Pages
                 objBrand = await _brand.GetAsync(filter: x => x.Id == brandId && x.IsDelete != true);
                 ViewData["PageType"] = "Edit";
                 ViewData["PagePrimaryID"] = objBrand.Id;
-                ViewData["ImagePath"] = objBrand.ImageUrl500;
+                ViewData["ImagePath"] = GetImageUrl(objBrand.ImageUrl500);
             }
             catch (Exception ex)
             {
@@ -222,14 +226,14 @@ namespace GoodsEnterprise.Web.Pages
                         if (objBrand.Id != 0)
                         {
                             ViewData["PagePrimaryID"] = objBrand.Id;
-                            ViewData["ImagePath"] = objBrand.ImageUrl500;
+                            ViewData["ImagePath"] = GetImageUrl(objBrand.ImageUrl500);
                         }
                         ViewData["SuccessMsg"] = $"Brand: {objBrand.Name} {Constants.AlreadyExistMessage}";
                         return Page();
                     }
                 }
 
-                Tuple<string, string> tupleImagePath = await Common.UploadImages(Upload, objBrand.Name, Constants.Brand);
+                Tuple<string, string> tupleImagePath = await Common.UploadImages(Upload, objBrand.Name, Constants.Brand, _configuration);
 
                 if (ModelState.IsValid)
                 {
@@ -270,6 +274,45 @@ namespace GoodsEnterprise.Web.Pages
             {
                 Log.Error(ex, $"Error in OnPostSubmitAsync(), Brand, BrandId: { objBrand?.Id }");
                 throw;
+            }
+        }
+
+        /// <summary>
+        /// Converts a file system path to an API URL for serving images
+        /// </summary>
+        /// <param name="filePath">The full file system path</param>
+        /// <returns>The API URL to access the image</returns>
+        private string GetImageUrl(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath))
+                return string.Empty;
+
+            try
+            {
+                string uploadPath = _configuration["Application:UploadPath"];
+                
+                // Check if the file path starts with the upload path
+                if (filePath.StartsWith(uploadPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    // Extract the relative path from the upload directory
+                    string relativePath = filePath.Substring(uploadPath.Length).TrimStart('\\', '/');
+                    
+                    // Split into folder and filename
+                    string[] pathParts = relativePath.Split(new char[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
+                    
+                    if (pathParts.Length >= 2)
+                    {
+                        string folder = pathParts[0];
+                        string filename = pathParts[1];
+                        return $"/api/Image/{folder}/{filename}";
+                    }
+                }
+                
+                return string.Empty;
+            }
+            catch
+            {
+                return string.Empty;
             }
         }
     }

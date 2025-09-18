@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -20,8 +21,9 @@ namespace GoodsEnterprise.Web.Pages
         /// ProductModel
         /// </summary>
         /// <param name="product"></param>
+        /// <param name="configuration"></param>
         public ProductModel(IGeneralRepository<Product> product, IGeneralRepository<Category> category,
-            IGeneralRepository<SubCategory> subCategory, IGeneralRepository<Brand> brand,IGeneralRepository<Tax> tax, IGeneralRepository<Supplier> supplier)
+            IGeneralRepository<SubCategory> subCategory, IGeneralRepository<Brand> brand,IGeneralRepository<Tax> tax, IGeneralRepository<Supplier> supplier, IConfiguration configuration)
         {
             _product = product;
             _category = category;
@@ -29,6 +31,7 @@ namespace GoodsEnterprise.Web.Pages
             _brand = brand;
             _tax = tax;
             _supplier = supplier;
+            _configuration = configuration;
         }
 
         private readonly IGeneralRepository<Product> _product;
@@ -37,6 +40,7 @@ namespace GoodsEnterprise.Web.Pages
         private readonly IGeneralRepository<Tax> _tax;
         private readonly IGeneralRepository<Brand> _brand;
         private readonly IGeneralRepository<Supplier> _supplier;
+        private readonly IConfiguration _configuration;
 
         [BindProperty()]
         public Product objProduct { get; set; }
@@ -111,7 +115,7 @@ namespace GoodsEnterprise.Web.Pages
                 await loadSupplier();
                 ViewData["PageType"] = "Edit";
                 ViewData["PagePrimaryID"] = objProduct.Id;
-                ViewData["ImagePath"] = objProduct.Image;
+                ViewData["ImagePath"] = GetImageUrl(objProduct.Image);
                 if (objProduct.TaxslabId == 0)
                 {
                     ViewData["IsTaxable"] = false;
@@ -168,7 +172,7 @@ namespace GoodsEnterprise.Web.Pages
                 objProduct = await _product.GetAsync(filter: x => x.Id == productId && x.IsDelete != true);
                 ViewData["PageType"] = "Edit";
                 ViewData["PagePrimaryID"] = objProduct.Id;
-                ViewData["ImagePath"] = objProduct.Image;
+                ViewData["ImagePath"] = GetImageUrl(objProduct.Image);
             }
             catch (Exception ex)
             {
@@ -222,14 +226,14 @@ namespace GoodsEnterprise.Web.Pages
                         if (objProduct.Id != 0)
                         {
                             ViewData["PagePrimaryID"] = objProduct.Id;
-                            ViewData["ImagePath"] = objProduct.Image;
+                            ViewData["ImagePath"] = GetImageUrl(objProduct.Image);
                         }
                         ViewData["SuccessMsg"] = $"Product: {objProduct.Code} {Constants.AlreadyExistMessage}";
                         return Page();
                     }
                 }
 
-                Tuple<string, string> tupleImagePath = await Common.UploadImages(Upload, objProduct.Code, Constants.Product);
+                Tuple<string, string> tupleImagePath = await Common.UploadImages(Upload, objProduct.Code, Constants.Product, _configuration);
 
                 if (ModelState.IsValid)
                 {
@@ -355,6 +359,44 @@ namespace GoodsEnterprise.Web.Pages
             }
         }
 
+        /// <summary>
+        /// Converts a file system path to an API URL for serving images
+        /// </summary>
+        /// <param name="filePath">The full file system path</param>
+        /// <returns>The API URL to access the image</returns>
+        private string GetImageUrl(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath))
+                return string.Empty;
+
+            try
+            {
+                string uploadPath = _configuration["Application:UploadPath"];
+                
+                // Check if the file path starts with the upload path
+                if (filePath.StartsWith(uploadPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    // Extract the relative path from the upload directory
+                    string relativePath = filePath.Substring(uploadPath.Length).TrimStart('\\', '/');
+                    
+                    // Split into folder and filename
+                    string[] pathParts = relativePath.Split(new char[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
+                    
+                    if (pathParts.Length >= 2)
+                    {
+                        string folder = pathParts[0];
+                        string filename = pathParts[1];
+                        return $"/api/Image/{folder}/{filename}";
+                    }
+                }
+                
+                return string.Empty;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
 
     }
 }

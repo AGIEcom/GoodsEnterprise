@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Serilog;
 using System;
@@ -25,12 +26,15 @@ namespace GoodsEnterprise.Web.Pages
         /// CategoryModel
         /// </summary>
         /// <param name="category"></param>
-        public CategoryModel(IGeneralRepository<Category> category)
+        /// <param name="configuration"></param>
+        public CategoryModel(IGeneralRepository<Category> category, IConfiguration configuration)
         {
             _category = category;
+            _configuration = configuration;
         }
 
         private readonly IGeneralRepository<Category> _category;
+        private readonly IConfiguration _configuration;
 
         [BindProperty()]
         public Category objCategory { get; set; }
@@ -89,7 +93,7 @@ namespace GoodsEnterprise.Web.Pages
                 }
                 ViewData["PageType"] = "Edit";
                 ViewData["PagePrimaryID"] = objCategory.Id;
-                ViewData["ImagePath"] = objCategory.ImageUrl500;
+                ViewData["ImagePath"] = GetImageUrl(objCategory.ImageUrl500);
             }
             catch (Exception ex)
             {
@@ -130,7 +134,7 @@ namespace GoodsEnterprise.Web.Pages
                 objCategory = await _category.GetAsync(filter: x => x.Id == categoryId && x.IsDelete != true);
                 ViewData["PageType"] = "Edit";
                 ViewData["PagePrimaryID"] = objCategory.Id;
-                ViewData["ImagePath"] = objCategory.ImageUrl500;
+                ViewData["ImagePath"] = GetImageUrl(objCategory.ImageUrl500);
             }
             catch (Exception ex)
             {
@@ -184,14 +188,14 @@ namespace GoodsEnterprise.Web.Pages
                         if (objCategory.Id != 0)
                         {
                             ViewData["PagePrimaryID"] = objCategory.Id;
-                            ViewData["ImagePath"] = objCategory.ImageUrl500;
+                            ViewData["ImagePath"] = GetImageUrl(objCategory.ImageUrl500);
                         }
                         ViewData["SuccessMsg"] = $"Category: {objCategory.Name} {Constants.AlreadyExistMessage}";
                         return Page();
                     }
                 }
 
-                Tuple<string, string> tupleImagePath = await Common.UploadImages(Upload, objCategory.Name, Constants.Category);
+                Tuple<string, string> tupleImagePath = await Common.UploadImages(Upload, objCategory.Name, Constants.Category, _configuration);
 
                 if (ModelState.IsValid)
                 {
@@ -232,6 +236,45 @@ namespace GoodsEnterprise.Web.Pages
             {
                 Log.Error(ex, $"Error in OnPostSubmitAsync(), Category, CategoryId: { objCategory?.Id }");
                 throw;
+            }
+        }
+
+        /// <summary>
+        /// Converts a file system path to an API URL for serving images
+        /// </summary>
+        /// <param name="filePath">The full file system path</param>
+        /// <returns>The API URL to access the image</returns>
+        private string GetImageUrl(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath))
+                return string.Empty;
+
+            try
+            {
+                string uploadPath = _configuration["Application:UploadPath"];
+                
+                // Check if the file path starts with the upload path
+                if (filePath.StartsWith(uploadPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    // Extract the relative path from the upload directory
+                    string relativePath = filePath.Substring(uploadPath.Length).TrimStart('\\', '/');
+                    
+                    // Split into folder and filename
+                    string[] pathParts = relativePath.Split(new char[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
+                    
+                    if (pathParts.Length >= 2)
+                    {
+                        string folder = pathParts[0];
+                        string filename = pathParts[1];
+                        return $"/api/Image/{folder}/{filename}";
+                    }
+                }
+                
+                return string.Empty;
+            }
+            catch
+            {
+                return string.Empty;
             }
         }
     }

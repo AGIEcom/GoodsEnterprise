@@ -7,6 +7,7 @@ using LinqKit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace GoodsEnterprise.Web.Pages
     public class UploadDownloadModel : PageModel
     {
         public UploadDownloadModel(IGeneralRepository<Brand> brand, IGeneralRepository<Category> category,
-            IGeneralRepository<SubCategory> subCategory, IGeneralRepository<Product> product, IGeneralRepository<Supplier> supplier, IUploadDownloadDA uploadDownloadDA, IMapper mapper)
+            IGeneralRepository<SubCategory> subCategory, IGeneralRepository<Product> product, IGeneralRepository<Supplier> supplier, IUploadDownloadDA uploadDownloadDA, IMapper mapper, IConfiguration configuration)
         {
             _brand = brand;
             _category = category;
@@ -29,6 +30,7 @@ namespace GoodsEnterprise.Web.Pages
             _supplier = supplier;
             _uploadDownloadDA = uploadDownloadDA;
             _mapper = mapper;
+            _configuration = configuration;
         }
         [BindProperty]
         public IFormFile Upload { get; set; }
@@ -41,6 +43,7 @@ namespace GoodsEnterprise.Web.Pages
         private readonly IGeneralRepository<Supplier> _supplier;
         private readonly IUploadDownloadDA _uploadDownloadDA;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
         public List<Product> products { get; set; }
 
         /// <summary>
@@ -197,6 +200,9 @@ namespace GoodsEnterprise.Web.Pages
                 await InsertNewSuppliers(productUpload);
 
                 List<Product> bulkInsertProducts = _mapper.Map<List<DataRow>, List<Product>>(new List<DataRow>(productUpload.Rows.OfType<DataRow>()));
+                
+                // Process images for products that have image paths
+                await ProcessProductImages(bulkInsertProducts);
                 
                 await _uploadDownloadDA.BulkInsertProductAsync(bulkInsertProducts.ToList());
 
@@ -483,6 +489,66 @@ namespace GoodsEnterprise.Web.Pages
             catch (Exception ex)
             {
                 Log.Error(ex, $"Error in InsertNewSuppliers(), UploadDownload");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// ProcessProductImages - Copy and process images from source paths to upload directory
+        /// </summary>
+        /// <param name="products"></param>
+        /// <returns></returns>
+        private async Task ProcessProductImages(List<Product> products)
+        {
+            try
+            {
+                string uploadPath = _configuration["Application:UploadPath"];
+                string productImageFolderPath = Path.Combine($"{uploadPath}{Constants.Product}");
+                
+                if (!Directory.Exists(productImageFolderPath))
+                {
+                    Directory.CreateDirectory(productImageFolderPath);
+                }
+
+                foreach (var product in products)
+                {
+                    if (!string.IsNullOrEmpty(product.Image) && System.IO.File.Exists(product.Image))
+                    {
+                        try
+                        {
+                            // Get the file extension from the source image
+                            string fileExtension = Path.GetExtension(product.Image);
+                            
+                            // Create a unique filename using product code
+                            string fileName = $"{product.Code}_{DateTime.UtcNow.Ticks}{fileExtension}";
+                            string destinationPath = Path.Combine(productImageFolderPath, fileName);
+                            
+                            // Copy the file to the upload directory
+                            System.IO.File.Copy(product.Image, destinationPath, true);
+                            
+                            // Update the product image path to the new location
+                            product.Image = Path.Combine($"{Constants.SavePath}{Constants.Product}{fileName}");
+                            
+                            Log.Information($"Successfully processed image for product {product.Code}: {product.Image}");
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error(ex, $"Error processing image for product {product.Code}: {product.Image}");
+                            // Set image to empty if processing fails
+                            product.Image = string.Empty;
+                        }
+                    }
+                    else if (!string.IsNullOrEmpty(product.Image))
+                    {
+                        Log.Warning($"Image file not found for product {product.Code}: {product.Image}");
+                        // Set image to empty if file doesn't exist
+                        product.Image = string.Empty;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Error in ProcessProductImages(), UploadDownload");
                 throw;
             }
         }
