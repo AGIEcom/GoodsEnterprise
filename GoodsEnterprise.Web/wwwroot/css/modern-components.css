@@ -16,11 +16,11 @@
 
 .toggle-switch {
     position: relative;
-    width: 80px;
-    height: 30px;
+    width: 60px;
+    height: 24px;
     background: linear-gradient(145deg, #64748b, #475569);
-    border-radius: 20px;
-    box-shadow: 0 3px 10px rgba(100, 116, 139, 0.3);
+    border-radius: 15px;
+    box-shadow: 0 2px 6px rgba(100, 116, 139, 0.3);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     overflow: hidden;
 }
@@ -29,11 +29,11 @@
     position: absolute;
     top: 2px;
     left: 2px;
-    width: 26px;
-    height: 26px;
+    width: 20px;
+    height: 20px;
     background: linear-gradient(145deg, #ffffff, #f8f9fa);
     border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: flex;
     align-items: center;
@@ -44,7 +44,7 @@
     content: "✕";
     color: #64748b;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 10px;
     transition: all 0.3s ease;
 }
 
@@ -52,7 +52,7 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 10px;
+    font-size: 8px;
     font-weight: 600;
     color: white;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -60,28 +60,28 @@
 }
 
 .toggle-text-off {
-    right: 8px;
+    right: 6px;
     opacity: 1;
 }
 
 .toggle-text-on {
-    left: 8px;
+    left: 6px;
     opacity: 0;
 }
 
 /* Checked State */
 .modern-checkbox:checked + .modern-toggle-label .toggle-switch {
-    background: linear-gradient(145deg, #1e40af, #1d4ed8);
-    box-shadow: 0 3px 10px rgba(30, 64, 175, 0.3);
+    background: linear-gradient(145deg, #16a34a, #15803d);
+    box-shadow: 0 3px 10px rgba(22, 163, 74, 0.3);
 }
 
 .modern-checkbox:checked + .modern-toggle-label .toggle-slider {
-    transform: translateX(52px);
+    transform: translateX(38px);
 }
 
 .modern-checkbox:checked + .modern-toggle-label .toggle-slider::before {
     content: "✓";
-    color: #1e40af;
+    color: #16a34a;
 }
 
 .modern-checkbox:checked + .modern-toggle-label .toggle-text-off {
@@ -99,18 +99,18 @@
 }
 
 .modern-checkbox:checked + .modern-toggle-label .toggle-switch:hover {
-    box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
+    box-shadow: 0 6px 20px rgba(22, 163, 74, 0.4);
 }
 
 /* Focus State for Accessibility */
 .modern-checkbox:focus + .modern-toggle-label .toggle-switch {
-    outline: 2px solid #1e40af;
+    outline: 2px solid #16a34a;
     outline-offset: 2px;
 }
 
 /* Modern Form Controls */
 .modern-form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     position: relative;
 }
 
@@ -124,10 +124,10 @@
 
 .modern-form-input {
     width: 100%;
-    padding: 0.75rem 1rem;
-    border: 2px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 1rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.9rem;
     transition: all 0.3s ease;
     background: #ffffff;
 }
@@ -146,12 +146,12 @@
 /* Modern Select */
 .modern-select {
     width: 100%;
-    padding: 0.75rem 1rem;
-    border: 2px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 1rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.9rem;
     transition: all 0.3s ease;
-    background: #ffffff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") no-repeat right 0.75rem center/1.5em 1.5em;
+    background: #ffffff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") no-repeat right 0.5rem center/1.2em 1.2em;
     appearance: none;
 }
 
@@ -163,16 +163,16 @@
 
 /* Modern Buttons */
 .modern-btn {
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     transition: all 0.3s ease;
     border: none;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
     text-decoration: none;
 }
 
@@ -221,10 +221,10 @@
 /* Modern Cards */
 .modern-card {
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    margin-bottom: 1rem;
     transition: all 0.3s ease;
 }
 
@@ -235,12 +235,12 @@
 
 .modern-card-header {
     border-bottom: 1px solid #e2e8f0;
-    padding-bottom: 1rem;
-    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
 }
 
 .modern-card-title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: #1e293b;
     margin: 0;
@@ -249,10 +249,10 @@
 /* Modern Tables */
 .modern-table-container {
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .modern-table {
@@ -263,18 +263,19 @@
 .modern-table th {
     background: linear-gradient(145deg, #4a5568, #2d3748);
     color: white;
-    padding: 1rem;
+    padding: 0.75rem;
     text-align: left;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
 .modern-table td {
-    padding: 1rem;
+    padding: 0.75rem;
     border-bottom: 1px solid #e2e8f0;
     color: #4a5568;
+    font-size: 0.9rem;
 }
 
 .modern-table tbody tr:hover {
@@ -356,24 +357,111 @@
     animation: spin 1s linear infinite;
 }
 
+/* Compact Layout Improvements */
+.row {
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+}
+
+.row > [class*="col-"] {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+/* Compact file upload styling */
+.file-upload-container {
+    margin-bottom: 0.75rem;
+}
+
+.file-upload-area {
+    padding: 1rem;
+    border: 2px dashed #e2e8f0;
+    border-radius: 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-icon svg {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 0.5rem;
+}
+
+.upload-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.upload-subtitle {
+    font-size: 0.8rem;
+    color: #718096;
+}
+
+.upload-formats {
+    font-size: 0.75rem;
+    color: #a0aec0;
+    margin-top: 0.25rem;
+}
+
+/* Compact alert styling */
+.modern-alert {
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+/* Compact table container with reduced max-height */
+.modern-table-container[style*="max-height"] {
+    max-height: 400px !important;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .modern-form-group {
-        margin-bottom: 1rem;
+        margin-bottom: 0.75rem;
     }
     
     .modern-btn {
         width: 100%;
         justify-content: center;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.4rem;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
     }
     
     .modern-card {
-        padding: 1rem;
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .modern-card-title {
+        font-size: 1.1rem;
     }
     
     .modern-table-container {
         overflow-x: auto;
+    }
+    
+    .modern-table th,
+    .modern-table td {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .toggle-switch {
+        width: 50px;
+        height: 20px;
+    }
+    
+    .toggle-slider {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .modern-checkbox:checked + .modern-toggle-label .toggle-slider {
+        transform: translateX(32px);
     }
 }
 
@@ -388,6 +476,37 @@
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
+}
+
+/* Search layout improvements */
+.dataTables_filter {
+    margin-bottom: 0 !important;
+}
+
+.dataTables_filter input {
+    margin-left: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    width: 200px;
+}
+
+.dataTables_filter label {
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #4a5568;
+    white-space: nowrap;
+}
+
+.row.justify-content-end .col-auto {
+    margin-left: 0.5rem;
+}
+
+.row.justify-content-end .col-auto:first-child {
+    margin-left: 0;
 }
 
 /* Focus visible for better keyboard navigation */

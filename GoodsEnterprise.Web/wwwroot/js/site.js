@@ -52,7 +52,7 @@ $(document).ready(function () {
         ],
         "order": [],
         lengthMenu: [5, 10, 20, 50],
-        "pageLength": 10
+        "pageLength": 5
     });
     $('#tblCategoryMaster').DataTable({
         'columnDefs': [
@@ -60,7 +60,8 @@ $(document).ready(function () {
             { 'searchable': true, "targets": [1, 2, 3] }
         ],
         "order": [],
-        lengthMenu: [5, 10, 20, 50]
+        lengthMenu: [5, 10, 20, 50],
+        "pageLength": 5
     });
 
     $('#tblSubCategoryMaster').DataTable({
@@ -69,7 +70,8 @@ $(document).ready(function () {
             { 'searchable': false, "targets": [1, 2, 3] }
         ],
         "order": [],
-        lengthMenu: [5, 10, 20, 50]
+        lengthMenu: [5, 10, 20, 50],
+        "pageLength": 5
     });
 
     //$('#tblProductMaster').DataTable({
@@ -87,7 +89,8 @@ $(document).ready(function () {
             { 'searchable': false, "targets": [1, 2, 3] }
         ],
         "order": [],
-        lengthMenu: [5, 10, 20, 50]
+        lengthMenu: [5, 10, 20, 50],
+        "pageLength": 5
     });
 
     $('#tblSupplierMaster').DataTable({
@@ -96,7 +99,8 @@ $(document).ready(function () {
             { 'searchable': false, "targets": [1, 2, 3] }
         ],
         "order": [],
-        lengthMenu: [5, 10, 20, 50]
+        lengthMenu: [5, 10, 20, 50],
+        "pageLength": 5
     });
 
     $('#tblRoleMaster').DataTable({
@@ -105,7 +109,8 @@ $(document).ready(function () {
             { 'searchable': false, "targets": [1, 2] }
         ],
         "order": [],
-        lengthMenu: [5, 10, 20, 50]
+        lengthMenu: [5, 10, 20, 50],
+        "pageLength": 5
     });
 
     $('#tblAdminMaster').DataTable({
@@ -114,7 +119,8 @@ $(document).ready(function () {
             { 'searchable': false, "targets": [1, 2, 3, 4, 5] }
         ],
         "order": [],
-        lengthMenu: [5, 10, 20, 50]
+        lengthMenu: [5, 10, 20, 50],
+        "pageLength": 5
     });
 
     $('#tblCustomerMaster').DataTable({
@@ -123,7 +129,8 @@ $(document).ready(function () {
             { 'searchable': false, "targets": [1, 2, 3, 4, 5] }
         ],
         "order": [],
-        lengthMenu: [5, 10, 20, 50]
+        lengthMenu: [5, 10, 20, 50],
+        "pageLength": 5
     });
 });
 //end

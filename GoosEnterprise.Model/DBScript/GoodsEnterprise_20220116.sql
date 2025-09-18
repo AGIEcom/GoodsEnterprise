@@ -822,7 +822,8 @@ CREATE PROCEDURE [dbo].[SPUI_GetPromotionCostDetails]  --1,  5, 'asc', 'Promotio
 @sortOrder varchar(10),
 @sortColumn varchar(100),
 
-@SearchText varchar(250)
+@SearchText varchar(250),
+@SearchBy varchar(50) = 'All'
 AS
 BEGIN
 	DECLARE @FilterTotalCount INT=0
@@ -832,21 +833,33 @@ BEGIN
 	
 	inner join Supplier[C] On A.SupplierID=C.Id
 	where A.IsActive=1 and A.IsDelete = 0
+	AND (
+		@SearchText IS NULL OR @SearchText = '' OR
+		(@SearchBy = 'All' AND (B.ProductName LIKE '%' + @SearchText + '%' OR C.Name LIKE '%' + @SearchText + '%')) OR
+		(@SearchBy = 'ProductName' AND B.ProductName LIKE '%' + @SearchText + '%') OR
+		(@SearchBy = 'SupplierName' AND C.Name LIKE '%' + @SearchText + '%')
+	)
 	group by A.ProductID,A.PromotionCost,A.PromotionCostID,A.SupplierID,C.Name,B.ProductName ,A.StartDate,A.EndDate
 	) M ) 
 
 
 	--select distinct A.ProductID,A.PromotionCost,A.PromotionCostID,A.SupplierID,C.Name[SupplierName],B.ProductName,A.StartDate,A.EndDate ,
-	select distinct C.Name[SupplierName],B.ProductName,A.PromotionCost,A.StartDate,A.EndDate,
+	select distinct C.Name[SupplierName],B.ProductName,A.PromotionCost,CAST(A.StartDate AS DATE) AS StartDate,CAST(A.EndDate AS DATE) AS EndDate,
 	CASE WHEN A.IsActive=1 THEN 'Active' ELSE 'InActive' end Status, A.PromotionCostID
 	,@FilterTotalCount AS FilterTotalCount 
 	from PromotionCost[A] 
 	inner join Product[B] On A.ProductID=B.Id
 	inner join Supplier[C] On A.SupplierID=C.Id
 	where A.IsActive=1 and A.IsDelete = 0
+	AND (
+		@SearchText IS NULL OR @SearchText = '' OR
+		(@SearchBy = 'All' AND (B.ProductName LIKE '%' + @SearchText + '%' OR C.Name LIKE '%' + @SearchText + '%')) OR
+		(@SearchBy = 'ProductName' AND B.ProductName LIKE '%' + @SearchText + '%') OR
+		(@SearchBy = 'SupplierName' AND C.Name LIKE '%' + @SearchText + '%')
+	)
 	 
 	order by A.EndDate desc
-	OFFSET ((@OffsetValue - 1) * @PagingSize) ROWS
+	OFFSET @OffsetValue ROWS
 	FETCH NEXT @PagingSize ROWS ONLY;
 
  

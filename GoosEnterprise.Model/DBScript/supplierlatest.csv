@@ -1,0 +1,2 @@
+ProductCode,SupplierName,SKUCode,IsActive,IsPreferred,LeadTimeDays,MoqCase,LastCost,Incoterm,ValidFrom,ValidTo
+1,1,23h1,1,0,1,n3n,1,enru,12-12-2026,12-01-2029

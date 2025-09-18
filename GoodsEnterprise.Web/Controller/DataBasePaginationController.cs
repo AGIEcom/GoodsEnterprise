@@ -116,14 +116,23 @@ namespace GoodsEnterprise.Web.Controller
             {
 
                 List<PromotionCostList> lstproduct = new List<PromotionCostList>();
+                
+                // Extract SearchBy parameter from AdditionalValues
+                string searchBy = "All";
+                if (param.AdditionalValues != null && param.AdditionalValues.Any())
+                {
+                    searchBy = param.AdditionalValues.FirstOrDefault()?.ToString() ?? "All";
+                }
+                
                 DBPaginationParams dBPaginationParams = new DBPaginationParams()
                 {
 
                     sortOrder = param.Order[0].Dir.ToString(),
                     sortColumn = param.SortOrder.Split(" ")[0],
-                    OffsetValue = param.Draw,
+                    OffsetValue = param.Start,
                     PagingSize = param.Length,
                     SearchText = param.Search.Value,
+                    SearchBy = searchBy,
                     StoredProcuder = "SPUI_GetPromotionCostDetails"
 
                 };

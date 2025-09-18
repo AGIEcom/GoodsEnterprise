@@ -56,7 +56,25 @@ namespace GoodsEnterprise.Web.Pages
         /// OnGetAsync
         /// </summary>
         /// <returns></returns>
-
+        public async Task<IActionResult> OnGetAsync()
+        {
+            try
+            {
+                if (objpromotionCost == null)
+                {
+                    objpromotionCost = new PromotionCost();
+                }
+                await LoadProduct();
+                await LoadSupplier();
+                ViewData["PageType"] = "List";
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Error in OnGetAsync(), PromotionCostModel");
+                throw;
+            }
+            return Page();
+        }
 
         /// <summary>
         /// OnGetCreateAsync
@@ -201,6 +219,8 @@ namespace GoodsEnterprise.Web.Pages
                             ViewData["PagePrimaryID"] = objpromotionCost.PromotionCostId;
                         }
                         ViewData["SuccessMsg"] = $"Mapping of this Supplier and Product {Constants.AlreadyExistMessage}";
+                        await LoadProduct();
+                        await LoadSupplier();
                         return Page();
                     }
                 }
@@ -218,7 +238,7 @@ namespace GoodsEnterprise.Web.Pages
                         await _promotionCost.UpdateAsync(objpromotionCost);
                         HttpContext.Session.SetString(Constants.StatusMessage, Constants.UpdateMessage);
                     }
-                    return Redirect("all-product");
+                    return Redirect("all-promotion-cost");
                 }
                 else
                 {
@@ -230,7 +250,26 @@ namespace GoodsEnterprise.Web.Pages
             }
             catch (Exception ex)
             {
-                Log.Error(ex, $"Error in OnPostUploadFileAsync(), PromotionCostModel, PromotionCostId: { objpromotionCost?.PromotionCostId}");
+                Log.Error(ex, $"Error in OnPostSubmitAsync(), PromotionCostModel, PromotionCostId: { objpromotionCost?.PromotionCostId}");
+                // Ensure dropdown data is loaded in case of error and we need to return to the page
+                try
+                {
+                    if (objpromotionCost == null)
+                    {
+                        objpromotionCost = new PromotionCost();
+                    }
+                    await LoadProduct();
+                    await LoadSupplier();
+                    ViewData["PageType"] = "Edit";
+                    if (objpromotionCost?.PromotionCostId > 0)
+                    {
+                        ViewData["PagePrimaryID"] = objpromotionCost.PromotionCostId;
+                    }
+                }
+                catch (Exception loadEx)
+                {
+                    Log.Error(loadEx, $"Error loading dropdown data in catch block, PromotionCostModel");
+                }
                 throw;
             }
         }
@@ -246,7 +285,7 @@ namespace GoodsEnterprise.Web.Pages
             try
             {
                 selectProduct = new SelectList(await _product.GetAllAsync(filter: x => x.IsDelete != true),
-                                          "Id", "ProductName", null);
+                                          "Id", "ProductName", objpromotionCost?.ProductId);
             }
             catch (Exception ex)
             {
@@ -264,7 +303,7 @@ namespace GoodsEnterprise.Web.Pages
             try
             {
                 selectSupplier = new SelectList(await _supplier.GetAllAsync(filter: x => x.IsDelete != true),
-                                          "Id", "Name", null);
+                                          "Id", "Name", objpromotionCost?.SupplierId);
             }
             catch (Exception ex)
             {
@@ -276,146 +315,187 @@ namespace GoodsEnterprise.Web.Pages
 
         public async Task<IActionResult> OnPostSubmitUploadAsync()
         {
-            DataTable productUpload;
+            if (Upload == null || Upload.Length == 0)
+            {
+                ViewData["ValidationMsg"] = "Please select a valid Excel file to upload.";
+                return Page();
+            }
+
             try
             {
+                // Validate file extension
+                var allowedExtensions = new[] { ".xlsx", ".xls" };
+                var fileExtension = Path.GetExtension(Upload.FileName).ToLowerInvariant();
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    ViewData["ValidationMsg"] = "Only Excel files (.xlsx, .xls) are allowed.";
+                    return Page();
+                }
+
+                // Register encoding provider once
                 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-                using (var stream = new MemoryStream())
-                {
-                    Upload.CopyTo(stream);
-                    stream.Position = 0;
-                    using (var reader = ExcelReaderFactory.CreateReader(stream))
-                    {
-                        productUpload = reader.AsDataSet(new ExcelDataSetConfiguration()
-                        {
-                            ConfigureDataTable = (_) => new ExcelDataTableConfiguration()
-                            {
-                                UseHeaderRow = true
-                            }
-                        }).Tables[0];
-                    }
-                }
-                productUpload = productUpload.Rows.Cast<DataRow>().Where(row => !row.ItemArray.All(field => field is DBNull ||
-                                     string.IsNullOrWhiteSpace(field as string))).CopyToDataTable();
+
+                DataTable processedData = await ProcessExcelFileAsync();
                 
-
-                DataTable dtCloned = productUpload.Clone();
-                dtCloned.Columns["Start"].DataType = typeof(DateTime);
-                dtCloned.Columns["End"].DataType = typeof(DateTime);
-                dtCloned.Columns["Sellout Start"].DataType = typeof(DateTime);
-                dtCloned.Columns["Sellout End"].DataType = typeof(DateTime);
-                dtCloned.Columns["Supplier:"].DataType = typeof(string);
-                dtCloned.Columns["Bonus Description"].DataType = typeof(string);
-                dtCloned.Columns["Sell Out Description"].DataType = typeof(string);
-                dtCloned.Columns["Outer Barcode"].DataType = typeof(string);
-                dtCloned.Columns["W/sale Nett Cost"].DataType = typeof(decimal); 
-                foreach (DataRow row in productUpload.Rows)
+                if (processedData == null || processedData.Rows.Count == 0)
                 {
-                    dtCloned.ImportRow(row);
+                    ViewData["ValidationMsg"] = "No valid data found in the uploaded file.";
+                    return Page();
                 }
 
-                dtCloned.Columns["Start"].ColumnName = "StartDate";
-                dtCloned.Columns["End"].ColumnName = "EndDate";
-                dtCloned.Columns["Sellout Start"].ColumnName = "SelloutStartDate";
-                dtCloned.Columns["Sellout End"].ColumnName = "SelloutEndDate";
-                dtCloned.Columns["Supplier:"].ColumnName = "Supplier";
-                dtCloned.Columns["Bonus Description"].ColumnName = "BonusDescription";
-                dtCloned.Columns["Sell Out Description"].ColumnName = "SellOutDescription";
-                dtCloned.Columns["Outer Barcode"].ColumnName = "OuterBarcode";
-                dtCloned.Columns["W/sale Nett Cost"].ColumnName = "PromotionCost";
+                await SavePromotionCostDataAsync(processedData);
 
-
-                string[] ColumnsToBeDeleted = { "Type", "PACK & RSP", "Inner Barcode", "Pallet", "Layer", "VAT", "COST", "BONUS", "C&C Price", "Price & Deal in Promotion", "Contact:", "Telephone", "Email", "Comments", "Bonus Desc Value 1", "Bonus Desc Value 2", "Sellout Desc Value 1", "Sellout Desc Value 2" };
-
-                foreach (string ColName in ColumnsToBeDeleted)
-                {
-                    if (dtCloned.Columns.Contains(ColName))
-                        dtCloned.Columns.Remove(ColName);
-                }
-
-
-                DataTable dtUDTTPromotion = ReorderPromotionCostTable(dtCloned);
-
-                CommenParameters commenParameters = new CommenParameters();
-                commenParameters.SPName = "usp_INSERTPROMOTIONCOST";
-                string CurrentUserIDSession = HttpContext.Session.GetString(Constants.LoginSession);
-                var result = JsonConvert.DeserializeObject<Admin>(CurrentUserIDSession);
-                commenParameters.CreatedBy = result.Id;
-                await _promotionCost.PostValueUsingUDTT(dtUDTTPromotion, commenParameters);
-
-                //LoadFields();
-                //foreach (DataColumn column in productUpload.Columns)
-                //{
-                //    if (uploadFileFields.ContainsKey(column.Caption.Trim()))
-                //    {
-                //        uploadFileFields[column.Caption.Trim()] = true;
-                //    }
-                //}
-
-
-                //await LoadProductList();
-
-                //if (products != null && products.Count > 0)
-                //{
-                //    //string[] existingProducts = productUpload.AsEnumerable().Where(a => products.Select(b => b.Code).Contains(Convert.ToString(a.Field<double>("Outer Barcode"))))
-                //    //                          .GroupBy(product => product.Field<string>("Outer Barcode").Trim())
-                //    //                          .Select(group => group.First().Field<string>("Outer Barcode")).ToArray();
-
-                //    //if (existingProducts.Count() > 1)
-                //    //{
-                //    //    string messages = string.Empty;
-                //    //    foreach (string msg in existingProducts)
-                //    //    {
-                //    //        messages += msg + "<br />";
-                //    //    }
-                //    //    ViewData["ValidationMsg"] = "Below Outer EAN are already exists, please correct it and retry" + "<br />" + messages;
-                //    //    return Page();
-                //    //}
-                //}
-
-                //await LoadSuppliers();
-
-                //if (Common.UploadSuppliers != null && Common.UploadSuppliers.Count > 0)
-                //{
-                //    //string[] existingProducts = productUpload.AsEnumerable().Where(a => Common.UploadSuppliers.Select(b => b.Name).Contains(a.Field<string>("Supplier:")))
-                //    //                          .GroupBy(product => product.Field<string>("Supplier:").Trim())
-                //    //                          .Select(group => group.First().Field<string>("Supplier:")).ToArray();
-
-                //    //if (existingProducts.Count() > 1)
-                //    //{
-                //    //    string messages = string.Empty;
-                //    //    foreach (string msg in existingProducts)
-                //    //    {
-                //    //        messages += msg + "<br />";
-                //    //    }
-                //    //    ViewData["ValidationMsg"] = "Below Outer EAN are already exists, please correct it and retry" + "<br />" + messages;
-                //    //    return Page();
-                //    //}
-                //}
-
-                ////await InsertPromotionCost(productUpload); 
-
-
-                //List<PromotionCost> bulkInsertProducts = _mapper.Map<List<DataRow>, List<PromotionCost>>(new List<DataRow>(productUpload.Rows.OfType<DataRow>()));
-
-                //await _uploadDownloadDA.BulkInsertPromotionCost(bulkInsertProducts.ToList());
-
-                ViewData["SuccessMsg"] = $"{Constants.SuccessUpload}";
-                return Page();
+                ViewData["SuccessMsg"] = Constants.SuccessUpload;
+                HttpContext.Session.SetString(Constants.StatusMessage, Constants.SuccessUpload);
+                
+                return Redirect("all-promotion-cost");
             }
             catch (Exception ex)
             {
-                ViewData["SuccessMsg"] = $"{Constants.FailureUpload}";
-                Log.Error(ex, $"Error in OnPostSubmitAsync(), UploadDownload");
-                return RedirectToPage("ErrorPage");
+                Log.Error(ex, $"Error in OnPostSubmitUploadAsync(), PromotionCostModel, File: {Upload?.FileName}");
+                ViewData["ValidationMsg"] = $"Error processing file: {ex.Message}";
+                
+                // Ensure dropdown data is loaded for error scenario
+                try
+                {
+                    if (objpromotionCost == null) objpromotionCost = new PromotionCost();
+                    await LoadProduct();
+                    await LoadSupplier();
+                    ViewData["PageType"] = "List";
+                }
+                catch (Exception loadEx)
+                {
+                    Log.Error(loadEx, "Error loading dropdown data in upload error scenario");
+                }
+                
+                return Page();
             }
             finally
             {
+                // Clean up static references
                 Common.UploadBrands = null;
                 Common.UploadCategories = null;
                 Common.UploadSubCategories = null;
                 Common.UploadSuppliers = null;
             }
+        }
+
+        /// <summary>
+        /// Process Excel file and return cleaned DataTable
+        /// </summary>
+        private async Task<DataTable> ProcessExcelFileAsync()
+        {
+            using var stream = new MemoryStream();
+            await Upload.CopyToAsync(stream);
+            stream.Position = 0;
+
+            using var reader = ExcelReaderFactory.CreateReader(stream);
+            var dataSet = reader.AsDataSet(new ExcelDataSetConfiguration()
+            {
+                ConfigureDataTable = (_) => new ExcelDataTableConfiguration()
+                {
+                    UseHeaderRow = true
+                }
+            });
+
+            var rawData = dataSet.Tables[0];
+            
+            // Filter out empty rows
+            var filteredRows = rawData.Rows.Cast<DataRow>()
+                .Where(row => !row.ItemArray.All(field => field is DBNull || string.IsNullOrWhiteSpace(field?.ToString())))
+                .ToList();
+
+            if (!filteredRows.Any())
+                return null;
+
+            // Create filtered DataTable
+            var filteredData = rawData.Clone();
+            foreach (var row in filteredRows)
+            {
+                filteredData.ImportRow(row);
+            }
+
+            return TransformDataTable(filteredData);
+        }
+
+        /// <summary>
+        /// Transform and clean the DataTable structure
+        /// </summary>
+        private DataTable TransformDataTable(DataTable source)
+        {
+            var transformed = source.Clone();
+
+            // Define column mappings and data types
+            var columnMappings = new Dictionary<string, (string newName, Type dataType)>
+            {
+                { "Start", ("StartDate", typeof(DateTime)) },
+                { "End", ("EndDate", typeof(DateTime)) },
+                { "Sellout Start", ("SelloutStartDate", typeof(DateTime)) },
+                { "Sellout End", ("SelloutEndDate", typeof(DateTime)) },
+                { "Supplier:", ("Supplier", typeof(string)) },
+                { "Bonus Description", ("BonusDescription", typeof(string)) },
+                { "Sell Out Description", ("SellOutDescription", typeof(string)) },
+                { "Outer Barcode", ("OuterBarcode", typeof(string)) },
+                { "W/sale Nett Cost", ("PromotionCost", typeof(decimal)) }
+            };
+
+            // Update column data types and names
+            foreach (var mapping in columnMappings)
+            {
+                if (transformed.Columns.Contains(mapping.Key))
+                {
+                    transformed.Columns[mapping.Key].DataType = mapping.Value.dataType;
+                    transformed.Columns[mapping.Key].ColumnName = mapping.Value.newName;
+                }
+            }
+
+            // Copy data to transformed table
+            foreach (DataRow row in source.Rows)
+            {
+                transformed.ImportRow(row);
+            }
+
+            // Remove unwanted columns
+            var columnsToDelete = new[]
+            {
+                "Type", "PACK & RSP", "Inner Barcode", "Pallet", "Layer", "VAT", "COST", "BONUS",
+                "C&C Price", "Price & Deal in Promotion", "Contact:", "Telephone", "Email", "Comments",
+                "Bonus Desc Value 1", "Bonus Desc Value 2", "Sellout Desc Value 1", "Sellout Desc Value 2"
+            };
+
+            foreach (var columnName in columnsToDelete)
+            {
+                if (transformed.Columns.Contains(columnName))
+                {
+                    transformed.Columns.Remove(columnName);
+                }
+            }
+
+            return transformed;
+        }
+
+        /// <summary>
+        /// Save processed promotion cost data to database
+        /// </summary>
+        private async Task SavePromotionCostDataAsync(DataTable processedData)
+        {
+            var reorderedData = ReorderPromotionCostTable(processedData);
+
+            var currentUserSession = HttpContext.Session.GetString(Constants.LoginSession);
+            if (string.IsNullOrEmpty(currentUserSession))
+            {
+                throw new UnauthorizedAccessException("User session not found. Please login again.");
+            }
+
+            var currentUser = JsonConvert.DeserializeObject<Admin>(currentUserSession);
+            
+            var parameters = new CommenParameters
+            {
+                SPName = "usp_INSERTPROMOTIONCOST",
+                CreatedBy = currentUser.Id
+            };
+
+            await _promotionCost.PostValueUsingUDTT(reorderedData, parameters);
         }
         /// <summary>
         /// ReorderPromotionCostTable

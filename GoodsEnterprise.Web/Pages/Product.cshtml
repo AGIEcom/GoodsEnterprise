@@ -96,23 +96,24 @@
         </a>
 
         <div class="modern-table-container" style="max-height: 500px; overflow-y: auto;">
-            <div class="row mb-3 align-items-end">
-                <div class="col-md-3">
-                    <div class="modern-form-group">
-                        <label for="searchByDropdown" class="modern-form-label">Search By</label>
-                        <select id="searchByDropdown" class="modern-select" style="width: auto; min-width: 140px;">
-                            <option value="All">All Fields</option>
-                            <option value="ProductName">Product Name</option>
-                            <option value="CategoryName">Category Name</option>
-                            <option value="BrandName">Brand Name</option>
-                            <option value="Code">Product Code</option>
-                            <option value="OuterEan">Outer EAN</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-9">
-                    <div id="tblProductMaster_filter" class="dataTables_filter" style="text-align: left;">
-                        <!-- DataTables search input will be moved here -->
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="d-flex justify-content-end align-items-center" style="gap: 2rem;">
+                        <div class="d-flex align-items-center gap-2">
+                            <label for="searchByDropdown" class="modern-form-label" style="font-size: 0.85rem; margin-bottom: 0; white-space: nowrap;">Search By:</label>
+                            <select id="searchByDropdown" class="modern-select" style="width: 140px;">
+                                <option value="All">All Fields</option>
+                                <option value="ProductName">Product Name</option>
+                                <option value="CategoryName">Category Name</option>
+                                <option value="BrandName">Brand Name</option>
+                                <option value="Code">Product Code</option>
+                                <option value="OuterEan">Outer EAN</option>
+                            </select>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <label class="modern-form-label" style="font-size: 0.85rem; margin-bottom: 0; white-space: nowrap;">Search:</label>
+                            <input type="text" id="customSearchInputProduct" class="modern-form-input" style="width: 200px;" placeholder="Search...">
+                        </div>
                     </div>
                 </div>
             </div>
