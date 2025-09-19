@@ -15,7 +15,7 @@ namespace GoodsEnterprise.Model.Models
         public string OuterEan { get; set; }
         public int FilterTotalCount { get; set; }
         public string Status { get; set; }
-        public DateTime? ModifiedDate { get; set; }
+        //public DateTime? ModifiedDate { get; set; }
     }
 
     public class PromotionCostList
@@ -29,5 +29,19 @@ namespace GoodsEnterprise.Model.Models
         public DateTime EndDate { get; set; }
         public int FilterTotalCount { get; set; }
         public string Status { get; set; }
+    }
+
+    public class BaseCostList
+    {
+        [Key]
+        public int BaseCostID { get; set; }
+        public string SupplierName { get; set; }
+        public string ProductName { get; set; }
+        public decimal BaseCost { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public int FilterTotalCount { get; set; }
+        public string Status { get; set; }
+        //public DateTime? ModifiedDate { get; set; }
     }
 }

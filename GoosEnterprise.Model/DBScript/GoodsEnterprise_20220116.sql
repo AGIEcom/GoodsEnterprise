@@ -141,7 +141,8 @@ CREATE TABLE [dbo].[BaseCost](
 	[EndDate] [datetime] NULL,
 	[Remark] [varchar](500) NULL,
 	[SupplierID] [int] NULL,
-	[IsActive] [bit] NULL,
+	[IsActive] [bit] NOT NULL,
+	[IsDelete] [bit] NOT NULL,
 	[CreatedDate] [datetime] NULL,
 	[CreatedBy] [int] NULL,
 	[Modifiedby] [int] NULL,
@@ -758,10 +759,8 @@ BEGIN
         SET @OrderByClause = 'P.OuterEAN'
     ELSE IF @sortColumn = 'status'
         SET @OrderByClause = 'P.IsActive'
-    ELSE IF @sortColumn = 'modifiedDate'
-        SET @OrderByClause = 'P.ModifiedDate'
-    ELSE
-        SET @OrderByClause = 'P.ModifiedDate'
+    ELSE -- Default sort: ModifiedDate if not null, otherwise CreatedDate
+        SET @OrderByClause = 'COALESCE(P.ModifiedDate, P.CreatedDate)'
     
     -- Get total count for pagination
     DECLARE @CountSQL NVARCHAR(MAX) = '
@@ -785,7 +784,6 @@ BEGIN
             ISNULL(C.Name, '''') AS CategoryName,
             ISNULL(B.Name, '''') AS BrandName,
             P.OuterEAN AS OuterEan,
-			P.ModifiedDate AS ModifiedDate,
             CASE WHEN P.IsActive = 1 THEN ''Active'' ELSE ''InActive'' END AS Status,
             @TotalRecords AS FilterTotalCount
         FROM Product P
@@ -844,7 +842,7 @@ BEGIN
 
 
 	--select distinct A.ProductID,A.PromotionCost,A.PromotionCostID,A.SupplierID,C.Name[SupplierName],B.ProductName,A.StartDate,A.EndDate ,
-	select distinct C.Name[SupplierName],B.ProductName,A.PromotionCost,CAST(A.StartDate AS DATE) AS StartDate,CAST(A.EndDate AS DATE) AS EndDate,
+	select C.Name[SupplierName],B.ProductName,A.PromotionCost,CAST(A.StartDate AS DATE) AS StartDate,CAST(A.EndDate AS DATE) AS EndDate,
 	CASE WHEN A.IsActive=1 THEN 'Active' ELSE 'InActive' end Status, A.PromotionCostID
 	,@FilterTotalCount AS FilterTotalCount 
 	from PromotionCost[A] 
@@ -858,13 +856,135 @@ BEGIN
 		(@SearchBy = 'SupplierName' AND C.Name LIKE '%' + @SearchText + '%')
 	)
 	 
-	order by A.EndDate desc
+	order by 
+		CASE 
+			WHEN @sortColumn = 'SupplierName' AND @sortOrder = 'asc' THEN C.Name
+		END ASC,
+		CASE 
+			WHEN @sortColumn = 'SupplierName' AND @sortOrder = 'desc' THEN C.Name
+		END DESC,
+		CASE 
+			WHEN @sortColumn = 'ProductName' AND @sortOrder = 'asc' THEN B.ProductName
+		END ASC,
+		CASE 
+			WHEN @sortColumn = 'ProductName' AND @sortOrder = 'desc' THEN B.ProductName
+		END DESC,
+		CASE 
+			WHEN @sortColumn = 'PromotionCost' AND @sortOrder = 'asc' THEN A.PromotionCost
+		END ASC,
+		CASE 
+			WHEN @sortColumn = 'PromotionCost' AND @sortOrder = 'desc' THEN A.PromotionCost
+		END DESC,
+		CASE 
+			WHEN @sortColumn = 'StartDate' AND @sortOrder = 'asc' THEN A.StartDate
+		END ASC,
+		CASE 
+			WHEN @sortColumn = 'StartDate' AND @sortOrder = 'desc' THEN A.StartDate
+		END DESC,
+		CASE 
+			WHEN @sortColumn = 'EndDate' AND @sortOrder = 'asc' THEN A.EndDate
+		END ASC,
+		CASE 
+			WHEN @sortColumn = 'EndDate' AND @sortOrder = 'desc' THEN A.EndDate
+		END DESC,
+		CASE 
+			WHEN @sortColumn NOT IN ('SupplierName', 'ProductName', 'PromotionCost', 'StartDate', 'EndDate') AND @sortOrder = 'asc' THEN COALESCE(A.ModifiedDate, A.CreatedDate)
+		END ASC,
+		CASE 
+			WHEN @sortColumn NOT IN ('SupplierName', 'ProductName', 'PromotionCost', 'StartDate', 'EndDate') AND @sortOrder = 'desc' THEN COALESCE(A.ModifiedDate, A.CreatedDate)
+		END DESC
 	OFFSET @OffsetValue ROWS
 	FETCH NEXT @PagingSize ROWS ONLY;
 
  
 END
+GO
 
+CREATE PROCEDURE [dbo].[SPUI_GetBaseCostDetails]  --0,  5, 'asc', 'BaseCostID', null
+ @OffsetValue int,
+@PagingSize int,
+@sortOrder varchar(10),
+@sortColumn varchar(100),
+
+@SearchText varchar(250),
+@SearchBy varchar(50) = 'All'
+AS
+BEGIN
+	DECLARE @FilterTotalCount INT=0
+	SET @FilterTotalCount =(select COUNT(*) from (
+	--select  A.ProductID,A.PromotionCost,A.PromotionCostID,A.SupplierID,C.Name[SupplierName],B.ProductName,A.StartDate,A.EndDate from PromotionCost[A] inner join Product[B] On A.ProductID=B.Id
+	select  A.ProductID,A.BaseCost,A.BaseCostID,A.SupplierID,C.Name[SupplierName],B.ProductName,A.StartDate,A.EndDate from BaseCost[A] inner join Product[B] On A.ProductID=B.Id
+	
+	inner join Supplier[C] On A.SupplierID=C.Id
+	where A.IsActive=1 and A.IsDelete = 0
+	AND (
+		@SearchText IS NULL OR @SearchText = '' OR
+		(@SearchBy = 'All' AND (B.ProductName LIKE '%' + @SearchText + '%' OR C.Name LIKE '%' + @SearchText + '%')) OR
+		(@SearchBy = 'ProductName' AND B.ProductName LIKE '%' + @SearchText + '%') OR
+		(@SearchBy = 'SupplierName' AND C.Name LIKE '%' + @SearchText + '%')
+	)
+	group by A.ProductID,A.BaseCost,A.BaseCostID,A.SupplierID,C.Name,B.ProductName ,A.StartDate,A.EndDate
+	) M ) 
+
+
+	--select distinct A.ProductID,A.PromotionCost,A.PromotionCostID,A.SupplierID,C.Name[SupplierName],B.ProductName,A.StartDate,A.EndDate ,
+	select C.Name[SupplierName],B.ProductName,A.BaseCost,CAST(A.StartDate AS DATE) AS StartDate,CAST(A.EndDate AS DATE) AS EndDate,
+	CASE WHEN A.IsActive=1 THEN 'Active' ELSE 'InActive' end Status, A.BaseCostID
+	,@FilterTotalCount AS FilterTotalCount 
+	from BaseCost[A] 
+	inner join Product[B] On A.ProductID=B.Id
+	inner join Supplier[C] On A.SupplierID=C.Id
+	where A.IsActive=1 and A.IsDelete = 0
+	AND (
+		@SearchText IS NULL OR @SearchText = '' OR
+		(@SearchBy = 'All' AND (B.ProductName LIKE '%' + @SearchText + '%' OR C.Name LIKE '%' + @SearchText + '%')) OR
+		(@SearchBy = 'ProductName' AND B.ProductName LIKE '%' + @SearchText + '%') OR
+		(@SearchBy = 'SupplierName' AND C.Name LIKE '%' + @SearchText + '%')
+	)
+	 
+	order by 
+		CASE 
+			WHEN @sortColumn = 'SupplierName' AND @sortOrder = 'asc' THEN C.Name
+		END ASC,
+		CASE 
+			WHEN @sortColumn = 'SupplierName' AND @sortOrder = 'desc' THEN C.Name
+		END DESC,
+		CASE 
+			WHEN @sortColumn = 'ProductName' AND @sortOrder = 'asc' THEN B.ProductName
+		END ASC,
+		CASE 
+			WHEN @sortColumn = 'ProductName' AND @sortOrder = 'desc' THEN B.ProductName
+		END DESC,
+		CASE 
+			WHEN @sortColumn = 'BaseCost' AND @sortOrder = 'asc' THEN A.BaseCost
+		END ASC,
+		CASE 
+			WHEN @sortColumn = 'BaseCost' AND @sortOrder = 'desc' THEN A.BaseCost
+		END DESC,
+		CASE 
+			WHEN @sortColumn = 'StartDate' AND @sortOrder = 'asc' THEN A.StartDate
+		END ASC,
+		CASE 
+			WHEN @sortColumn = 'StartDate' AND @sortOrder = 'desc' THEN A.StartDate
+		END DESC,
+		CASE 
+			WHEN @sortColumn = 'EndDate' AND @sortOrder = 'asc' THEN A.EndDate
+		END ASC,
+		CASE 
+			WHEN @sortColumn = 'EndDate' AND @sortOrder = 'desc' THEN A.EndDate
+		END DESC,
+		CASE 
+			WHEN @sortColumn NOT IN ('SupplierName', 'ProductName', 'BaseCost', 'StartDate', 'EndDate') AND @sortOrder = 'asc' THEN COALESCE(A.ModifiedDate, A.CreatedDate)
+		END ASC,
+		CASE 
+			WHEN @sortColumn NOT IN ('SupplierName', 'ProductName', 'BaseCost', 'StartDate', 'EndDate') AND @sortOrder = 'desc' THEN COALESCE(A.ModifiedDate, A.CreatedDate)
+		END DESC
+	--OFFSET ((@OffsetValue) * @PagingSize) ROWS
+	OFFSET @OffsetValue ROWS
+	FETCH NEXT @PagingSize ROWS ONLY;
+
+ 
+END
 
 GO
 /****** Object:  StoredProcedure [dbo].[USP_GetBrands]    Script Date: 18-09-2025 10:04:06 ******/

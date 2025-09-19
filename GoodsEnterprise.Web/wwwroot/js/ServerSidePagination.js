@@ -7,7 +7,7 @@ $(document).ready(function () {
     // Initialize tables
     ProductGridDataLoading();
     PromotionPriceGridDataLoading();
-   
+    BaseCostGridDataLoading();
     // Reload table when search filter changes
     //$('#searchByDropdown').on('change', function() {
     //    const table = $('#tblProductMaster').DataTable();
@@ -57,6 +57,18 @@ $(document).ready(function () {
             }
         }
     });
+
+
+    // Reload BaseCost table when custom search input changes
+    $('#customSearchInputBaseCost').on('keyup', function () {
+        if (this.value.length >= 3) {
+            const table = $('#tblBaseCost').DataTable();
+            if (table) {
+                table.ajax.reload(null, false); // false = don't reset paging
+            }
+        }
+    });
+
     
     // Handle window resize for DataTables in this file
     let resizeTimer;
@@ -86,7 +98,7 @@ $(document).ready(function () {
             lengthMenu: [5, 10, 20, 50],
             pageLength: 5,
             searching: false, // Disable default search to use our custom search
-            order: [[6, "desc"]],
+            order: [], // No default client-side ordering, let server handle default sort
             deferRender: true,
             //drawCallback: function() {
             //    // Handle resizing after table draw
@@ -95,7 +107,7 @@ $(document).ready(function () {
             //    }
             //},
             columnDefs: [{
-                targets: [7], /* column index */
+                targets: [6], /* column index - Actions column (0-based: Code, ProductName, CategoryName, BrandName, OuterEan, Status, Actions) */
                 orderable: false, /* true or false */
 
             }],
@@ -174,16 +186,6 @@ $(document).ready(function () {
                     name: "Status"
                 },  
                 {
-                    data: "modifiedDate",
-                    name: "ModifiedDate",
-                    render: function (data, type, row) {
-                        if (type === 'display' && data) {
-                            return new Date(data).toLocaleDateString('en-GB');
-                        }
-                        return data;
-                    }
-                },
-                {
                     data: "id",
                     name: "Id",
                     render: function (data, type, row) {
@@ -200,97 +202,7 @@ $(document).ready(function () {
         });
     }
 
-    //function PromotionPriceGridDataLoading() {
-
-    //    tbl_barangay = $('#tblPromotionCost').dataTable({
-
-    //        processing: true,
-    //        serverSide: true,
-    //        responsive: true,
-    //        lengthMenu: [10, 20, 50],
-
-    //        "order": [[1, "desc"]],
-    //        "deferRender": true,
-    //        'columnDefs': [{
-
-    //            'targets': [6], /* column index */
-
-    //            'orderable': false, /* true or false */
-
-    //        }],
-    //        ajax: {
-    //            type: "POST",
-    //            url: './api/DataBasePagination/getpromotioncostdata',
-    //            contentType: "application/json; charset=utf-8",
-    //            dataType: "json",
-    //            headers: {
-    //                "XSRF-TOKEN": document.querySelector('[name="__RequestVerificationToken"]').value
-    //            },
-               
-    //            async: true,
-    //            data: function (data) {
-    //                let additionalValues = [];
-    //                //additionalValues[0] = $("#txtfromDate").val();
-    //                //additionalValues[1] = $("#txtToDate").val();
-    //                //var Appic = GetApplication();
-    //                //additionalValues[2] = Appic;
-    //                //data.AdditionalValues = additionalValues;
-    //                return JSON.stringify(data);
-    //            },
-    //            error: function (jqXHR, exception) {
-    //                var msg = '';
-    //                if (jqXHR.status === 0) {
-    //                    msg = 'Not connect.\n Verify Network.';
-    //                } else if (jqXHR.status == 404) {
-    //                    msg = 'Requested page not found. [404]';
-    //                } else if (jqXHR.status == 500) {
-    //                    msg = 'Internal Server Error [500].';
-    //                } else if (exception === 'parsererror') {
-    //                    msg = 'Requested JSON parse failed.';
-    //                } else if (exception === 'timeout') {
-    //                    msg = 'Time out error.';
-    //                } else if (exception === 'abort') {
-    //                    msg = 'Ajax request aborted.';
-    //                } else {
-    //                    msg = 'Uncaught Error.\n' + jqXHR.responseText;
-    //                }
-
-    //            }
-    //        },
-    //        columns: [                           
-    //            {
-    //                data: "SupplierName"
-    //            },
-    //            {
-    //                data: "ProductName"
-    //            },
-    //            {
-    //                data: "PromotionCost"
-    //            },
-    //            {
-    //                data: "StartDate"
-    //            },
-    //            {
-    //                data: "EndDate"
-    //            },
-    //            {
-    //                data: "Status"
-    //            },
-    //            {
-    //                data: "PromotionCostID",
-    //                render: function (data, type, row) {
-    //                    if (type === 'display') {
-    //                        return '<a class="btn btn-primary" href="/all-promotion-cost?PromotionCostId=' + row.PromotionCostID + '&amp;handler=Edit">Edit</a> | ' +
-    //                            '<a href="/all-promotion-cost?PromotionCostId=' + row.PromotionCostID + '&amp;handler=DeleteProduct" class="btn btn-primary btn-PromotionCost-delete">Delete</a>';
-    //                    }
-    //                    return data;
-    //                }
-    //            }
-                 
-
-    //        ]
-    //    });
-    //}
+    
 
     function PromotionPriceGridDataLoading() {
         if (!$('#tblPromotionCost').length) {
@@ -308,7 +220,7 @@ $(document).ready(function () {
             scrollCollapse: true,
             lengthMenu: [5, 10, 20, 50],
             pageLength: 5,
-            order: [[1, "desc"]],
+            order: [], // No default client-side ordering, let server handle default sort
             deferRender: true,
             searching: false, // Disable default search to use our custom search
             drawCallback: function() {
@@ -353,18 +265,36 @@ $(document).ready(function () {
             },
             columns: [
                 // Use functions to handle PascalCase OR camelCase JSON keys
-                { data: function (row) { return row.SupplierName || row.supplierName || ''; } },
-                { data: function (row) { return row.ProductName || row.productName || ''; } },
-                { data: function (row) { return row.PromotionCost || row.promotionCost || ''; } },
-                { data: function (row) { 
-                    var startDate = row.StartDate || row.startDate || '';
-                    return startDate ? new Date(startDate).toLocaleDateString() : '';
-                } },
-                { data: function (row) { 
-                    var endDate = row.EndDate || row.endDate || '';
-                    return endDate ? new Date(endDate).toLocaleDateString() : '';
-                } },
-                { data: function (row) { return row.Status || row.status || ''; } },
+                {
+                    data: function (row) { return row.SupplierName || row.supplierName || ''; },
+                    name: "SupplierName"
+                },
+                {
+                    data: function (row) { return row.ProductName || row.productName || ''; },
+                    name: "ProductName"
+                },
+                {
+                    data: function (row) { return row.PromotionCost || row.promotionCost || ''; },
+                    name: "PromotionCost"
+                },
+                {
+                    data: function (row) {
+                        var startDate = row.StartDate || row.startDate || '';
+                        return startDate ? new Date(startDate).toLocaleDateString() : '';
+                    },
+                    name: "StartDate"
+                },
+                {
+                    data: function (row) {
+                        var endDate = row.EndDate || row.endDate || '';
+                        return endDate ? new Date(endDate).toLocaleDateString() : '';
+                    },
+                    name: "EndDate"
+                },
+                {
+                    data: function (row) { return row.Status || row.status || ''; },
+                    name: "Status"
+                },
                 {
                     data: function (row) {
                         var id = row.PromotionCostID || row.promotionCostID || '';
@@ -373,11 +303,132 @@ $(document).ready(function () {
                     }
                 }
             ],
+
             initComplete: function() {
                 // Using custom search controls, no need to move DataTables search input
                 // The default search is disabled and we use our custom search input
             }
         });
     }
+
+
+    function BaseCostGridDataLoading() {
+        if (!$('#tblBaseCost').length) {
+            console.error('#tblBaseCost not found');
+            return;
+        }
+
+        // Initialize with our custom function
+        var tblBaseCost = $('#tblBaseCost').DataTable({
+            processing: true,
+            serverSide: true,
+            responsive: true,
+            autoWidth: true,
+            scrollX: true,
+            scrollCollapse: true,
+            lengthMenu: [5, 10, 20, 50],
+            pageLength: 10,
+            order: [], // No default client-side ordering, let server handle default sort
+            deferRender: true,
+            searching: false, // Disable default search to use our custom search
+            columnDefs: [
+                {
+                    targets: [6], // action column is index 6 (0..6)
+                    orderable: false,
+                    className: 'text-nowrap' // Prevent action buttons from wrapping
+                }
+            ],
+            ajax: {
+                type: "POST",
+                url: './api/DataBasePagination/getbasecostdata',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                headers: {
+                    "XSRF-TOKEN": document.querySelector('[name="__RequestVerificationToken"]').value
+                },
+                data: function (data) {
+                    // Add SearchBy parameter and custom search text for BaseCost
+                    var searchBy = $('#searchByDropdownBaseCost').val() || 'All';
+                    var customSearchText = $('#customSearchInputBaseCost').val() || '';
+                    data.additionalValues = [searchBy];
+                    data.search = { value: customSearchText };
+                    return JSON.stringify(data);
+                },
+                dataSrc: function (json) {
+                    console.log("BaseCost DT server response:", json);
+                    if (!json) return [];
+                    return json.data || json;
+                },
+                error: function (xhr, status, error) {
+                    console.error("BaseCost DataTables AJAX error:", status, error);
+                    console.log("Response text:", xhr && xhr.responseText);
+                }
+            },
+            columns: [
+                // Use functions to handle PascalCase OR camelCase JSON keys
+                {
+                    data: function (row) { return row.SupplierName || row.supplierName || ''; },
+                    name: "SupplierName"
+                },
+                {
+                    data: function (row) { return row.ProductName || row.productName || ''; },
+                    name: "ProductName"
+                },
+                {
+                    data: function (row) {
+                        var baseCost = row.BaseCost1 || row.baseCost1 || row.BaseCost || row.baseCost || '';
+                        return baseCost ? parseFloat(baseCost).toFixed(2) : '0.00';
+                    },
+                    name: "BaseCost"
+                },
+                {
+                    data: function (row) {
+                        var startDate = row.StartDate || row.startDate || '';
+                        return startDate ? new Date(startDate).toLocaleDateString() : '';
+                    },
+                    name: "StartDate"
+                },
+                {
+                    data: function (row) {
+                        var endDate = row.EndDate || row.endDate || '';
+                        return endDate ? new Date(endDate).toLocaleDateString() : 'N/A';
+                    },
+                    name: "EndDate"
+                },
+                //{
+                //    data: function (row) {
+                //        var isActive = row.IsActive || row.isActive;
+                //        return isActive === 'Active' ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-secondary">Inactive</span>';
+                //    }
+                //},
+                {
+                    data: function (row) { return row.Status || row.status || ''; },
+                    name: "Status"
+                },
+                {
+                    data: function (row) {
+                        var id = row.BaseCostId || row.baseCostId || '';
+                        return '<a class="btn btn-primary" href="/all-base-cost?BaseCostId=' + id + '&amp;handler=Edit">Edit</a> | ' +
+                            '<a href="/all-base-cost?BaseCostId=' + id + '&amp;handler=Delete" class="btn btn-primary btn-BaseCost-delete">Delete</a>';
+                    }
+                }
+            ],
+
+            initComplete: function () {
+                console.log('BaseCost DataTable initialized successfully');
+            }
+        });
+
+        // Delete confirmation for BaseCost
+        $(document).on('click', '.btn-BaseCost-delete', function (e) {
+            e.preventDefault();
+            var result = confirm("Are you sure you want to delete this base cost record?");
+            if (result) {
+                window.location.href = $(this).attr('href');
+            }
+        });
+    }
+
+
 });
 

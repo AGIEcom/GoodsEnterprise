@@ -66,12 +66,6 @@ namespace GoodsEnterprise
             services.AddDbContext<GoodsEnterpriseContext>(options =>
             options.UseSqlServer(
             Configuration.GetConnectionString("GoodsEnterpriseDatabase")));
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(30);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-            });
             services.Configure<RazorViewEngineOptions>(options =>
             {
                 options.PageViewLocationFormats.Add("/Pages/Partials/{0}" + RazorViewEngine.ViewExtension);
