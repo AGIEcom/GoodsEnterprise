@@ -1080,6 +1080,79 @@
                     margin: 10px auto;
                 }
             }
+            
+            /* Modern Loading Spinner */
+            .loading-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 2rem 1rem;
+                text-align: center;
+            }
+            
+            .loading-spinner {
+                position: relative;
+                width: 60px;
+                height: 60px;
+                margin-bottom: 1.5rem;
+            }
+            
+            .spinner-ring {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border: 3px solid transparent;
+                border-top: 3px solid #007bff;
+                border-radius: 50%;
+                animation: spin 1.2s linear infinite;
+            }
+            
+            .spinner-ring:nth-child(1) {
+                animation-delay: 0s;
+                border-top-color: #007bff;
+            }
+            
+            .spinner-ring:nth-child(2) {
+                animation-delay: 0.3s;
+                border-top-color: #28a745;
+                transform: scale(0.8);
+            }
+            
+            .spinner-ring:nth-child(3) {
+                animation-delay: 0.6s;
+                border-top-color: #ffc107;
+                transform: scale(0.6);
+            }
+            
+            .spinner-ring:nth-child(4) {
+                animation-delay: 0.9s;
+                border-top-color: #dc3545;
+                transform: scale(0.4);
+            }
+            
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            
+            .loading-text {
+                color: #495057;
+            }
+            
+            #loadingMessage {
+                font-size: 1.1rem;
+                font-weight: 500;
+                margin-bottom: 0.5rem;
+                color: #007bff;
+            }
+            
+            .loading-subtext {
+                font-size: 0.9rem;
+                color: #6c757d;
+                font-style: italic;
+            }
         `;
         document.head.appendChild(style);
     }
@@ -1544,13 +1617,26 @@
     }
     
     function updateProgress(percentage, processed, total) {
-        const progressFill = document.getElementById('progressFill');
-        const progressText = document.getElementById('progressText');
+        const loadingMessage = document.getElementById('loadingMessage');
         const recordsProcessed = document.getElementById('recordsProcessed');
         
-        if (progressFill) progressFill.style.width = percentage + '%';
-        if (progressText) progressText.textContent = Math.round(percentage) + '%';
-        if (recordsProcessed) recordsProcessed.textContent = `${processed} / ${total} records`;
+        // Update loading messages based on progress
+        if (percentage < 25) {
+            if (loadingMessage) loadingMessage.textContent = 'Reading Excel file...';
+            if (recordsProcessed) recordsProcessed.textContent = 'Analyzing file structure and data';
+        } else if (percentage < 50) {
+            if (loadingMessage) loadingMessage.textContent = 'Validating data...';
+            if (recordsProcessed) recordsProcessed.textContent = `Processing ${processed} of ${total} records`;
+        } else if (percentage < 75) {
+            if (loadingMessage) loadingMessage.textContent = 'Importing suppliers...';
+            if (recordsProcessed) recordsProcessed.textContent = `Importing ${processed} of ${total} records`;
+        } else if (percentage < 100) {
+            if (loadingMessage) loadingMessage.textContent = 'Finalizing import...';
+            if (recordsProcessed) recordsProcessed.textContent = `Almost done - ${processed} of ${total} records processed`;
+        } else {
+            if (loadingMessage) loadingMessage.textContent = 'Import completed!';
+            if (recordsProcessed) recordsProcessed.textContent = `Successfully processed ${total} records`;
+        }
     }
     
     function displayImportResults(data) {

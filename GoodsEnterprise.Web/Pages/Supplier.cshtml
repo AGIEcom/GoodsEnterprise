@@ -247,18 +247,20 @@
                 </small>
             </div>
 
-            <!-- Progress Section -->
+            <!-- Loading Section -->
             <div id="importProgress" style="display: none;">
                 <div class="modern-form-group">
-                    <label class="modern-form-label">Import Progress</label>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div id="progressFill" class="progress-fill" style="width: 0%;"></div>
+                    <label class="modern-form-label">Processing Import</label>
+                    <div class="loading-container">
+                        <div class="loading-spinner">
+                            <div class="spinner-ring"></div>
+                            <div class="spinner-ring"></div>
+                            <div class="spinner-ring"></div>
+                            <div class="spinner-ring"></div>
                         </div>
-                        <br />
-                        <div class="progress-text">
-                            <span id="progressText">0%</span>
-                            <span id="recordsProcessed">0 / 0 records</span>
+                        <div class="loading-text">
+                            <div id="loadingMessage">Importing your data...</div>
+                            <div id="recordsProcessed" class="loading-subtext">Please wait while we process your file</div>
                         </div>
                     </div>
                 </div>
