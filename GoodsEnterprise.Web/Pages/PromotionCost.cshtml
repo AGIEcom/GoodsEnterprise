@@ -62,6 +62,7 @@
 
 @Html.AntiForgeryToken()
 
+<input type="hidden" id="PromotionTypehtn" value="@ViewData["PageType"]" />
 
 <div class="modern-alert modern-alert-success" id="success-alert" style="display:none;">
     <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
@@ -298,4 +299,15 @@
     </script>
 
 }
-<script src="~/js/ServerSidePagination.js"></script>
+
+<script src="~/js/ServerSidePagination.js" asp-append-version="true"></script>
+
+<script>
+$(document).ready(function() {
+    // Initialize PromotionCost DataTable only when in List mode
+    @if (Convert.ToString(ViewData["PageType"]) == "List")
+    {
+        <text>PromotionPriceGridDataLoading();</text>
+    }
+});
+</script>

@@ -5,9 +5,16 @@ if (typeof initDataTable !== 'function') {
 
 $(document).ready(function () {
     // Initialize tables
-    ProductGridDataLoading();
-    PromotionPriceGridDataLoading();
-    BaseCostGridDataLoading();
+    if ($('#ProductTypehtn').val() == 'List') {
+        ProductGridDataLoading();
+    }
+    if ($('#PromotionTypehtn').val() == 'List') {
+        PromotionPriceGridDataLoading();
+    }
+    if ($('#BasePageTypehtn').val() == 'List') {
+
+        BaseCostGridDataLoading(); // Commented out to prevent automatic loading during import
+    }
     // Reload table when search filter changes
     //$('#searchByDropdown').on('change', function() {
     //    const table = $('#tblProductMaster').DataTable();

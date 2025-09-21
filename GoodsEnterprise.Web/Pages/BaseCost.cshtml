@@ -62,6 +62,7 @@
 
 @Html.AntiForgeryToken()
 
+<input type="hidden" id="BasePageTypehtn" value="@ViewData["PageType"]" />
 
 <div class="modern-alert modern-alert-success" id="success-alert" style="display:none;">
     <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
@@ -304,98 +305,7 @@
 <script src="~/js/ServerSidePagination.js" asp-append-version="true"></script>
 
 <script>
-$(document).ready(function() {
-    // Initialize BaseCost DataTable only when in List mode
-    @if (Convert.ToString(ViewData["PageType"]) == "List")
-    {
-        <text>BaseCostGridDataLoading();</text>
-    }
-});
 
-function BaseCostGridDataLoading() {
-    if (!$('#tblBaseCost').length) {
-        console.error('#tblBaseCost not found');
-        return;
-    }
-
-    // Initialize with our custom function
-    var tblBaseCost = $('#tblBaseCost').DataTable({
-        processing: true,
-        serverSide: true,
-        responsive: true,
-        autoWidth: true,
-        scrollX: true,
-        scrollCollapse: true,
-        lengthMenu: [5, 10, 20, 50],
-        pageLength: 10,
-        order: [[3, "desc"]], // Order by StartDate descending
-        deferRender: true,
-        searching: false, // Disable default search to use our custom search
-        columnDefs: [
-            { 
-                targets: [6], // action column is index 6 (0..6)
-                orderable: false,
-                className: 'text-nowrap' // Prevent action buttons from wrapping
-            }
-        ],
-        ajax: {
-            type: "POST",
-            url: './api/DataBasePagination/getbasecostdata',
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            headers: {
-                "XSRF-TOKEN": document.querySelector('[name="__RequestVerificationToken"]').value
-            },
-            data: function (data) {
-                // Add SearchBy parameter and custom search text for BaseCost
-                var searchBy = $('#searchByDropdownBaseCost').val() || 'All';
-                var customSearchText = $('#customSearchInputBaseCost').val() || '';
-                data.additionalValues = [searchBy];
-                data.search = { value: customSearchText };
-                return JSON.stringify(data);
-            },
-            dataSrc: function (json) {
-                console.log("BaseCost DT server response:", json);
-                if (!json) return [];
-                return json.data || json;
-            },
-            error: function (xhr, status, error) {
-                console.error("BaseCost DataTables AJAX error:", status, error);
-                console.log("Response text:", xhr && xhr.responseText);
-            }
-        },
-        columns: [
-            // Use functions to handle PascalCase OR camelCase JSON keys
-            { data: function (row) { return row.SupplierName || row.supplierName || ''; } },
-            { data: function (row) { return row.ProductName || row.productName || ''; } },
-            { data: function (row) { 
-                var baseCost = row.BaseCost1 || row.baseCost1 || row.BaseCost || row.baseCost || '';
-                return baseCost ? parseFloat(baseCost).toFixed(2) : '0.00';
-            } },
-            { data: function (row) { 
-                var startDate = row.StartDate || row.startDate || '';
-                return startDate ? new Date(startDate).toLocaleDateString() : '';
-            } },
-            { data: function (row) { 
-                var endDate = row.EndDate || row.endDate || '';
-                return endDate ? new Date(endDate).toLocaleDateString() : 'N/A';
-            } },
-            { data: function (row) { 
-                var isActive = row.IsActive || row.isActive;
-                return isActive === 'Active' ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-secondary">Inactive</span>';
-            } },
-            {
-                data: function (row) {
-                    var id = row.BaseCostId || row.baseCostId || '';
-                    return '<a class="btn btn-primary" href="/all-base-cost?BaseCostId=' + id + '&amp;handler=Edit">Edit</a> | ' +
-                        '<a href="/all-base-cost?BaseCostId=' + id + '&amp;handler=Delete" class="btn btn-primary btn-BaseCost-delete">Delete</a>';
-                }
-            }
-        ],
-        initComplete: function () {
-            console.log('BaseCost DataTable initialized successfully');
-        }
-    });
 
     // Delete confirmation for BaseCost
     $(document).on('click', '.btn-BaseCost-delete', function(e) {

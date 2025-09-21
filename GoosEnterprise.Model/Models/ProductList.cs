@@ -42,6 +42,6 @@ namespace GoodsEnterprise.Model.Models
         public DateTime EndDate { get; set; }
         public int FilterTotalCount { get; set; }
         public string Status { get; set; }
-        public DateTime? ModifiedDate { get; set; }
+        //public DateTime? ModifiedDate { get; set; }
     }
 }
