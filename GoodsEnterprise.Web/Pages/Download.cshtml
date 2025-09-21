@@ -1,4 +1,4 @@
-@page "/Download"
+@page "/Export"
 @model GoodsEnterprise.Web.Pages.DownloadModel
 @{
     ViewData["Title"] = "Download";
@@ -25,10 +25,6 @@
 
 <div id="divDownload">
     <div class="modern-card">
-        <div class="modern-card-header">
-            <h2 class="modern-card-title">Export Products</h2>
-            <p class="modern-card-subtitle">Download product data in Excel format</p>
-        </div>
         <form id="Downloadform" method="post" enctype="multipart/form-data" asp-page-handler="Submit">
             <div class="row">
                 <div class="col-12">
@@ -66,24 +62,18 @@
     </div>
 </div>
 
-@if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
-{
-    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#success-alert").show();
-            $("#success-alert").fadeTo(2000, 3000).slideUp(3000, function () {
-                $("#success-alert").slideUp(3000);
-            });
-        });
-    </script>
-}
+@* Include Modern Alert System *@
+@await Html.PartialAsync("_ModernAlerts")
 
 @if (ViewData["ValidationMsg"] != null && ViewData["ValidationMsg"] != "")
 {
-<script type="text/javascript">
-    $(document).ready(function () {
-        $("#validation-alert").show();      
-    });      
-</script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof ModernAlert !== 'undefined') {
+                ModernAlert.warning('@Html.Raw(Html.Encode(ViewData["ValidationMsg"].ToString()).Replace("'", "\\'"))', 'Validation Error!', {
+                    duration: 6000
+                });
+            }
+        });
+    </script>
 }

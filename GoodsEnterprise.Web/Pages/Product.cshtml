@@ -1,8 +1,7 @@
 @page "/all-product"
 @model GoodsEnterprise.Web.Pages.ProductModel
 
-@{
-    ViewData["Title"] = "Product";
+@{ ViewData["Title"] = "Product";
     var Edit = "";
     var List = "";
     var ShowTaxDrop = "";
@@ -27,8 +26,7 @@
     {
         imagePath = Convert.ToString(ViewData["ImagePath"]);
 
-    }
-}
+    } }
 
 <link href="/css/common.css" rel="stylesheet" asp-append-version="true" />
 
@@ -44,12 +42,12 @@
         align-items: center;
         font-size: 14px;
     }
-    
+
     .file-name-text {
         color: #495057;
         font-weight: 500;
     }
-    
+
     .remove-file-btn {
         background: none;
         border: none;
@@ -63,12 +61,12 @@
         align-items: center;
         justify-content: center;
     }
-    
-    .remove-file-btn:hover {
-        background-color: #dc3545;
-        color: white;
-        border-radius: 50%;
-    }
+
+        .remove-file-btn:hover {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+        }
 </style>
 
 @Html.AntiForgeryToken()
@@ -85,73 +83,178 @@
 
 <div id="productlist" style="@List">
     <div class="modern-card">
-        <div class="modern-card-header">
-            <h2 class="modern-card-title">Product Management</h2>
-        </div>
-        <a asp-page-handler="Create" id="lnkCreateProduct" class="modern-btn modern-btn-primary mb-3">
-            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
-            </svg>
-            Create New Product
-        </a>
+        <div class="d-flex justify-content-end">
+            <a asp-page-handler="Create" id="lnkCreateProduct" class="modern-btn modern-btn-primary">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+                </svg>
 
-        <div class="modern-table-container" style="max-height: 500px; overflow-y: auto;">
-            <div class="row mb-3">
-                <div class="col-12">
-                    <div class="d-flex justify-content-end align-items-center" style="gap: 2rem;">
-                        <div class="d-flex align-items-center gap-2">
-                            <label for="searchByDropdown" class="modern-form-label" style="font-size: 0.85rem; margin-bottom: 0; white-space: nowrap;">Search By:</label>
-                            <select id="searchByDropdown" class="modern-select" style="width: 140px;">
-                                <option value="All">All Fields</option>
-                                <option value="ProductName">Product Name</option>
-                                <option value="CategoryName">Category Name</option>
-                                <option value="BrandName">Brand Name</option>
-                                <option value="Code">Product Code</option>
-                                <option value="OuterEan">Outer EAN</option>
-                            </select>
+            </a>
+        </div>
+        <!-- Enhanced Product DataTable Container -->
+        <div class="modern-datatable-container">
+            <!-- Advanced Search & Filter Controls -->
+            <div class="datatable-header-controls">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <div class="d-flex flex-wrap align-items-center gap-3">
+                            <!-- Search Filter Dropdown -->
+                            <div class="filter-group">
+                                <label for="searchByDropdown" class="filter-label">
+                                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
+                                    </svg>
+                                    Filter By:
+                                </label>
+                                <select id="searchByDropdown" class="modern-select-enhanced">
+                                    <option value="All">🔍 All Fields</option>
+                                    <option value="ProductName">📦 Product Name</option>
+                                    <option value="CategoryName">📂 Category</option>
+                                    <option value="BrandName">🏷️ Brand</option>
+                                    <option value="Code">🔢 Product Code</option>
+                                    <option value="OuterEan">📊 Outer EAN</option>
+                                </select>
+                            </div>
+
+                            <!-- Status Filter -->
+                            <div class="filter-group  d-none">
+                                <label for="statusFilter" class="filter-label">
+                                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
+                                    </svg>
+                                    Status:
+                                </label>
+                                <select id="statusFilter" class="modern-select-enhanced">
+                                    <option value="All">All Status</option>
+                                    <option value="Active">✅ Active</option>
+                                    <option value="Inactive">❌ Inactive</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <label class="modern-form-label" style="font-size: 0.85rem; margin-bottom: 0; white-space: nowrap;">Search:</label>
-                            <input type="text" id="customSearchInputProduct" class="modern-form-input" style="width: 200px;" placeholder="Search...">
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="d-flex align-items-center justify-content-end gap-2">
+                            <!-- Enhanced Search Input -->
+                            <div class="search-input-group">
+                                <input type="text" id="customSearchInputProduct" class="modern-search-input" placeholder="🔍 Search products...">
+                                <button type="button" class="search-clear-btn" id="clearProductSearch" title="Clear search">
+                                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- Table Action Buttons -->
+                            <div class="table-actions">
+                                <button type="button" class="action-btn" id="refreshProductTable" title="Refresh table">
+                                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
+                                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
+                                    </svg>
+                                </button>
+                                <button type="button" class="action-btn d-none" id="exportProductTable" title="Export data">
+                                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                                        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <table class="modern-table" id="tblProductMaster">
-                <thead>
-                    <tr>
-                        <th scope="col">Product Code</th>
-                        <th scope="col">Product Name</th>
-                        <th scope="col">Category Name</th>
-                        <th scope="col">Brand Name</th>
-                        <th scope="col">OuterEan</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Modified Date</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+
+            <!-- Enhanced DataTable -->
+            <div class="datatable-wrapper">
+                <table class="modern-datatable" id="tblProductMaster">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="sortable" data-column="code">
+                                <div class="th-content">
+                                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c0 .026.01.052.03.073L8.5 12.836a1 1 0 0 0 1.414 0L17.384 5.366a.125.125 0 0 0 .03-.073V4.5A1.5 1.5 0 0 0 16 3H2.5z" />
+                                    </svg>
+                                    Product Code
+                                </div>
+                            </th>
+                            <th scope="col" class="sortable" data-column="name">
+                                <div class="th-content">
+                                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z" />
+                                    </svg>
+                                    Product Name
+                                </div>
+                            </th>
+                            <th scope="col" class="sortable" data-column="category">
+                                <div class="th-content">
+                                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z" />
+                                    </svg>
+                                    Category
+                                </div>
+                            </th>
+                            <th scope="col" class="sortable" data-column="brand">
+                                <div class="th-content">
+                                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                                    </svg>
+                                    Brand
+                                </div>
+                            </th>
+                            <th scope="col" class="sortable" data-column="ean">
+                                <div class="th-content">
+                                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1h-4zM11 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 17 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zM.5 11a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 15.5v-4a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5zM3 4.5a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-7zm2 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-7zm2 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-7zm2 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-7zm2 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0v-7z" />
+                                    </svg>
+                                    Outer EAN
+                                </div>
+                            </th>
+                            <th scope="col" class="text-center">
+                                <div class="th-content">
+                                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
+                                    </svg>
+                                    Status
+                                </div>
+                            </th>
+                            <th scope="col" class="sortable" data-column="date">
+                                <div class="th-content">
+                                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
+                                    </svg>
+                                    Modified Date
+                                </div>
+                            </th>
+                            <th scope="col" class="text-center action-column">
+                                <div class="th-content">
+                                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z" />
+                                    </svg>
+                                    Actions
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
 <div id="divCreateUpdateProduct" style="@Edit">
     <div class="modern-card">
-        <div class="modern-card-header">
-            <h2 class="modern-card-title">@(Convert.ToInt32(ViewData["PagePrimaryID"]) > 0 ? "Edit Product" : "Create New Product")</h2>
-        </div>
         <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
             <div asp-validation-summary="ModelOnly" class="modern-alert modern-alert-error"></div>
             @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
             {
-                <input asp-for="objProduct.Id" type="hidden" class="form-control" id="txtProductID">
+<input asp-for="objProduct.Id" type="hidden" class="form-control" id="txtProductID">
                 <input asp-for="objProduct.IsDelete" type="hidden" class="form-control" id="txtIsDelete">
-                <input asp-for="objProduct.Createdby" type="hidden" class="form-control" id="txtCreatedby">
-                <input asp-for="objProduct.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
-                <input asp-for="objProduct.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
-                <input asp-for="objProduct.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
-            }
+                                <input asp-for="objProduct.Createdby" type="hidden" class="form-control" id="txtCreatedby">
+                                                <input asp-for="objProduct.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
+                                                                <input asp-for="objProduct.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
+                                                                                <input asp-for="objProduct.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">}
             <div class="row">
                 <div class="col-md-3">
                     <div class="modern-form-group">
@@ -159,7 +262,7 @@
                         <input asp-for="objProduct.Code" type="text" class="modern-form-input" id="txtProduct" required>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 d-none">
                     <div class="modern-form-group">
                         <label for="txtProductID" class="modern-form-label">Lavender Code</label>
                         <input asp-for="objProduct.Id" type="text" class="modern-form-input" id="txtProductID" readonly>
@@ -223,7 +326,7 @@
                         <label for="selectProductSubCategory" class="modern-form-label">Supplier</label>
                         <select asp-for="objProduct.SupplierId" class="modern-select" asp-items="Model.selectSupplier" id="selectProductSupplier">
                             <option value="">-- Select Supplier --</option>
-                        </select>                       
+                        </select>
                     </div>
                 </div>
             </div>
@@ -376,7 +479,7 @@
                     <div class="modern-form-group">
                         <label for="txtExpriyDate" class="modern-form-label">Expiry Date</label>
                         <div class="datepicker-wrapper">
-                            <input asp-for="objProduct.ExpriyDate" type="date" class="modern-form-input datepicker" id="txtExpriyDate" 
+                            <input asp-for="objProduct.ExpriyDate" type="date" class="modern-form-input datepicker" id="txtExpriyDate"
                                    value="@(Model.objProduct?.ExpriyDate?.ToString("yyyy-MM-dd") ?? string.Empty)">
                         </div>
                     </div>
@@ -441,14 +544,14 @@
                             </div>
                             @if (imagePath != "")
                             {
-                                <div class="image-preview-container">
-                                    <img src="@imagePath" id="imgPath" alt="Product Image" class="preview-image" />
-                                    <div class="image-overlay">
-                                        <button type="button" class="change-image-btn" onclick="document.getElementById('fileUpload').click()">
-                                            Change Image
-                                        </button>
-                                    </div>
-                                </div>}
+                <div class="image-preview-container">
+                    <img src="@imagePath" id="imgPath" alt="Product Image" class="preview-image" />
+                    <div class="image-overlay">
+                        <button type="button" class="change-image-btn" onclick="document.getElementById('fileUpload').click()">
+                            Change Image
+                        </button>
+                    </div>
+                </div>}
                         </div>
                     </div>
                 </div>
@@ -465,21 +568,21 @@
                         </button>
                         @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
                         {
-                            <a asp-page-handler="Reset" asp-route-productId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="modern-btn modern-btn-secondary">
-                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"></path>
-                                </svg>
-                                Reset
-                            </a> }
-                        else
-                        {
-                            <a asp-page-handler="Clear" class="modern-btn modern-btn-secondary">
-                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"></path>
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                                </svg>
-                                Clear
-                            </a>}
+            <a asp-page-handler="Reset" asp-route-productId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="modern-btn modern-btn-secondary">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"></path>
+                </svg>
+                Reset
+            </a> }
+        else
+        {
+<a asp-page-handler="Clear" class="modern-btn modern-btn-secondary">
+    <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"></path>
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+    </svg>
+    Clear
+</a>}
                         <a asp-page="/Product" class="modern-btn modern-btn-secondary">
                             <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
@@ -492,26 +595,19 @@
         </form>
     </div>
 </div>
+<script src="~/js/ServerSidePagination.js"></script>
+@* Include Modern Alert System *@
+@await Html.PartialAsync("_ModernAlerts")
 
-@if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
-{
-    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#success-alert").show();
-            $("#success-alert").fadeTo(2000, 3000).slideUp(3000, function () {
-                $("#success-alert").slideUp(3000);
-            });
-        });
 
-    </script>
-}
+
+
 
 <script>
     function clearSelectedFile() {
         var fileInput = document.getElementById('fileUpload');
         var selectedFileName = document.getElementById('selectedFileName');
-        
+
         fileInput.value = '';
         selectedFileName.style.display = 'none';
     }
@@ -529,23 +625,23 @@
     function validateShelfLife(input) {
         // Remove any leading zeros and ensure value is not 0
         let value = input.value;
-        
+
         // Remove leading zeros
         value = value.replace(/^0+/, '');
-        
+
         // If empty after removing zeros, set to empty
         if (value === '') {
             input.value = '';
             return;
         }
-        
+
         // Convert to number and check if it's 0
         let numValue = parseInt(value);
         if (numValue === 0 || isNaN(numValue)) {
             input.value = '';
             return;
         }
-        
+
         // Update the input value without leading zeros
         input.value = numValue.toString();
     }
@@ -553,21 +649,21 @@
     function handleShelfLifePaste(event) {
         // Prevent default paste behavior
         event.preventDefault();
-        
+
         // Get pasted data
         let pastedData = (event.clipboardData || window.clipboardData).getData('text');
-        
+
         // Remove non-numeric characters except for the first character
         pastedData = pastedData.replace(/[^0-9]/g, '');
-        
+
         // Remove leading zeros
         pastedData = pastedData.replace(/^0+/, '');
-        
+
         // If empty after cleaning, don't paste anything
         if (pastedData === '') {
             return;
         }
-        
+
         // Convert to number and validate
         let numValue = parseInt(pastedData);
         if (numValue > 0 && !isNaN(numValue)) {
@@ -575,5 +671,4 @@
         }
     }
 </script>
- 
-<script src="~/js/ServerSidePagination.js"></script>
+

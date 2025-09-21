@@ -72,49 +72,13 @@
         // ... (keep existing implementation)
     }
 
-    // DataTable utilities
+    // DataTable utilities - resize functionality removed
     function initDataTables() {
-        // Add resize handler for DataTables
-        const resizeDataTables = function() {
-            if (typeof $ !== 'undefined' && $.fn.DataTable) {
-                $('.dataTable').each(function() {
-                    const table = $(this).DataTable();
-                    if (table) {
-                        try {
-                            table.columns.adjust().responsive.recalc();
-                        } catch (e) {
-                            console.warn('Error resizing DataTable:', e);
-                        }
-                    }
-                });
-            }
-        };
-
-        // Make it globally available
-        window.resizeDataTables = resizeDataTables;
-
-        // Initialize DataTables with proper options
-        if (typeof $ !== 'undefined' && $.fn.DataTable) {
-            // Handle window resize with debounce
-            let resizeTimer;
-            $(window).on('resize', function() {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(resizeDataTables, 250);
-            });
-
-            // Handle tab changes
-            $('a[data-toggle="tab"], a[data-bs-toggle="tab"]').on('shown.bs.tab', function() {
-                setTimeout(resizeDataTables, 100);
-            });
-
-            // Handle modal shown
-            $('.modal').on('shown.bs.modal', function() {
-                setTimeout(resizeDataTables, 100);
-            });
-        }
-
+        // DataTable resize functionality has been removed
+        // Tables will use native responsive behavior instead
+        
         return {
-            resize: resizeDataTables
+            // No resize method needed
         };
     }
 

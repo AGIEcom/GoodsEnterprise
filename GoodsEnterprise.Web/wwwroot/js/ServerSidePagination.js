@@ -3,26 +3,41 @@ if (typeof initDataTable !== 'function') {
     //console.error('initDataTable function is not available. Make sure site.js is loaded first.');
 }
 
-$(document).ready(function () {
-    // Initialize tables
-    ProductGridDataLoading();
-    PromotionPriceGridDataLoading();
-   
-    // Reload table when search filter changes
-    //$('#searchByDropdown').on('change', function() {
-    //    const table = $('#tblProductMaster').DataTable();
-    //    if (table) {
-    //        table.ajax.reload(null, false); // false = don't reset paging
-            
-    //        // Refresh the table after data is loaded
-    //        table.on('draw', function() {
-    //            if (typeof resizeDataTables === 'function') {
-    //                resizeDataTables();
-    //            }
-    //        });
-    //    }
-    //});
+// Global variables to track table initialization
+var productTableInitialized = false;
+var promotionTableInitialized = false;
+
+$(document).ready(function () { 
+    // Initialize tables only once
+    if ($('#tblProductMaster').length > 0) {
+        ProductGridDataLoading();
+    }
     
+    if ($('#tblPromotionCost').length > 0) {
+        PromotionPriceGridDataLoading();
+    }
+    
+    // Handle "Add New Product" button to prevent table reinitialization
+    $(document).on('click', '#lnkCreateProduct', function(e) {
+        // Don't prevent default, just ensure table doesn't reinitialize
+        console.log('Add New Product clicked - table should remain stable');
+    });
+    
+    // Handle page visibility changes to prevent unnecessary reinitialization
+    $(document).on('visibilitychange', function() {
+        if (document.visibilityState === 'visible') {
+            console.log('Page became visible - tables should remain stable');
+        }
+    });
+    
+    // Prevent table reinitialization on window focus
+    $(window).on('focus', function() {
+        console.log('Window focused - tables should remain stable');
+    });
+
+    // Reload table when search filter changes
+    // Search dropdown functionality removed - using custom search instead
+
     // Reload Product table when custom search input changes
     $('#customSearchInputProduct').on('keyup', function () {
         if (this.value.length >= 5) {
@@ -32,22 +47,25 @@ $(document).ready(function () {
             }
         }
     });
+    $('#refreshProductTable').on('click', function () {
+        $('#customSearchInputProduct').val("");
+        $('#searchByDropdown').val("All");
+        const table = $('#tblProductMaster').DataTable();
+        if (table) {
+            table.ajax.reload(null, false); // false = don't reset paging
+        }
+    });
+    $('#clearProductSearch').on('click', function () {
+        $('#customSearchInputProduct').val("");        
+        const table = $('#tblProductMaster').DataTable();
+        if (table) {
+            table.ajax.reload(null, false); // false = don't reset paging
+        }
+    });
     
-    // Reload PromotionCost table when search filter changes
-    //$('#searchByDropdownPromotionCost').on('change', function() {
-    //    const table = $('#tblPromotionCost').DataTable();
-    //    if (table) {
-    //        table.ajax.reload(null, false); // false = don't reset paging
-            
-    //        // Refresh the table after data is loaded
-    //        table.on('draw', function() {
-    //            if (typeof resizeDataTables === 'function') {
-    //                resizeDataTables();
-    //            }
-    //        });
-    //    }
-    //});
-    
+
+    // PromotionCost search dropdown removed - using custom search instead
+
     // Reload PromotionCost table when custom search input changes
     $('#customSearchInput').on('keyup', function () {
         if (this.value.length >= 5) {
@@ -57,49 +75,48 @@ $(document).ready(function () {
             }
         }
     });
-    
-    // Handle window resize for DataTables in this file
-    let resizeTimer;
-    $(window).on('resize', function () {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function() {
-            if (typeof resizeDataTables === 'function') {
-                resizeDataTables();
-            }
-        }, 250);
-    });
+   
+
+    // Window resize handler removed - no longer needed for DataTables
 
     function ProductGridDataLoading() {
-        // Destroy existing DataTable if it exists
+        // Check if already initialized using global variable
+        if (productTableInitialized) {
+            console.log('ProductGrid DataTable already initialized, skipping...');
+            return $('#tblProductMaster').DataTable();
+        }
+        
+        // Check if DataTable already exists and is properly initialized
         if ($.fn.DataTable.isDataTable('#tblProductMaster')) {
-            $('#tblProductMaster').DataTable().destroy();
+            console.log('ProductGrid DataTable already exists, skipping initialization');
+            productTableInitialized = true;
+            return $('#tblProductMaster').DataTable();
         }
 
-        // Initialize with our custom function
-        tbl_barangay = initDataTable('#tblProductMaster', {
+        console.log('Initializing ProductGrid DataTable...');
+        productTableInitialized = true;
+        
+        // Initialize with our custom function (now returns a Promise)
+        return $('#tblProductMaster').DataTable({
+            // const table = initDataTable('#tblProductMaster', {
             processing: true,
             serverSide: true,
-            responsive: true,
-            autoWidth: true,
+            responsive: false, // Disable responsive to prevent collapse
+            autoWidth: false,
             scrollX: true,
-            scrollCollapse: true,
+            scrollCollapse: false,
             lengthMenu: [5, 10, 20, 50],
             pageLength: 5,
             searching: false, // Disable default search to use our custom search
             order: [[6, "desc"]],
             deferRender: true,
-            //drawCallback: function() {
-            //    // Handle resizing after table draw
-            //    if (typeof resizeDataTables === 'function') {
-            //        resizeDataTables();
-            //    }
-            //},
+            // drawCallback removed - no resize functionality needed
             columnDefs: [{
                 targets: [7], /* column index */
                 orderable: false, /* true or false */
 
             }],
-            initComplete: function() {
+            initComplete: function () {
                 // Using custom search controls, no need to move DataTables search input
                 // The default search is disabled and we use our custom search input
             },
@@ -116,16 +133,16 @@ $(document).ready(function () {
                     let additionalValues = [];
                     additionalValues[0] = $("#searchByDropdown").val() || "All";
                     data.AdditionalValues = additionalValues;
-                    
+
                     // Add custom search text for Product
                     var customSearchText = $('#customSearchInputProduct').val() || '';
                     data.search = { value: customSearchText };
-                    
+
                     // Force modifiedDate sorting on initial load
                     if (data.start === 0 && (!data.search || !data.search.value)) {
                         data.SortOrder = "modifiedDate DESC";
                     }
-                    
+
                     return JSON.stringify(data);
                 },
                 error: function (jqXHR, exception) {
@@ -148,7 +165,7 @@ $(document).ready(function () {
 
                 }
             },
-            columns: [               
+            columns: [
                 {
                     data: "code",
                     name: "Code"
@@ -172,7 +189,7 @@ $(document).ready(function () {
                 {
                     data: "status",
                     name: "Status"
-                },  
+                },
                 {
                     data: "modifiedDate",
                     name: "ModifiedDate",
@@ -189,7 +206,7 @@ $(document).ready(function () {
                     render: function (data, type, row) {
                         if (type === 'display') {
                             return '<a class="modern-btn modern-btn-primary modern-btn-sm" href="/all-product?productId=' + row.id + '&amp;handler=Edit">Edit</a> ' +
-                                '<a href="/all-product?productId=' + row.id + '&amp;handler=DeleteProduct" class="modern-btn modern-btn-danger modern-btn-sm btn-product-delete">Delete</a>';
+                                '<a href="/all-product?productId=' + row.id + '&amp;handler=DeleteProduct" class="modern-btn modern-btn-sm modern-btn-danger btn-product-delete" onclick="return deleteConfirm(event, \'Product\', this.href)">Delete</a>';
                         }
                         return data;
                     }
@@ -199,126 +216,65 @@ $(document).ready(function () {
             ]
         });
     }
+    function deleteConfirm(event, entityName, deleteUrl) {
+        event.preventDefault(); // Prevent default link behavior
+        
+        showModernConfirm(
+            'Delete Confirmation',
+            `Are you sure you want to delete this ${entityName}? This action cannot be undone.`,
+            'Delete',
+            'Cancel',
+            () => {
+                // Proceed with deletion
+                window.location.href = deleteUrl;
+            }
+        );
+        
+        return false; // Prevent default link behavior
+    }
 
-    //function PromotionPriceGridDataLoading() {
-
-    //    tbl_barangay = $('#tblPromotionCost').dataTable({
-
-    //        processing: true,
-    //        serverSide: true,
-    //        responsive: true,
-    //        lengthMenu: [10, 20, 50],
-
-    //        "order": [[1, "desc"]],
-    //        "deferRender": true,
-    //        'columnDefs': [{
-
-    //            'targets': [6], /* column index */
-
-    //            'orderable': false, /* true or false */
-
-    //        }],
-    //        ajax: {
-    //            type: "POST",
-    //            url: './api/DataBasePagination/getpromotioncostdata',
-    //            contentType: "application/json; charset=utf-8",
-    //            dataType: "json",
-    //            headers: {
-    //                "XSRF-TOKEN": document.querySelector('[name="__RequestVerificationToken"]').value
-    //            },
-               
-    //            async: true,
-    //            data: function (data) {
-    //                let additionalValues = [];
-    //                //additionalValues[0] = $("#txtfromDate").val();
-    //                //additionalValues[1] = $("#txtToDate").val();
-    //                //var Appic = GetApplication();
-    //                //additionalValues[2] = Appic;
-    //                //data.AdditionalValues = additionalValues;
-    //                return JSON.stringify(data);
-    //            },
-    //            error: function (jqXHR, exception) {
-    //                var msg = '';
-    //                if (jqXHR.status === 0) {
-    //                    msg = 'Not connect.\n Verify Network.';
-    //                } else if (jqXHR.status == 404) {
-    //                    msg = 'Requested page not found. [404]';
-    //                } else if (jqXHR.status == 500) {
-    //                    msg = 'Internal Server Error [500].';
-    //                } else if (exception === 'parsererror') {
-    //                    msg = 'Requested JSON parse failed.';
-    //                } else if (exception === 'timeout') {
-    //                    msg = 'Time out error.';
-    //                } else if (exception === 'abort') {
-    //                    msg = 'Ajax request aborted.';
-    //                } else {
-    //                    msg = 'Uncaught Error.\n' + jqXHR.responseText;
-    //                }
-
-    //            }
-    //        },
-    //        columns: [                           
-    //            {
-    //                data: "SupplierName"
-    //            },
-    //            {
-    //                data: "ProductName"
-    //            },
-    //            {
-    //                data: "PromotionCost"
-    //            },
-    //            {
-    //                data: "StartDate"
-    //            },
-    //            {
-    //                data: "EndDate"
-    //            },
-    //            {
-    //                data: "Status"
-    //            },
-    //            {
-    //                data: "PromotionCostID",
-    //                render: function (data, type, row) {
-    //                    if (type === 'display') {
-    //                        return '<a class="btn btn-primary" href="/all-promotion-cost?PromotionCostId=' + row.PromotionCostID + '&amp;handler=Edit">Edit</a> | ' +
-    //                            '<a href="/all-promotion-cost?PromotionCostId=' + row.PromotionCostID + '&amp;handler=DeleteProduct" class="btn btn-primary btn-PromotionCost-delete">Delete</a>';
-    //                    }
-    //                    return data;
-    //                }
-    //            }
-                 
-
-    //        ]
-    //    });
-    //}
-
+    // Make deleteConfirm globally available for other DataTables
+    window.deleteConfirm = deleteConfirm;
+   
+    
     function PromotionPriceGridDataLoading() {
         if (!$('#tblPromotionCost').length) {
             //console.error('#tblPromotionCost not found');
             return;
         }
 
+        // Check if already initialized using global variable
+        if (promotionTableInitialized) {
+            console.log('PromotionCost DataTable already initialized, skipping...');
+            return $('#tblPromotionCost').DataTable();
+        }
+        
+        // Check if DataTable already exists and is properly initialized
+        if ($.fn.DataTable.isDataTable('#tblPromotionCost')) {
+            console.log('PromotionCost DataTable already exists, skipping initialization');
+            promotionTableInitialized = true;
+            return $('#tblPromotionCost').DataTable();
+        }
+
+        console.log('Initializing PromotionCost DataTable...');
+        promotionTableInitialized = true;
+
         // Initialize with our custom function
-        tbl_barangay = initDataTable('#tblPromotionCost', {
+        return $('#tblPromotionCost').DataTable({
+       // const table = initDataTable('#tblPromotionCost', {
             processing: true,
             serverSide: true,
-            responsive: true,
-            autoWidth: true,
+            responsive: false, // Disable responsive to prevent collapse
+            autoWidth: false,
             scrollX: true,
-            scrollCollapse: true,
+            scrollCollapse: false,
             lengthMenu: [5, 10, 20, 50],
             pageLength: 5,
             order: [[1, "desc"]],
             deferRender: true,
             searching: false, // Disable default search to use our custom search
-            drawCallback: function() {
-                // Handle resizing after table draw
-                if (typeof resizeDataTables === 'function') {
-                    resizeDataTables();
-                }
-            },
             columnDefs: [
-                { 
+                {
                     targets: [6], // action column is index 6 (0..6)
                     orderable: false,
                     className: 'text-nowrap' // Prevent action buttons from wrapping
@@ -356,24 +312,28 @@ $(document).ready(function () {
                 { data: function (row) { return row.SupplierName || row.supplierName || ''; } },
                 { data: function (row) { return row.ProductName || row.productName || ''; } },
                 { data: function (row) { return row.PromotionCost || row.promotionCost || ''; } },
-                { data: function (row) { 
-                    var startDate = row.StartDate || row.startDate || '';
-                    return startDate ? new Date(startDate).toLocaleDateString() : '';
-                } },
-                { data: function (row) { 
-                    var endDate = row.EndDate || row.endDate || '';
-                    return endDate ? new Date(endDate).toLocaleDateString() : '';
-                } },
+                {
+                    data: function (row) {
+                        var startDate = row.StartDate || row.startDate || '';
+                        return startDate ? new Date(startDate).toLocaleDateString() : '';
+                    }
+                },
+                {
+                    data: function (row) {
+                        var endDate = row.EndDate || row.endDate || '';
+                        return endDate ? new Date(endDate).toLocaleDateString() : '';
+                    }
+                },
                 { data: function (row) { return row.Status || row.status || ''; } },
                 {
                     data: function (row) {
                         var id = row.PromotionCostID || row.promotionCostID || '';
                         return '<a class="btn btn-primary" href="/all-promotion-cost?PromotionCostId=' + id + '&amp;handler=Edit">Edit</a> | ' +
-                            '<a href="/all-promotion-cost?PromotionCostId=' + id + '&amp;handler=Delete" class="btn btn-primary btn-PromotionCost-delete">Delete</a>';
+                            '<a href="/all-promotion-cost?PromotionCostId=' + id + '&amp;handler=Delete" class="btn btn-primary btn-PromotionCost-delete" onclick="return deleteConfirm(event, \'PromotionCost\', this.href)">Delete</a>';
                     }
                 }
             ],
-            initComplete: function() {
+            initComplete: function () {
                 // Using custom search controls, no need to move DataTables search input
                 // The default search is disabled and we use our custom search input
             }

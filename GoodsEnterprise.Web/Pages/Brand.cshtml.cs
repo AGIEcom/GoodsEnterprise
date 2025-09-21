@@ -66,10 +66,10 @@ namespace GoodsEnterprise.Web.Pages
                 ViewData["PagePrimaryID"] = 0;
 
                 lstbrand = await _brand.GetAllAsync(filter: x => x.IsDelete != true, orderBy: mt => mt.OrderByDescending(m => m.ModifiedDate == null ? m.CreatedDate : m.ModifiedDate));
-                if (lstbrand == null || lstbrand?.Count == 0)
-                {
-                    ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
-                }
+                //if (lstbrand == null || lstbrand?.Count == 0)
+                //{
+                //    ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
+                //}
             }
             catch (Exception ex)
             {
@@ -228,7 +228,7 @@ namespace GoodsEnterprise.Web.Pages
                             ViewData["PagePrimaryID"] = objBrand.Id;
                             ViewData["ImagePath"] = GetImageUrl(objBrand.ImageUrl500);
                         }
-                        ViewData["SuccessMsg"] = $"Brand: {objBrand.Name} {Constants.AlreadyExistMessage}";
+                        ViewData["InfoMsg"] = $"Brand: {objBrand.Name} {Constants.AlreadyExistMessage}";
                         return Page();
                     }
                 }

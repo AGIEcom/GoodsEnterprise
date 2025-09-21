@@ -60,10 +60,10 @@ namespace GoodsEnterprise.Web.Pages
                 }
                 ViewData["PagePrimaryID"] = 0;
                 lstcustomer = await _customer.GetAllAsync(filter: x => x.IsDelete != true, orderBy: mt => mt.OrderByDescending(m => m.ModifiedDate == null ? m.CreatedDate : m.ModifiedDate));
-                if (lstcustomer == null || lstcustomer?.Count == 0)
-                {
-                    ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
-                }
+                //if (lstcustomer == null || lstcustomer?.Count == 0)
+                //{
+                //    ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
+                //}
             }
             catch (Exception ex)
             {
@@ -123,10 +123,11 @@ namespace GoodsEnterprise.Web.Pages
         /// OnGetClear
         /// </summary>
         /// <returns></returns>
-        public IActionResult OnGetClear()
+        public async Task<IActionResult> OnGetClear()
         {
             try
             {
+                await LoadRole();
                 objCustomer = new Customer();
                 objCustomer.IsActive = false;
                 ViewData["PageType"] = "Edit";
@@ -206,23 +207,39 @@ namespace GoodsEnterprise.Web.Pages
                         {
                             ViewData["PagePrimaryID"] = objCustomer.Id;
                         }
-                        ViewData["SuccessMsg"] = $"Customer: {objCustomer.Email} {Constants.AlreadyExistMessage}";
+                        ViewData["InfoMsg"] = $"Customer: {objCustomer.Email} {Constants.AlreadyExistMessage}";
+                        await LoadRole();
                         return Page();
                     }
                 }
-
-                objCustomer.Password = objCustomer.Password.Encrypt(Constants.EncryptDecryptSecurity);
-
                 if (ModelState.IsValid)
                 {
                     if (objCustomer.Id == 0)
                     {
+                        // New customer - password is required
+                        if (objCustomer.Password != null)
+                            objCustomer.Password = objCustomer.Password.Encrypt(Constants.EncryptDecryptSecurity);
                         objCustomer.PasswordExpiryDate = DateTime.UtcNow.AddDays(90);
                         await _customer.InsertAsync(objCustomer);
                         HttpContext.Session.SetString(Constants.StatusMessage, Constants.SaveMessage);
                     }
                     else
                     {
+                        // Existing customer - handle password update
+                        if (!string.IsNullOrEmpty(objCustomer.Password))
+                        {
+                            // Password is being changed
+                            objCustomer.Password = objCustomer.Password.Encrypt(Constants.EncryptDecryptSecurity);
+                        }
+                        else
+                        {
+                            // Password is not being changed - preserve existing password
+                            var existingCustomerData = await _customer.GetAsync(filter: x => x.Id == objCustomer.Id);
+                            if (existingCustomerData != null)
+                            {
+                                objCustomer.Password = existingCustomerData.Password;
+                            }
+                        }
                         await _customer.UpdateAsync(objCustomer);
                         HttpContext.Session.SetString(Constants.StatusMessage, Constants.UpdateMessage);
                     }

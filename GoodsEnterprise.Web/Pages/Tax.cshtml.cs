@@ -54,10 +54,10 @@ namespace GoodsEnterprise.Web.Pages
                 }
                 ViewData["PagePrimaryID"] = 0;
                 lsttax = await _tax.GetAllAsync(filter: x => x.IsDelete != true, orderBy: mt => mt.OrderByDescending(m => m.ModifiedDate == null ? m.CreatedDate : m.ModifiedDate));
-                if (lsttax == null || lsttax?.Count == 0)
-                {
-                    ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
-                }
+                //if (lsttax == null || lsttax?.Count == 0)
+                //{
+                //    ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
+                //}
             }
             catch (Exception ex)
             {
@@ -177,7 +177,7 @@ namespace GoodsEnterprise.Web.Pages
                         {
                             ViewData["PagePrimaryID"] = objTax.Id;
                         }
-                        ViewData["SuccessMsg"] = $"Tax: {objTax.Name} {Constants.AlreadyExistMessage}";
+                        ViewData["InfoMsg"] = $"Tax: {objTax.Name} {Constants.AlreadyExistMessage}";
                         return Page();
                     }
                 }

@@ -1,0 +1,114 @@
+@* Modern Alert System - Include this in all pages *@
+
+@if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
+{
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof ModernAlert !== 'undefined') {
+                ModernAlert.success('@Html.Raw(Html.Encode(ViewData["SuccessMsg"].ToString()).Replace("'", "\\'"))', 'Success!', {
+                    duration: 5000
+                });
+            }
+        });
+    </script>
+}
+
+@if (ViewData["ErrorMsg"] != null && ViewData["ErrorMsg"] != "")
+{
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof ModernAlert !== 'undefined') {
+                ModernAlert.error('@Html.Raw(Html.Encode(ViewData["ErrorMsg"].ToString()).Replace("'", "\\'"))', 'Error!', {
+                    duration: 6000
+                });
+            }
+        });
+    </script>
+}
+
+@if (ViewData["WarningMsg"] != null && ViewData["WarningMsg"] != "")
+{
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof ModernAlert !== 'undefined') {
+                ModernAlert.warning('@Html.Raw(Html.Encode(ViewData["WarningMsg"].ToString()).Replace("'", "\\'"))', 'Warning!', {
+                    duration: 5000
+                });
+            }
+        });
+    </script>
+}
+
+@if (ViewData["InfoMsg"] != null && ViewData["InfoMsg"] != "")
+{
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof ModernAlert !== 'undefined') {
+                ModernAlert.info('@Html.Raw(Html.Encode(ViewData["InfoMsg"].ToString()).Replace("'", "\\'"))', 'Information', {
+                    duration: 4000
+                });
+            }
+        });
+    </script>
+}
+
+@* Custom alert functions for JavaScript usage *@
+<script type="text/javascript">
+    // Global helper functions for easy alert usage
+    window.showSuccessAlert = function(message, title = 'Success!', options = {}) {
+        if (typeof ModernAlert !== 'undefined') {
+            return ModernAlert.success(message, title, options);
+        }
+    };
+
+    window.showErrorAlert = function(message, title = 'Error!', options = {}) {
+        if (typeof ModernAlert !== 'undefined') {
+            return ModernAlert.error(message, title, options);
+        }
+    };
+
+    window.showWarningAlert = function(message, title = 'Warning!', options = {}) {
+        if (typeof ModernAlert !== 'undefined') {
+            return ModernAlert.warning(message, title, options);
+        }
+    };
+
+    window.showInfoAlert = function(message, title = 'Info', options = {}) {
+        if (typeof ModernAlert !== 'undefined') {
+            return ModernAlert.info(message, title, options);
+        }
+    };
+
+    // Form submission success handler
+    window.handleFormSuccess = function(message) {
+        showSuccessAlert(message || 'Operation completed successfully!');
+    };
+
+    // Form submission error handler
+    window.handleFormError = function(message) {
+        showErrorAlert(message || 'An error occurred. Please try again.');
+    };
+
+    // AJAX success handler
+    window.handleAjaxSuccess = function(response) {
+        if (response && response.message) {
+            showSuccessAlert(response.message);
+        }
+    };
+
+    // AJAX error handler
+    window.handleAjaxError = function(xhr, status, error) {
+        let message = 'An error occurred. Please try again.';
+        if (xhr.responseJSON && xhr.responseJSON.message) {
+            message = xhr.responseJSON.message;
+        } else if (xhr.responseText) {
+            try {
+                const response = JSON.parse(xhr.responseText);
+                message = response.message || message;
+            } catch (e) {
+                // Use default message
+            }
+        }
+        showErrorAlert(message);
+    };
+</script>

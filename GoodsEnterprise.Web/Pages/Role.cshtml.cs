@@ -54,10 +54,10 @@ namespace GoodsEnterprise.Web.Pages
                 }
                 ViewData["PagePrimaryID"] = 0;
                 lstrole = await _role.GetAllAsync(filter: x => x.IsDelete != true, orderBy: mt => mt.OrderByDescending(m => m.ModifiedDate == null ? m.CreatedDate : m.ModifiedDate));
-                if (lstrole == null || lstrole?.Count == 0)
-                {
-                    ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
-                }
+                //if (lstrole == null || lstrole?.Count == 0)
+                //{
+                //    ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
+                //}
             }
             catch (Exception ex)
             {
@@ -177,7 +177,7 @@ namespace GoodsEnterprise.Web.Pages
                         {
                             ViewData["PagePrimaryID"] = objRole.Id;
                         }
-                        ViewData["SuccessMsg"] = $"Role: {objRole.Name} {Constants.AlreadyExistMessage}";
+                        ViewData["InfoMsg"] = $"Role: {objRole.Name} {Constants.AlreadyExistMessage}";
                         return Page();
                     }
                 }

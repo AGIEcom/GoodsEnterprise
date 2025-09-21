@@ -51,18 +51,8 @@
 </head>
 <body>
 
-@if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
-{
-    <div class="modern-alert modern-alert-success" id="success-alert" style="position: fixed; top: 20px; right: 20px; z-index: 1000; max-width: 400px;">
-        <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-        </svg>
-        <span>@ViewData["SuccessMsg"]</span>
-        <button type="button" class="close" onclick="this.parentElement.style.display='none'" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-}
+@* Include Modern Alert System *@
+@await Html.PartialAsync("_ModernAlerts")
 
 <div class="login-container">
     <div class="login-header">

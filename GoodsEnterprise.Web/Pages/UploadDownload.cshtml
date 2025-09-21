@@ -1,4 +1,4 @@
-@page "/UploadDownload"
+@page "/Import"
 @model GoodsEnterprise.Web.Pages.UploadDownloadModel
 @{
     ViewData["Title"] = "UploadDownload";
@@ -67,10 +67,6 @@
 
 <div id="divUploadDownload">
     <div class="modern-card">
-        <div class="modern-card-header">
-            <h2 class="modern-card-title">Import Products</h2>
-            <p class="modern-card-subtitle">Upload Excel file to import product data</p>
-        </div>
         <form id="UploadDownloadform" method="post" enctype="multipart/form-data" asp-page-handler="Submit">
             <div class="row">
                 <div class="col-12">
@@ -123,33 +119,18 @@
     </div>
 </div>
 
-@if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
-{
-    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#success-alert").show();
-            $("#success-alert").fadeTo(2000, 3000).slideUp(3000, function () {
-                $("#success-alert").slideUp(3000);
-            });
-        });
-    </script>
-}
+@* Include Modern Alert System *@
+@await Html.PartialAsync("_ModernAlerts")
 
 @if (ViewData["ValidationMsg"] != null && ViewData["ValidationMsg"] != "")
 {
     <script type="text/javascript">
-    $(document).ready(function () {
-        $("#validation-alert").show();
-        //$("#validation-alert").fadeTo(2000, 6000).slideUp(6000, function () {
-        //    $("#validation-alert").slideUp(6000);
-        //    });
-    });
-        @*$(document).ready(function () {
-            $.alert({
-            title: 'Alert!',
-            content: @ViewData["ValidationMsg"],
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof ModernAlert !== 'undefined') {
+                ModernAlert.warning('@Html.Raw(Html.Encode(ViewData["ValidationMsg"].ToString()).Replace("'", "\\'"))', 'Validation Error!', {
+                    duration: 6000
+                });
+            }
         });
-        });*@
     </script>
 }

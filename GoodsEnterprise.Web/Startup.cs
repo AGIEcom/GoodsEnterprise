@@ -76,7 +76,7 @@ namespace GoodsEnterprise
             {
                 options.PageViewLocationFormats.Add("/Pages/Partials/{0}" + RazorViewEngine.ViewExtension);
             });
-            services.AddScoped<IUploadDownloadDA, UploadDownloadDA>();
+            services.AddScoped<IUploadDownloadDA, UploadDownloadDA>(); 
             services.AddScoped(typeof(IGeneralRepository<>), typeof(GeneralRepository<>));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             var autoMapconfig = new MapperConfiguration(c =>

@@ -98,7 +98,7 @@ namespace GoodsEnterprise.Web.Pages
             }
             catch (Exception ex)
             {
-                ViewData["SuccessMsg"] = $"{Constants.FailureUpload}";
+                ViewData["ErrorMsg"] = $"{Constants.FailureUpload}";
                 Log.Error(ex, $"Error in OnPostSubmitAsync(), Download");
                 throw;
             }

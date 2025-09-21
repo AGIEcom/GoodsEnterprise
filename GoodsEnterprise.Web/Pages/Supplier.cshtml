@@ -1,22 +1,20 @@
 @page "/all-supplier"
 @model GoodsEnterprise.Web.Pages.SupplierModel
 
-@{
-    ViewData["Title"] = "Supplier";
-    var Edit = "";
-    var List = "";
+@{ ViewData["Title"] = "Supplier";
+                var Edit = "";
+                var List = "";
 
-    if (Convert.ToString(ViewData["PageType"]) == "Edit")
-    {
-        Edit = "display:block;";
-        List = "display:none;";
-    }
-    else
-    {
-        Edit = "display:none;";
-        List = "display:block;";
-    }
-}
+                if (Convert.ToString(ViewData["PageType"]) == "Edit")
+                {
+                    Edit = "display:block;";
+                    List = "display:none;";
+                }
+                else
+                {
+                    Edit = "display:none;";
+                    List = "display:block;";
+                } }
 
 <div class="modern-alert modern-alert-success" id="success-alert" style="display:none;">
     <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
@@ -30,15 +28,26 @@
 
 <div id="supplierlist" style="@List">
     <div class="modern-card">
-        <div class="modern-card-header">
-            <h2 class="modern-card-title">Supplier Management</h2>
+        <div class="modern-form-actions d-flex justify-content-end gap-2  mb-1">
+            @*<a href="./all-supplier?handler=GenerateSampleExcel" class="modern-btn modern-btn-success" id="btnGenerateSample">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                    Generate Sample Excel (50K)
+                </a>*@
+            <button id="btnImportSuppliers" class="modern-btn modern-btn-info">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                Import Excel
+            </button>
+            <a id="lnkCreateSupplier" class="modern-btn modern-btn-primary">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+                </svg>
+                Add Supplier
+            </a>
         </div>
-        <a id="lnkCreateSupplier" class="modern-btn modern-btn-primary mb-3">
-            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
-            </svg>
-            Create New Supplier
-        </a>
         <div class="modern-table-container">
             <table class="modern-table" id="tblSupplierMaster">
                 <thead>
@@ -53,34 +62,32 @@
                 <tbody>
                     @foreach (var item in Model.lstsupplier)
                     {
-                        <tr>
-                            <td>@item.Name</td>
-                            <td>@item.Description</td>
-                            <td>@item.Email</td>
-                            <td>
-                                <span class="modern-badge @(item.IsActive ? "modern-badge-success" : "modern-badge-secondary")">
-                                    @(item.IsActive ? "Active" : "Inactive")
-                                </span>
-                            </td>
-                            <td>
-                                <div class="modern-btn-group">
-                                    <a asp-page-handler="Edit" asp-route-supplierId="@item.Id" class="modern-btn modern-btn-sm modern-btn-primary">
-                                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
-                                        </svg>
-                                        Edit
-                                    </a>
-                                    <a asp-page-handler="DeleteSupplier" asp-route-supplierId="@item.Id" class="modern-btn modern-btn-sm modern-btn-danger btn-supplier-delete">
-                                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"></path>
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        Delete
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    }
+        <tr>
+            <td>@item.Name</td>
+            <td>@item.Description</td>
+            <td>@item.Email</td>
+            <td>
+                <span class="modern-badge @(item.IsActive ? "modern-badge-success" : "modern-badge-secondary")">
+                    @(item.IsActive ? "Active" : "Inactive")
+                </span>
+            </td>
+            <td>
+                <div class="modern-btn-group">
+                    <a asp-page-handler="Edit" asp-route-supplierId="@item.Id" class="modern-btn modern-btn-sm modern-btn-primary">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                        </svg>
+                    </a>
+                    <a asp-page-handler="DeleteSupplier" asp-route-supplierId="@item.Id" class="modern-btn modern-btn-sm modern-btn-danger btn-supplier-delete">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"></path>
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                        </svg>
+                    </a>
+                </div>
+            </td>
+        </tr>
+}
                 </tbody>
             </table>
         </div>
@@ -91,19 +98,15 @@
 
 <div id="divCreateUpdateSupplier" style="@Edit">
     <div class="modern-card">
-        <div class="modern-card-header">
-            <h2 class="modern-card-title">@(Convert.ToInt32(ViewData["PagePrimaryID"]) > 0 ? "Edit Supplier" : "Create New Supplier")</h2>
-        </div>
         <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
-        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
-        {
-            <input asp-for="objSupplier.Id" type="hidden" class="form-control" id="txtSupplierID">
-            <input asp-for="objSupplier.IsDelete" type="hidden" class="form-control" id="txtIsDelete">
-            <input asp-for="objSupplier.Createdby" type="hidden" class="form-control" id="txtCreatedby">
-            <input asp-for="objSupplier.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
-            <input asp-for="objSupplier.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
-            <input asp-for="objSupplier.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
-        }
+            @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+            {
+<input asp-for="objSupplier.Id" type="hidden" class="form-control" id="txtSupplierID">
+                <input asp-for="objSupplier.IsDelete" type="hidden" class="form-control" id="txtIsDelete">
+                                <input asp-for="objSupplier.Createdby" type="hidden" class="form-control" id="txtCreatedby">
+                                                <input asp-for="objSupplier.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
+                                                                <input asp-for="objSupplier.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
+                                                                                <input asp-for="objSupplier.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">            }
 
             <div class="row">
                 <div class="col-md-6">
@@ -119,7 +122,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="row">
                 <div class="col-md-8">
                     <div class="modern-form-group">
@@ -143,10 +146,10 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="row mt-4">
                 <div class="col-12">
-                    <div class="modern-form-actions">
+                    <div class="modern-form-actions d-flex justify-content-end gap-2">
                         <button type="submit" class="modern-btn modern-btn-primary supplier-submit">
                             <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
@@ -155,23 +158,21 @@
                         </button>
                         @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
                         {
-                            <a asp-page-handler="Reset" asp-route-supplierId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="modern-btn modern-btn-secondary">
-                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"></path>
-                                </svg>
-                                Reset
-                            </a>
-                        }
+            <a asp-page-handler="Reset" asp-route-supplierId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="modern-btn modern-btn-secondary">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"></path>
+                </svg>
+                Reset
+            </a> }
                         else
                         {
-                            <a asp-page-handler="Clear" class="modern-btn modern-btn-secondary">
-                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"></path>
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                                </svg>
-                                Clear
-                            </a>
-                        }
+            <a asp-page-handler="Clear" class="modern-btn modern-btn-secondary">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"></path>
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                </svg>
+                Clear
+            </a>}
                         <a asp-page="/Supplier" class="modern-btn modern-btn-secondary">
                             <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
@@ -185,16 +186,196 @@
     </div>
 </div>
 
-@if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
-{
-    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#success-alert").show();
-            $("#success-alert").fadeTo(2000, 3000).slideUp(3000, function () {
-                $("#success-alert").slideUp(3000);
-            });
-        });
+<!-- Excel Import Modal -->
+<div id="importModal" class="modal-backdrop" style="display: none;">
+    <div class="modern-card" style="max-width: 800px; max-height: 90vh; margin: 20px auto; position: relative; z-index: 1051; overflow-y: auto; overflow-x: hidden;">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="modern-card-title" style="margin: 0;">Import Suppliers from Excel</h3>
+            <button type="button" class="btn-close" id="closeImportModal" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+        </div>
 
-    </script>
-}
+        <form id="importForm" enctype="multipart/form-data">
+            <div class="modern-form-group">
+                <label for="excelFile" class="modern-form-label">Select Excel File *</label>
+                <div class="file-upload-container">
+                    <input type="file" id="excelFile" name="excelFile" accept=".xlsx,.xls" class="modern-form-input" required>
+                    <small class="form-text text-muted">
+                        Supported formats: .xlsx, .xls (Max size: 50MB)
+                    </small>
+                </div>
+            </div>
+
+            <div class="modern-form-group">
+                <label class="modern-form-label">Expected Excel Columns:</label>
+                <div class="excel-columns-info">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul style="font-size: 0.9rem; color: #666;">
+                                <li>SupplierName</li>
+                                <li>SKUCode</li>
+                                <li>IsActive</li>
+                                <li>IsPreferred</li>
+                                <li>LeadTimeDays</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul style="font-size: 0.9rem; color: #666;">
+                                <li>MoqCase</li>
+                                <li>LastCost</li>
+                                <li>Incoterm</li>
+                                <li>ValidFrom</li>
+                                <li>ValidTo</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modern-form-group">
+                <div class="modern-toggle-container">
+                    <input type="checkbox" id="validateData" class="modern-checkbox" checked>
+                    <label for="validateData" class="modern-toggle-label">
+                        <div class="toggle-switch">
+                            <div class="toggle-slider"></div>
+                            <span class="toggle-text-off">Skip Validation</span>
+                            <span class="toggle-text-on">Validate Data</span>
+                        </div>
+                    </label>
+                </div>
+                <small class="form-text text-muted">
+                    Validation will check for required fields and data formats
+                </small>
+            </div>
+
+            <!-- Progress Section -->
+            <div id="importProgress" style="display: none;">
+                <div class="modern-form-group">
+                    <label class="modern-form-label">Import Progress</label>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div id="progressFill" class="progress-fill" style="width: 0%;"></div>
+                        </div>
+                        <br />
+                        <div class="progress-text">
+                            <span id="progressText">0%</span>
+                            <span id="recordsProcessed">0 / 0 records</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Import Results Summary -->
+                <div id="importResultsSummary" class="import-results-summary" style="display: none;">
+                    <div class="results-cards">
+                        <div class="result-card success-card">
+                            <div class="result-icon">
+                                <svg width="24" height="24" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div class="result-content">
+                                <div class="result-number" id="successCount">0</div>
+                                <div class="result-label">Successful</div>
+                            </div>
+                        </div>
+
+                        <div class="result-card error-card">
+                            <div class="result-icon">
+                                <svg width="24" height="24" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div class="result-content">
+                                <div class="result-number" id="errorCount">0</div>
+                                <div class="result-label">Failed</div>
+                            </div>
+                        </div>
+
+                        <div class="result-card total-card">
+                            <div class="result-icon">
+                                <svg width="24" height="24" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div class="result-content">
+                                <div class="result-number" id="totalCount">0</div>
+                                <div class="result-label">Total Records</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Results Tabs -->
+                <div id="importResultsDetails" class="import-results-details" style="display: none;">
+                    <div class="results-tabs">
+                        <button type="button" class="tab-button active" data-tab="successful">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            Successful Records
+                        </button>
+                        <button type="button" class="tab-button" data-tab="failed">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                            Failed Records
+                        </button>
+                    </div>
+
+                    <div class="tab-content">
+                        <div id="successfulTab" class="tab-pane active">
+                            <div class="results-table-container">
+                                <table class="results-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Row #</th>
+                                            <th>Supplier Name</th>
+                                            <th>SKU Code</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="successfulRecords">
+                                        <!-- Successful records will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="failedTab" class="tab-pane">
+                            <div class="results-table-container">
+                                <table class="results-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Row #</th>
+                                            <th>Supplier Name</th>
+                                            <th>SKU Code</th>
+                                            <th>Error Message</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="failedRecords">
+                                        <!-- Failed records will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="importStatus" class="import-status"></div>
+            </div>
+
+            <div class="modern-form-actions d-flex justify-content-end gap-2">
+                <button type="button" id="cancelImport" class="modern-btn modern-btn-secondary">Cancel</button>
+                <button type="submit" id="startImport" class="modern-btn modern-btn-primary">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    Start Import
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@* Include Modern Alert System *@
+@await Html.PartialAsync("_ModernAlerts")

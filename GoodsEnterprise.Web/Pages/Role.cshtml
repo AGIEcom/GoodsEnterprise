@@ -30,15 +30,13 @@
 
 <div id="rolelist" style="@List">
     <div class="modern-card">
-        <div class="modern-card-header">
-            <h2 class="modern-card-title">Role Management</h2>
+        <div class="d-flex justify-content-end mb-3">
+            <a id="lnkCreateRole" class="modern-btn modern-btn-primary">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+                </svg>
+            </a>
         </div>
-        <a id="lnkCreateRole" class="modern-btn modern-btn-primary mb-3">
-            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
-            </svg>
-            Create New Role
-        </a>
         <div class="modern-table-container">
             <table class="modern-table" id="tblRoleMaster">
                 <thead>
@@ -64,14 +62,12 @@
                                         <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
                                         </svg>
-                                        Edit
                                     </a>
                                     <a asp-page-handler="DeleteRole" asp-route-roleId="@item.Id" class="modern-btn modern-btn-sm modern-btn-danger btn-role-delete">
                                         <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"></path>
                                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
                                         </svg>
-                                        Delete
                                     </a>
                                 </div>
                             </td>
@@ -87,19 +83,16 @@
 
 <div id="divCreateUpdateRole" style="@Edit">
     <div class="modern-card">
-        <div class="modern-card-header">
-            <h2 class="modern-card-title">@(Convert.ToInt32(ViewData["PagePrimaryID"]) > 0 ? "Edit Role" : "Create New Role")</h2>
-        </div>
         <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
-        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
-        {
-            <input asp-for="objRole.Id" type="hidden" class="form-control" id="txtRoleID">
-            <input asp-for="objRole.IsDelete" type="hidden" class="form-control" id="txtIsDelete">
-            <input asp-for="objRole.Createdby" type="hidden" class="form-control" id="txtCreatedby">
-            <input asp-for="objRole.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
-            <input asp-for="objRole.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
-            <input asp-for="objRole.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
-        }
+            @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+            {
+                <input asp-for="objRole.Id" type="hidden" class="form-control" id="txtRoleID">
+                <input asp-for="objRole.IsDelete" type="hidden" class="form-control" id="txtIsDelete">
+                <input asp-for="objRole.Createdby" type="hidden" class="form-control" id="txtCreatedby">
+                <input asp-for="objRole.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
+                <input asp-for="objRole.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
+                <input asp-for="objRole.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
+            }
 
             <div class="row">
                 <div class="col-md-8">
@@ -124,10 +117,10 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="row mt-4">
                 <div class="col-12">
-                    <div class="modern-form-actions">
+                    <div class="modern-form-actions d-flex justify-content-end gap-2">
                         <button type="submit" class="modern-btn modern-btn-primary role-submit">
                             <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
@@ -166,16 +159,5 @@
     </div>
 </div>
 
-@if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
-{
-    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#success-alert").show();
-            $("#success-alert").fadeTo(2000, 3000).slideUp(3000, function () {
-                $("#success-alert").slideUp(3000);
-            });
-        });
-
-    </script>
-}
+@* Include Modern Alert System *@
+@await Html.PartialAsync("_ModernAlerts")

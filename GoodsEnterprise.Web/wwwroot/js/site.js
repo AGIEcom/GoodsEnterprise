@@ -1,48 +1,9 @@
 // Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
-// Function to handle DataTable resizing
-//function resizeDataTables() {
-//    $('.dataTable').each(function() {
-//        const $table = $(this);
-//        if ($.fn.DataTable.isDataTable($table)) {
-//            try {
-//                const table = $table.DataTable();
-//                if (table) {
-//                    table.columns.adjust().responsive.recalc();
-//                }
-//            } catch (e) {
-//                console.warn('Error resizing DataTable:', e);
-//            }
-//        }
-//    });
-//}
+// DataTable resize functionality has been removed
+// Tables now use native responsive behavior
 
-//// Call this when showing a tab or modal containing a DataTable
-//function onTableShown() {
-//    setTimeout(function() {
-//        resizeDataTables();
-//    }, 300);
-//}
 
-// Initialize DataTables with responsive and autoWidth options
-function initDataTable(selector, options = {}) {
-    const defaultOptions = {
-        responsive: true,
-        autoWidth: true,
-        destroy: true, // Allow reinitialization
-        scrollX: true,
-        scrollCollapse: true,
-        lengthMenu: [5, 10, 20, 50],
-        pageLength: 10,
-        ...options
-    };
-    
-    if ($.fn.DataTable.isDataTable(selector)) {
-        $(selector).DataTable().destroy();
-    }
-    
-    return $(selector).DataTable(defaultOptions);
-}
 //datatable initialization
 $(document).ready(function () {
     $('#tblBrandMaster').DataTable({
@@ -166,14 +127,14 @@ $(".brand-submit").click(function () {
         return true;
     }
 });
-$(".btn-brand-delete").click(function () {
-    var result = confirm("Want to delete?");
-    if (result) {
-        return true;
-    }
-    else
-        return false;
-});
+//$(".btn-brand-delete").click(function () {
+//    var result = confirm("Want to delete?");
+//    if (result) {
+//        return true;
+//    }
+//    else
+//        return false;
+//});
 
 function fileValidation() {
     var fileInput =
@@ -262,14 +223,14 @@ $(".category-submit").click(function () {
         return true;
     }
 });
-$(".btn-category-delete").click(function () {
-    var result = confirm("Want to delete?");
-    if (result) {
-        return true;
-    }
-    else
-        return false;
-});
+//$(".btn-category-delete").click(function () {
+//    var result = confirm("Want to delete?");
+//    if (result) {
+//        return true;
+//    }
+//    else
+//        return false;
+//});
 //End
 
 //sub category master
@@ -302,14 +263,14 @@ $(".subCategory-submit").click(function () {
         return true;
     }
 });
-$(".btn-subCategory-delete").click(function () {
-    var result = confirm("Want to delete?");
-    if (result) {
-        return true;
-    }
-    else
-        return false;
-});
+//$(".btn-subCategory-delete").click(function () {
+//    var result = confirm("Want to delete?");
+//    if (result) {
+//        return true;
+//    }
+//    else
+//        return false;
+//});
 //End
 
 //product master
@@ -353,14 +314,14 @@ $(".product-submit").click(function () {
 
 });
 
-$(".btn-product-delete").click(function () {
-    var result = confirm("Want to delete?");
-    if (result) {
-        return true;
-    }
-    else
-        return false;
-});
+//$(".btn-product-delete").click(function () {
+//    var result = confirm("Want to delete?");
+//    if (result) {
+//        return true;
+//    }
+//    else
+//        return false;
+//});
 //End
 
 
@@ -388,14 +349,14 @@ $(".tax-submit").click(function () {
         return true;
     }
 });
-$(".btn-tax-delete").click(function () {
-    var result = confirm("Want to delete?");
-    if (result) {
-        return true;
-    }
-    else
-        return false;
-});
+//$(".btn-tax-delete").click(function () {
+//    var result = confirm("Want to delete?");
+//    if (result) {
+//        return true;
+//    }
+//    else
+//        return false;
+//});
 //End
 
 //supplier master
@@ -428,14 +389,14 @@ $(".supplier-submit").click(function () {
         return true;
     }
 });
-$(".btn-supplier-delete").click(function () {
-    var result = confirm("Want to delete?");
-    if (result) {
-        return true;
-    }
-    else
-        return false;
-});
+//$(".btn-supplier-delete").click(function () {
+//    var result = confirm("Want to delete?");
+//    if (result) {
+//        return true;
+//    }
+//    else
+//        return false;
+//});
 //End
 
 //role master
@@ -462,14 +423,14 @@ $(".role-submit").click(function () {
         return true;
     }
 });
-$(".btn-role-delete").click(function () {
-    var result = confirm("Want to delete?");
-    if (result) {
-        return true;
-    }
-    else
-        return false;
-});
+//$(".btn-role-delete").click(function () {
+//    var result = confirm("Want to delete?");
+//    if (result) {
+//        return true;
+//    }
+//    else
+//        return false;
+//});
 //End
 
 //admin master
@@ -480,14 +441,26 @@ $("#lnkCreateAdmin").click(function () {
     $("#txtIsEmailSubscribed").prop('checked', true);
 });
 
-$(".admin-submit").click(function () {
+$(".admin-submit").click(function (e) {
     var firstName = $('#txtAdminFirstName').val();
     var LastName = $('#txtAdminLastName').val();
     var password = $('#txtAdminPassword').val();
+    var confirmPassword = $('#txtAdminConfirmPassword').val();
     var email = $('#txtAdminEmail').val();
     var roleId = $('#selectRole').val();
     var error = false;
+    var isEditMode = $('#hdnAdminID').length > 0 && $('#hdnAdminID').val() > 0;
+    var isPasswordChangeEnabled = $('#chkChangePassword').length > 0 && $('#chkChangePassword').is(':checked');
+    
     $(".text-danger").remove();
+    
+    // If in edit mode and password change is not enabled, clear the password field to prevent null submission
+    if (isEditMode && !isPasswordChangeEnabled) {
+        $('#txtAdminPassword').removeAttr('name');
+        $('#txtAdminConfirmPassword').removeAttr('name');
+    } else {
+        $('#txtAdminPassword').attr('name', 'objAdmin.Password');
+    }
 
     if (!email.match(emailReg)) {
         $('#txtAdminEmail').after('<span class="text-danger">Enter valid Email address</span>');
@@ -509,9 +482,22 @@ $(".admin-submit").click(function () {
         error = true;
     }
 
-    if (!password.match(passwordReg)) {
-        $('#txtAdminPassword').after('<span class="text-danger">Password must contain </br> 5 to 25 characters which contain at least one numeric digit and a special character</span>');
-        error = true;
+    // Password validation - only validate if creating new admin or changing password in edit mode
+    if (!isEditMode || isPasswordChangeEnabled) {
+        if (password.length < 6) {
+            $('#txtAdminPassword').after('<span class="text-danger">Password must be at least 6 characters long</span>');
+            error = true;
+        }
+        
+        if (password !== confirmPassword) {
+            $('#txtAdminConfirmPassword').after('<span class="text-danger">Passwords do not match</span>');
+            error = true;
+        }
+        
+        if (password.length > 0 && !password.match(passwordReg)) {
+            $('#txtAdminPassword').after('<span class="text-danger">Password must contain 5 to 25 characters with at least one numeric digit and a special character</span>');
+            error = true;
+        }
     }
 
     if (error == true) {
@@ -521,14 +507,14 @@ $(".admin-submit").click(function () {
         return true;
     }
 });
-$(".btn-admin-delete").click(function () {
-    var result = confirm("Want to delete?");
-    if (result) {
-        return true;
-    }
-    else
-        return false;
-});
+//$(".btn-admin-delete").click(function () {
+//    var result = confirm("Want to delete?");
+//    if (result) {
+//        return true;
+//    }
+//    else
+//        return false;
+//});
 //End
 
 //customer master
@@ -539,14 +525,26 @@ $("#lnkCreateCustomer").click(function () {
     $("#txtEmailSubscribed").prop('checked', true);
 });
 
-$(".customer-submit").click(function () {
+$(".customer-submit").click(function (e) {
     var firstName = $('#txtCustomerFirstName').val();
     var LastName = $('#txtCustomerLastName').val();
     var password = $('#txtCustomerPassword').val();
+    var confirmPassword = $('#txtCustomerConfirmPassword').val();
     var email = $('#txtCustomerEmail').val();
     var roleId = $('#selectRole').val();
     var error = false;
+    var isEditMode = $('#hdnCustomerID').length > 0 && $('#hdnCustomerID').val() > 0;
+    var isPasswordChangeEnabled = $('#chkChangeCustomerPassword').length > 0 && $('#chkChangeCustomerPassword').is(':checked');
+    
     $(".text-danger").remove();
+    
+    // If in edit mode and password change is not enabled, clear the password field to prevent null submission
+    if (isEditMode && !isPasswordChangeEnabled) {
+        $('#txtCustomerPassword').removeAttr('name');
+        $('#txtCustomerConfirmPassword').removeAttr('name');
+    } else {
+        $('#txtCustomerPassword').attr('name', 'objCustomer.Password');
+    }
 
     if (!email.match(emailReg)) {
         $('#txtCustomerEmail').after('<span class="text-danger">Enter valid Email address</span>');
@@ -568,9 +566,22 @@ $(".customer-submit").click(function () {
         error = true;
     }
 
-    if (!password.match(passwordReg)) {
-        $('#txtCustomerPassword').after('<span class="text-danger">Password must contain </br> 5 to 25 characters which contain at least one numeric digit and a special character</span>');
-        error = true;
+    // Password validation - only validate if creating new customer or changing password in edit mode
+    if (!isEditMode || isPasswordChangeEnabled) {
+        if (password.length < 6) {
+            $('#txtCustomerPassword').after('<span class="text-danger">Password must be at least 6 characters long</span>');
+            error = true;
+        }
+        
+        if (password !== confirmPassword) {
+            $('#txtCustomerConfirmPassword').after('<span class="text-danger">Passwords do not match</span>');
+            error = true;
+        }
+        
+        if (password.length > 0 && !password.match(passwordReg)) {
+            $('#txtCustomerPassword').after('<span class="text-danger">Password must contain 5 to 25 characters with at least one numeric digit and a special character</span>');
+            error = true;
+        }
     }
 
     if (error == true) {
@@ -580,14 +591,14 @@ $(".customer-submit").click(function () {
         return true;
     }
 });
-$(".btn-customer-delete").click(function () {
-    var result = confirm("Want to delete?");
-    if (result) {
-        return true;
-    }
-    else
-        return false;
-});
+//$(".btn-customer-delete").click(function () {
+//    var result = confirm("Want to delete?");
+//    if (result) {
+//        return true;
+//    }
+//    else
+//        return false;
+//});
 //End
 //UploadDownload
 $(".UploadDownload-submit").click(function () {
@@ -780,7 +791,7 @@ function loadActiveMenu() {
             matchingLink.addClass('active');
         } else {
             // Special handling for UploadDownload page (default after login)
-            if (url.toLowerCase() === 'uploaddownload' || url.toLowerCase() === '') {
+            if (url.toLowerCase() === 'import' || url.toLowerCase() === '') {
                 var importMenu = $('.menu-text:contains("Import")').parent();
                 if (importMenu.length) {
                     importMenu.addClass('active');
@@ -799,15 +810,17 @@ function loadActiveMenu() {
                     'Role': ['role', 'all-role'],
                     'Admin': ['admin', 'all-admin'],
                     'Customer': ['customer', 'all-customer'],
-                    'Import': ['uploaddownload', 'upload', 'import'],
-                    'Export': ['download', 'export']
+                    'Import': ['import', 'upload', 'import'],
+                    'Export': ['export', 'export']
                 };
 
                 for (var menuName in pagePatterns) {
                     var patterns = pagePatterns[menuName];
                     for (var i = 0; i < patterns.length; i++) {
                         if (url.toLowerCase() == patterns[i].toLowerCase()) {
-                            $('.menu-text:contains("' + menuName + '")').parent().addClass('active');
+                            $('.menu-text').filter(function() {
+                                return $(this).text().trim() === menuName;
+                            }).parent().addClass('active');
                             break;
                         }
                     }

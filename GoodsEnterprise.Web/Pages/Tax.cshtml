@@ -30,15 +30,13 @@
 
 <div id="taxlist" style="@List">
     <div class="modern-card">
-        <div class="modern-card-header">
-            <h2 class="modern-card-title">Tax Management</h2>
+        <div class="d-flex justify-content-end mb-3">
+            <a id="lnkCreateTax" class="modern-btn modern-btn-primary mb-3">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+                </svg>
+            </a>
         </div>
-        <a id="lnkCreateTax" class="modern-btn modern-btn-primary mb-3">
-            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
-            </svg>
-            Create New Tax
-        </a>
         <div class="modern-table-container">
             <table class="modern-table" id="tblTaxMaster">
                 <thead>
@@ -91,19 +89,16 @@
 
 <div id="divCreateUpdateTax" style="@Edit">
     <div class="modern-card">
-        <div class="modern-card-header">
-            <h2 class="modern-card-title">@(Convert.ToInt32(ViewData["PagePrimaryID"]) > 0 ? "Edit Tax" : "Create New Tax")</h2>
-        </div>
         <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
-        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
-        {
-            <input asp-for="objTax.Id" type="hidden" class="form-control" id="txtTaxID">
-            <input asp-for="objTax.IsDelete" type="hidden" class="form-control" id="txtIsDelete">
-            <input asp-for="objTax.Createdby" type="hidden" class="form-control" id="txtCreatedby">
-            <input asp-for="objTax.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
-            <input asp-for="objTax.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
-            <input asp-for="objTax.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
-        }
+            @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+            {
+                <input asp-for="objTax.Id" type="hidden" class="form-control" id="txtTaxID">
+                <input asp-for="objTax.IsDelete" type="hidden" class="form-control" id="txtIsDelete">
+                <input asp-for="objTax.Createdby" type="hidden" class="form-control" id="txtCreatedby">
+                <input asp-for="objTax.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
+                <input asp-for="objTax.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
+                <input asp-for="objTax.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
+            }
 
             <div class="row">
                 <div class="col-md-6">
@@ -119,7 +114,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="row">
                 <div class="col-md-8">
                     <div class="modern-form-group">
@@ -143,7 +138,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="row mt-4">
                 <div class="col-12">
                     <div class="modern-form-actions">
@@ -185,16 +180,5 @@
     </div>
 </div>
 
-@if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
-{
-    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#success-alert").show();
-            $("#success-alert").fadeTo(2000, 3000).slideUp(3000, function () {
-                $("#success-alert").slideUp(3000);
-            });
-        });
-
-    </script>
-}
+@* Include Modern Alert System *@
+@await Html.PartialAsync("_ModernAlerts")

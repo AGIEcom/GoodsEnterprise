@@ -12,6 +12,11 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using NPOI.HSSF.UserModel;
+using System.Globalization;
+using System.Text.Json;
 
 namespace GoodsEnterprise.Web.Pages
 {
@@ -54,16 +59,39 @@ namespace GoodsEnterprise.Web.Pages
                 }
                 ViewData["PagePrimaryID"] = 0;
                 lstsupplier = await _supplier.GetAllAsync(filter: x => x.IsDelete != true, orderBy: mt => mt.OrderByDescending(m => m.ModifiedDate == null ? m.CreatedDate : m.ModifiedDate));
-                if (lstsupplier == null || lstsupplier?.Count == 0)
-                {
-                    ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
-                }
+                //if (lstsupplier == null || lstsupplier?.Count == 0)
+                //{
+                //    ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
+                //}
             }
             catch (Exception ex)
             {
                 Log.Error(ex, $"Error in OnGetAsync(), Supplier");
                 throw;
             }
+        }
+        /// <summary>
+        /// OnGetCreateAsync
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> OnGetCreateAsync()
+        {
+            try
+            {
+              
+                if (objSupplier == null)
+                {
+                    objSupplier = new Supplier();
+                }
+                objSupplier.IsActive = true; 
+                ViewData["PageType"] = "Edit";
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Error in OnGetCreateAsync(), Product");
+                throw;
+            }
+            return Page();
         }
 
         /// <summary>
@@ -177,7 +205,7 @@ namespace GoodsEnterprise.Web.Pages
                         {
                             ViewData["PagePrimaryID"] = objSupplier.Id;
                         }
-                        ViewData["SuccessMsg"] = $"Supplier: {objSupplier.Name} {Constants.AlreadyExistMessage}";
+                        ViewData["InfoMsg"] = $"Supplier: {objSupplier.Name} {Constants.AlreadyExistMessage}";
                         return Page();
                     }
                 }
@@ -206,6 +234,539 @@ namespace GoodsEnterprise.Web.Pages
             {
                 Log.Error(ex, $"Error in OnPostSubmitAsync(), Supplier, SupplierId: { objSupplier?.Id }");
                 throw;
+            }
+        }
+
+        /// <summary>
+        /// OnPostImportExcelAsync - Handle Excel import for suppliers
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> OnPostImportExcelAsync(IFormFile excelFile, bool validateData = true)
+        {
+            try
+            {
+                if (excelFile == null || excelFile.Length == 0)
+                {
+                    return new JsonResult(new { success = false, message = "Please select a valid Excel file." });
+                }
+
+                // Validate file extension
+                var allowedExtensions = new[] { ".xlsx", ".xls" };
+                var fileExtension = Path.GetExtension(excelFile.FileName).ToLowerInvariant();
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    return new JsonResult(new { success = false, message = "Only Excel files (.xlsx, .xls) are allowed." });
+                }
+
+                // Validate file size (50MB limit)
+                if (excelFile.Length > 50 * 1024 * 1024)
+                {
+                    return new JsonResult(new { success = false, message = "File size exceeds 50MB limit." });
+                }
+
+                var importResult = await ProcessExcelImport(excelFile, validateData);
+                return new JsonResult(importResult);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in OnPostImportExcelAsync(), Supplier Excel Import");
+                return new JsonResult(new { success = false, message = $"Import failed: {ex.Message}" });
+            }
+        }
+
+        /// <summary>
+        /// ProcessExcelImport - Process the Excel file and import suppliers using NPOI (Free)
+        /// </summary>
+        /// <param name="excelFile"></param>
+        /// <param name="validateData"></param>
+        /// <returns></returns>
+        private async Task<object> ProcessExcelImport(IFormFile excelFile, bool validateData)
+        {
+            var suppliers = new List<Supplier>();
+            var errors = new List<string>();
+            var successfulRecords = new List<object>();
+            int totalRecords = 0;
+            int successCount = 0;
+            int errorCount = 0;
+
+            using (var stream = new MemoryStream())
+            {
+                await excelFile.CopyToAsync(stream);
+                stream.Position = 0; // Reset stream position for reading
+
+                IWorkbook workbook = null;
+                try
+                {
+                    // Determine file type and create appropriate workbook
+                    var fileExtension = Path.GetExtension(excelFile.FileName).ToLowerInvariant();
+                    if (fileExtension == ".xlsx")
+                    {
+                        workbook = new XSSFWorkbook(stream); // For .xlsx files
+                    }
+                    else if (fileExtension == ".xls")
+                    {
+                        workbook = new HSSFWorkbook(stream); // For .xls files
+                    }
+                    else
+                    {
+                        return new { success = false, message = "Unsupported file format. Please use .xlsx or .xls files." };
+                    }
+
+                    // Get the first worksheet
+                    var worksheet = workbook.GetSheetAt(0);
+                    if (worksheet == null)
+                    {
+                        return new { success = false, message = "No worksheet found in the Excel file." };
+                    }
+
+                    // Get the used range
+                    var startRow = 1; // Row 0 is header, start from row 1
+                    var endRow = worksheet.LastRowNum;
+                    totalRecords = Math.Max(0, endRow - startRow + 1);
+
+                    if (totalRecords == 0)
+                    {
+                        return new { success = false, message = "No data rows found in the Excel file." };
+                    }
+
+                    // Validate headers (optional - you can enable this if needed)
+                    var headerRow = worksheet.GetRow(0);
+                    if (headerRow != null)
+                    {
+                        var expectedHeaders = new[] { "SupplierName", "SKUCode", "IsActive", "IsPreferred", "LeadTimeDays", "MoqCase", "LastCost", "Incoterm", "ValidFrom", "ValidTo" };
+                        // You can add header validation here if needed
+                    }
+
+                    // Process each row
+                    for (int rowIndex = startRow; rowIndex <= endRow; rowIndex++)
+                    {
+                        try
+                        {
+                            var row = worksheet.GetRow(rowIndex);
+                            if (row == null) continue; // Skip null rows
+
+                            var supplier = new Supplier();
+                            var rowErrors = new List<string>();
+
+                            // Extract data from Excel row using NPOI
+                            var supplierName = GetCellValue(row, 0)?.Trim();
+                            var skuCode = GetCellValue(row, 1)?.Trim();
+                            var isActiveText = GetCellValue(row, 2)?.Trim();
+                            var isPreferredText = GetCellValue(row, 3)?.Trim();
+                            var leadTimeDaysText = GetCellValue(row, 4)?.Trim();
+                            var moqCaseText = GetCellValue(row, 5)?.Trim();
+                            var lastCostText = GetCellValue(row, 6)?.Trim();
+                            var incoterm = GetCellValue(row, 7)?.Trim();
+                            var validFromText = GetCellValue(row, 8)?.Trim();
+                            var validToText = GetCellValue(row, 9)?.Trim();
+
+                            // Validate required fields
+                            if (validateData)
+                            {
+                                if (string.IsNullOrEmpty(supplierName))
+                                    rowErrors.Add($"Row {rowIndex + 1}: SupplierName is required");
+                                if (string.IsNullOrEmpty(skuCode))
+                                    rowErrors.Add($"Row {rowIndex + 1}: SKUCode is required");
+                            }
+
+                            // Skip empty rows
+                            if (string.IsNullOrEmpty(supplierName) && string.IsNullOrEmpty(skuCode))
+                                continue;
+
+                            // Map to Supplier model (based on current model structure)
+                            supplier.Name = supplierName;
+                            supplier.Skucode = skuCode;
+                            
+                            // Handle additional fields with proper validation and error handling
+                            try
+                            {
+                                // Incoterm - direct assignment
+                                supplier.Incoterm = !string.IsNullOrEmpty(incoterm) ? incoterm : null;
+                                
+                                // IsPreferred - safe boolean parsing
+                                supplier.IsPreferred = ParseBoolean(isPreferredText, false);
+                                
+                                // LeadTimeDays - safe integer parsing (non-nullable)
+                                if (!string.IsNullOrEmpty(leadTimeDaysText) && int.TryParse(leadTimeDaysText, out int leadDays))
+                                {
+                                    supplier.LeadTimeDays = leadDays;
+                                }
+                                else
+                                {
+                                    supplier.LeadTimeDays = 0; // Default value for non-nullable int
+                                    if (validateData && !string.IsNullOrEmpty(leadTimeDaysText))
+                                        rowErrors.Add($"Row {rowIndex + 1}: Invalid LeadTimeDays value '{leadTimeDaysText}', using default 0");
+                                }
+                                
+                                // MoqCase - direct assignment as string
+                                supplier.MoqCase = !string.IsNullOrEmpty(moqCaseText) ? moqCaseText : null;
+                                
+                                // LastCost - safe decimal parsing (non-nullable)
+                                if (!string.IsNullOrEmpty(lastCostText) && decimal.TryParse(lastCostText, out decimal lastCost))
+                                {
+                                    supplier.LastCost = lastCost;
+                                }
+                                else
+                                {
+                                    supplier.LastCost = 0.00m; // Default value for non-nullable decimal
+                                    if (validateData && !string.IsNullOrEmpty(lastCostText))
+                                        rowErrors.Add($"Row {rowIndex + 1}: Invalid LastCost value '{lastCostText}', using default 0.00");
+                                }
+                                
+                                // ValidFrom - safe date parsing (non-nullable)
+                                if (!string.IsNullOrEmpty(validFromText) && DateTime.TryParse(validFromText, out DateTime validFrom))
+                                {
+                                    supplier.ValidFrom = validFrom;
+                                }
+                                else
+                                {
+                                    supplier.ValidFrom = DateTime.UtcNow; // Default to current date for non-nullable DateTime
+                                    if (validateData && !string.IsNullOrEmpty(validFromText))
+                                        rowErrors.Add($"Row {rowIndex + 1}: Invalid ValidFrom date '{validFromText}', using current date");
+                                }
+                                
+                                // ValidTo - safe date parsing (non-nullable)
+                                if (!string.IsNullOrEmpty(validToText) && DateTime.TryParse(validToText, out DateTime validTo))
+                                {
+                                    supplier.ValidTo = validTo;
+                                }
+                                else
+                                {
+                                    supplier.ValidTo = DateTime.UtcNow.AddYears(1); // Default to 1 year from now for non-nullable DateTime
+                                    if (validateData && !string.IsNullOrEmpty(validToText))
+                                        rowErrors.Add($"Row {rowIndex + 1}: Invalid ValidTo date '{validToText}', using 1 year from now");
+                                }
+                                
+                                // Validate date logic - ValidTo should be after ValidFrom (non-nullable DateTime)
+                                if (validateData && supplier.ValidTo <= supplier.ValidFrom)
+                                {
+                                    rowErrors.Add($"Row {rowIndex + 1}: ValidTo date must be after ValidFrom date");
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                rowErrors.Add($"Row {rowIndex + 1}: Error parsing additional fields - {ex.Message}");
+                            }
+                            // Build description with additional fields
+                            var descriptionParts = new List<string>();
+                            if (!string.IsNullOrEmpty(incoterm)) descriptionParts.Add($"Incoterm: {incoterm}");
+                            if (!string.IsNullOrEmpty(isPreferredText)) descriptionParts.Add($"Preferred: {isPreferredText}");
+                            if (!string.IsNullOrEmpty(leadTimeDaysText)) descriptionParts.Add($"Lead Time: {leadTimeDaysText} days");
+                            if (!string.IsNullOrEmpty(moqCaseText)) descriptionParts.Add($"MOQ: {moqCaseText}");
+                            if (!string.IsNullOrEmpty(lastCostText)) descriptionParts.Add($"Last Cost: {lastCostText}");
+                            if (!string.IsNullOrEmpty(validFromText)) descriptionParts.Add($"Valid From: {validFromText}");
+                            if (!string.IsNullOrEmpty(validToText)) descriptionParts.Add($"Valid To: {validToText}");
+                            
+                            supplier.Description = descriptionParts.Count > 0 ? string.Join(" | ", descriptionParts) : "Imported supplier";
+                            
+                            // Parse boolean values
+                            supplier.IsActive = ParseBoolean(isActiveText, true); // Default to true
+                            supplier.IsDelete = false;
+
+                            // Set audit fields
+                            supplier.CreatedDate = DateTime.UtcNow;
+                            supplier.Createdby = 1; // You may want to get this from session
+                            supplier.ModifiedDate = DateTime.UtcNow;
+                            supplier.Modifiedby = 1;
+
+                            // Add validation errors if any
+                            if (rowErrors.Count > 0)
+                            {
+                                errors.AddRange(rowErrors);
+                                errorCount++;
+                                continue;
+                            }
+
+                            suppliers.Add(supplier);
+                        }
+                        catch (Exception ex)
+                        {
+                            errors.Add($"Row {rowIndex + 1}: Error processing row - {ex.Message}");
+                            errorCount++;
+                        }
+                    }
+                }
+                finally
+                {
+                    workbook?.Close();
+                }
+            }
+
+            // Bulk insert suppliers
+            if (suppliers.Count > 0)
+            {
+                try
+                {
+                    // Process in batches for better performance with large datasets
+                    const int batchSize = 1000;
+                    var batches = suppliers.Select((supplier, index) => new { supplier, index })
+                                          .GroupBy(x => x.index / batchSize)
+                                          .Select(g => g.Select(x => x.supplier).ToList())
+                                          .ToList();
+
+                    foreach (var batch in batches)
+                    {
+                        foreach (var supplier in batch)
+                        {
+                            try
+                            {
+                                // Check for duplicates based on Name and SKUCode
+                                var existingSupplier = await _supplier.GetAsync(filter: x => 
+                                    x.Name == supplier.Name && x.Skucode == supplier.Skucode && x.IsDelete != true);
+                                
+                                if (existingSupplier == null)
+                                {
+                                    await _supplier.InsertAsync(supplier);
+                                    successCount++;
+                                    
+                                    // Track successful record
+                                    successfulRecords.Add(new
+                                    {
+                                        rowNumber = suppliers.IndexOf(supplier) + 2, // +2 because Excel is 1-based and has header
+                                        supplierName = supplier.Name,
+                                        skuCode = supplier.Skucode,
+                                        status = "Imported Successfully"
+                                    });
+                                }
+                                else
+                                {
+                                    errors.Add($"Supplier '{supplier.Name}' with SKU '{supplier.Skucode}' already exists");
+                                    errorCount++;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                errors.Add($"Error inserting supplier '{supplier.Name}': {ex.Message}");
+                                errorCount++;
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error during bulk supplier insert");
+                    return new { success = false, message = $"Bulk insert failed: {ex.Message}" };
+                }
+            }
+
+            return new
+            {
+                success = true,
+                totalRecords = totalRecords,
+                successCount = successCount,
+                errorCount = errorCount,
+                errors = errors.Take(100).ToList(), // Limit errors to prevent large response
+                successfulRecords = successfulRecords.Take(100).ToList() // Limit successful records for performance
+            };
+        }
+
+        /// <summary>
+        /// GetCellValue - Helper method to get cell value from NPOI row
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="columnIndex"></param>
+        /// <returns></returns>
+        private string GetCellValue(IRow row, int columnIndex)
+        {
+            var cell = row.GetCell(columnIndex);
+            if (cell == null) return string.Empty;
+
+            switch (cell.CellType)
+            {
+                case CellType.String:
+                    return cell.StringCellValue;
+                case CellType.Numeric:
+                    if (DateUtil.IsCellDateFormatted(cell))
+                    {
+                        return Convert.ToDateTime(cell.DateCellValue).ToString("yyyy-MM-dd");
+                    }
+                    return cell.NumericCellValue.ToString();
+                case CellType.Boolean:
+                    return cell.BooleanCellValue.ToString();
+                case CellType.Formula:
+                    try
+                    {
+                        return cell.NumericCellValue.ToString();
+                    }
+                    catch
+                    {
+                        return cell.StringCellValue;
+                    }
+                   
+                case CellType.Blank:
+                    return string.Empty;
+                default:
+                    return cell.ToString();
+            }
+        }
+
+        /// <summary>
+        /// ParseBoolean - Helper method to parse boolean values from Excel
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        private bool ParseBoolean(string value, bool defaultValue = false)
+        {
+            if (string.IsNullOrEmpty(value))
+                return defaultValue;
+
+            value = value.ToLowerInvariant().Trim();
+            
+            if (value == "true" || value == "yes" || value == "1" || value == "y")
+                return true;
+            
+            if (value == "false" || value == "no" || value == "0" || value == "n")
+                return false;
+
+            return defaultValue;
+        }
+
+        /// <summary>
+        /// OnGetGenerateSampleExcelAsync - Generate sample Excel file with 50,000 records
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> OnGetGenerateSampleExcelAsync()
+        {
+            try
+            {
+                var excelBytes = await GenerateSampleExcelFile();
+                var fileName = $"SampleSuppliers_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                
+                return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error generating sample Excel file");
+                return new JsonResult(new { success = false, message = $"Failed to generate sample file: {ex.Message}" });
+            }
+        }
+
+        /// <summary>
+        /// GenerateSampleExcelFile - Create Excel file with 50,000 sample supplier records
+        /// </summary>
+        /// <returns></returns>
+        private async Task<byte[]> GenerateSampleExcelFile()
+        {
+            using (var workbook = new XSSFWorkbook())
+            {
+                var worksheet = workbook.CreateSheet("Suppliers");
+                
+                // Create header row
+                var headerRow = worksheet.CreateRow(0);
+                var headers = new string[] 
+                {
+                    "SupplierName", "SKUCode", "IsActive", "IsPreferred", 
+                    "LeadTimeDays", "MoqCase", "LastCost", "Incoterm", 
+                    "ValidFrom", "ValidTo"
+                };
+
+                // Style header row
+                var headerStyle = workbook.CreateCellStyle();
+                var headerFont = workbook.CreateFont();
+                headerFont.IsBold = true;
+                headerFont.Color = NPOI.HSSF.Util.HSSFColor.White.Index;
+                headerStyle.SetFont(headerFont);
+                headerStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.DarkBlue.Index;
+                headerStyle.FillPattern = NPOI.SS.UserModel.FillPattern.SolidForeground;
+                headerStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+                headerStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+                headerStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+                headerStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+
+                for (int i = 0; i < headers.Length; i++)
+                {
+                    var cell = headerRow.CreateCell(i);
+                    cell.SetCellValue(headers[i]);
+                    cell.CellStyle = headerStyle;
+                    worksheet.SetColumnWidth(i, 4000); // Set column width
+                }
+
+                // Sample data arrays for variety
+                var supplierPrefixes = new[] { "Global", "Premium", "Elite", "Prime", "Superior", "Advanced", "Quality", "Reliable", "Trusted", "Professional" };
+                var supplierSuffixes = new[] { "Supplies", "Trading", "Corp", "Industries", "Solutions", "Enterprises", "Group", "International", "Systems", "Partners" };
+                var incoterms = new[] { "FOB", "CIF", "EXW", "DDP", "DAP", "FCA", "CPT", "CIP" };
+                var booleanValues = new[] { "Yes", "No", "True", "False", "1", "0" };
+                
+                var random = new Random(12345); // Fixed seed for consistent data
+                var baseDate = new DateTime(2024, 1, 1);
+
+                // Generate 50,000 data rows
+                for (int rowIndex = 1; rowIndex <= 50000; rowIndex++)
+                {
+                    var dataRow = worksheet.CreateRow(rowIndex);
+                    
+                    // SupplierName
+                    var supplierName = $"{supplierPrefixes[random.Next(supplierPrefixes.Length)]} {supplierSuffixes[random.Next(supplierSuffixes.Length)]} {rowIndex:D5}";
+                    dataRow.CreateCell(0).SetCellValue(supplierName);
+                    
+                    // SKUCode
+                    var skuCode = $"SKU{rowIndex:D6}-{random.Next(100, 999)}";
+                    dataRow.CreateCell(1).SetCellValue(skuCode);
+                    
+                    // IsActive
+                    var isActive = booleanValues[random.Next(booleanValues.Length)];
+                    dataRow.CreateCell(2).SetCellValue(isActive);
+                    
+                    // IsPreferred
+                    var isPreferred = booleanValues[random.Next(booleanValues.Length)];
+                    dataRow.CreateCell(3).SetCellValue(isPreferred);
+                    
+                    // LeadTimeDays
+                    var leadTimeDays = random.Next(1, 90);
+                    dataRow.CreateCell(4).SetCellValue(leadTimeDays);
+                    
+                    // MoqCase
+                    var moqCase = random.Next(10, 1000);
+                    dataRow.CreateCell(5).SetCellValue(moqCase);
+                    
+                    // LastCost
+                    var lastCost = Math.Round(random.NextDouble() * 1000 + 10, 2);
+                    dataRow.CreateCell(6).SetCellValue(lastCost);
+                    
+                    // Incoterm
+                    var incoterm = incoterms[random.Next(incoterms.Length)];
+                    dataRow.CreateCell(7).SetCellValue(incoterm);
+                    
+                    // ValidFrom
+                    var validFrom = baseDate.AddDays(random.Next(0, 365));
+                    var validFromCell = dataRow.CreateCell(8);
+                    validFromCell.SetCellValue(validFrom);
+                    
+                    // ValidTo
+                    var validTo = validFrom.AddDays(random.Next(30, 730));
+                    var validToCell = dataRow.CreateCell(9);
+                    validToCell.SetCellValue(validTo);
+
+                    // Apply date formatting to date cells
+                    var dateStyle = workbook.CreateCellStyle();
+                    var dateFormat = workbook.CreateDataFormat();
+                    dateStyle.DataFormat = dateFormat.GetFormat("yyyy-mm-dd");
+                    validFromCell.CellStyle = dateStyle;
+                    validToCell.CellStyle = dateStyle;
+
+                    // Progress logging every 10,000 records
+                    if (rowIndex % 10000 == 0)
+                    {
+                        Log.Information($"Generated {rowIndex} sample records");
+                    }
+                }
+
+                // Auto-size columns for better readability
+                for (int i = 0; i < headers.Length; i++)
+                {
+                    worksheet.AutoSizeColumn(i);
+                    // Set minimum width
+                    if (worksheet.GetColumnWidth(i) < 3000)
+                        worksheet.SetColumnWidth(i, 3000);
+                }
+
+                // Convert to byte array
+                using (var stream = new MemoryStream())
+                {
+                    workbook.Write(stream);
+                    return stream.ToArray();
+                }
             }
         }
     }

@@ -62,7 +62,24 @@ namespace GoodsEnterprise.Web.Pages
         /// OnGetAsync
         /// </summary>
         /// <returns></returns>
-
+        public async Task OnGetAsync()
+        {
+            try
+            {
+                ViewData["PageType"] = "List";
+                if (!string.IsNullOrEmpty(HttpContext.Session.GetString(Constants.StatusMessage)))
+                {
+                    ViewData["SuccessMsg"] = HttpContext.Session.GetString(Constants.StatusMessage);
+                    HttpContext.Session.SetString(Constants.StatusMessage, "");
+                }
+                ViewData["PagePrimaryID"] = 0;                
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Error in OnGetAsync(), Product");
+                throw;
+            }
+        }
 
         /// <summary>
         /// OnGetCreateAsync
@@ -140,10 +157,15 @@ namespace GoodsEnterprise.Web.Pages
         /// OnGetClear
         /// </summary>
         /// <returns></returns>
-        public IActionResult OnGetClear()
+        public async Task<IActionResult> OnGetClear()
         {
             try
             {
+                await LoadBrand();
+                await LoadCategory();
+                await LoadSubCategoryByCategoryId();
+                await LoadTaxSlab();
+                await loadSupplier();
                 objProduct = new Product();
                 objProduct.IsActive = false;
                 ViewData["PageType"] = "Edit";
@@ -181,6 +203,7 @@ namespace GoodsEnterprise.Web.Pages
             }
             return Page();
         }
+
 
         /// <summary>
         /// OnGetDeleteProductAsync
@@ -228,7 +251,12 @@ namespace GoodsEnterprise.Web.Pages
                             ViewData["PagePrimaryID"] = objProduct.Id;
                             ViewData["ImagePath"] = GetImageUrl(objProduct.Image);
                         }
-                        ViewData["SuccessMsg"] = $"Product: {objProduct.Code} {Constants.AlreadyExistMessage}";
+                        ViewData["InfoMsg"] = $"Product: {objProduct.Code} {Constants.AlreadyExistMessage}";
+                        await LoadBrand();
+                        await LoadCategory();
+                        await LoadSubCategoryByCategoryId();
+                        await LoadTaxSlab();
+                        await loadSupplier();
                         return Page();
                     }
                 }
@@ -251,7 +279,7 @@ namespace GoodsEnterprise.Web.Pages
                         }
                         await _product.UpdateAsync(objProduct);
                         HttpContext.Session.SetString(Constants.StatusMessage, Constants.UpdateMessage);
-                    }
+                    } 
                     return Redirect("all-product");
                 }
                 else

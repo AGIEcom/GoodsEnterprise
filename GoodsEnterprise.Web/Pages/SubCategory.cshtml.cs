@@ -56,10 +56,10 @@ namespace GoodsEnterprise.Web.Pages
 
                 lstsubCategory = await _subCategory.GetAllAsync(filter: x => x.IsDelete != true, orderBy: mt => mt.OrderByDescending(m => m.ModifiedDate == null ? m.CreatedDate : m.ModifiedDate));
 
-                if (lstsubCategory == null || lstsubCategory?.Count == 0)
-                {
-                    ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
-                }
+                //if (lstsubCategory == null || lstsubCategory?.Count == 0)
+                //{
+                //    ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
+                //}
             }
             catch (Exception ex)
             {
@@ -197,7 +197,7 @@ namespace GoodsEnterprise.Web.Pages
                         {
                             ViewData["PagePrimaryID"] = objSubCategory.Id;
                         }
-                        ViewData["SuccessMsg"] = $"SubCategory: {objSubCategory.Name} {Constants.AlreadyExistMessage}";
+                        ViewData["InfoMsg"] = $"SubCategory: {objSubCategory.Name} {Constants.AlreadyExistMessage}";
                         return Page();
                     }
                 }

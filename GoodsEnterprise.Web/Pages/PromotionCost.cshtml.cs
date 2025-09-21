@@ -64,6 +64,13 @@ namespace GoodsEnterprise.Web.Pages
                 {
                     objpromotionCost = new PromotionCost();
                 }
+                ViewData["PageType"] = "List";
+                if (!string.IsNullOrEmpty(HttpContext.Session.GetString(Constants.StatusMessage)))
+                {
+                    ViewData["SuccessMsg"] = HttpContext.Session.GetString(Constants.StatusMessage);
+                    HttpContext.Session.SetString(Constants.StatusMessage, "");
+                }
+                ViewData["PagePrimaryID"] = 0;
                 await LoadProduct();
                 await LoadSupplier();
                 ViewData["PageType"] = "List";
@@ -135,12 +142,14 @@ namespace GoodsEnterprise.Web.Pages
         /// OnGetClear
         /// </summary>
         /// <returns></returns>
-        public IActionResult OnGetClear()
+        public async Task<IActionResult> OnGetClear()
         {
             try
             {
                 objpromotionCost = new PromotionCost();
                 objpromotionCost.IsActive = false;
+                await LoadProduct();
+                await LoadSupplier();
                 ViewData["PageType"] = "Edit";
             }
             catch (Exception ex)
@@ -218,7 +227,7 @@ namespace GoodsEnterprise.Web.Pages
                         {
                             ViewData["PagePrimaryID"] = objpromotionCost.PromotionCostId;
                         }
-                        ViewData["SuccessMsg"] = $"Mapping of this Supplier and Product {Constants.AlreadyExistMessage}";
+                        ViewData["InfoMsg"] = $"Mapping of this Supplier and Product {Constants.AlreadyExistMessage}";
                         await LoadProduct();
                         await LoadSupplier();
                         return Page();
@@ -284,8 +293,13 @@ namespace GoodsEnterprise.Web.Pages
         {
             try
             {
-                selectProduct = new SelectList(await _product.GetAllAsync(filter: x => x.IsDelete != true),
-                                          "Id", "ProductName", objpromotionCost?.ProductId);
+                var products = await _product.GetAllAsync(filter: x => x.IsDelete != true);
+                var productList = products.Select(p => new {
+                    Id = p.Id,
+                    DisplayText = $"{p.ProductName} ({p.Code})"
+                }).ToList();
+                
+                selectProduct = new SelectList(productList, "Id", "DisplayText", objpromotionCost?.ProductId);
             }
             catch (Exception ex)
             {

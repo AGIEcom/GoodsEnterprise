@@ -60,10 +60,10 @@ namespace GoodsEnterprise.Web.Pages
                 }
                 ViewData["PagePrimaryID"] = 0;
                 lstadmin = await _admin.GetAllAsync(filter: x => x.IsDelete != true, orderBy: mt => mt.OrderByDescending(m => m.ModifiedDate == null ? m.CreatedDate : m.ModifiedDate));
-                if (lstadmin == null || lstadmin?.Count == 0)
-                {
-                    ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
-                }
+                //if (lstadmin == null || lstadmin?.Count == 0)
+                //{
+                //    ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
+                //}
             }
             catch (Exception ex)
             {
@@ -123,10 +123,11 @@ namespace GoodsEnterprise.Web.Pages
         /// OnGetClear
         /// </summary>
         /// <returns></returns>
-        public IActionResult OnGetClear()
+        public async Task<IActionResult> OnGetClear()
         {
             try
             {
+                await LoadRole();
                 objAdmin = new Admin();
                 objAdmin.IsActive = false;
                 ViewData["PageType"] = "Edit";
@@ -206,22 +207,39 @@ namespace GoodsEnterprise.Web.Pages
                         {
                             ViewData["PagePrimaryID"] = objAdmin.Id;
                         }
-                        ViewData["SuccessMsg"] = $"Admin: {objAdmin.Email} {Constants.AlreadyExistMessage}";
+                        ViewData["InfoMsg"] = $"Admin: {objAdmin.Email} {Constants.AlreadyExistMessage}";
+                        await LoadRole();
                         return Page();
                     }
                 }
-
-                objAdmin.Password = objAdmin.Password.Encrypt(Constants.EncryptDecryptSecurity);
 
                 if (ModelState.IsValid)
                 {
                     if (objAdmin.Id == 0)
                     {
+                        // New admin - password is required
+                        if (objAdmin.Password != null)
+                            objAdmin.Password = objAdmin.Password.Encrypt(Constants.EncryptDecryptSecurity);
                         await _admin.InsertAsync(objAdmin);
                         HttpContext.Session.SetString(Constants.StatusMessage, Constants.SaveMessage);
                     }
                     else
                     {
+                        // Existing admin - handle password update
+                        if (!string.IsNullOrEmpty(objAdmin.Password))
+                        {
+                            // Password is being changed
+                            objAdmin.Password = objAdmin.Password.Encrypt(Constants.EncryptDecryptSecurity);
+                        }
+                        else
+                        {
+                            // Password is not being changed - preserve existing password
+                            var existingAdminData = await _admin.GetAsync(filter: x => x.Id == objAdmin.Id);
+                            if (existingAdminData != null)
+                            {
+                                objAdmin.Password = existingAdminData.Password;
+                            }
+                        }
                         await _admin.UpdateAsync(objAdmin);
                         HttpContext.Session.SetString(Constants.StatusMessage, Constants.UpdateMessage);
                     }

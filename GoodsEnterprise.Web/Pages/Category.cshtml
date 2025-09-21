@@ -1,8 +1,7 @@
 @page "/all-category"
 @model GoodsEnterprise.Web.Pages.CategoryModel
 
-@{
-    ViewData["Title"] = "Category";
+@{ ViewData["Title"] = "Category";
     var Edit = "";
     var List = "";
 
@@ -22,8 +21,7 @@
     {
         imagePath = Convert.ToString(ViewData["ImagePath"]);
 
-    }
-}
+    } }
 
 <link href="/css/common.css" rel="stylesheet" asp-append-version="true" />
 
@@ -39,12 +37,12 @@
         align-items: center;
         font-size: 14px;
     }
-    
+
     .file-name-text {
         color: #495057;
         font-weight: 500;
     }
-    
+
     .remove-file-btn {
         background: none;
         border: none;
@@ -58,12 +56,12 @@
         align-items: center;
         justify-content: center;
     }
-    
-    .remove-file-btn:hover {
-        background-color: #dc3545;
-        color: white;
-        border-radius: 50%;
-    }
+
+        .remove-file-btn:hover {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+        }
 </style>
 
 <div class="modern-alert modern-alert-success" id="success-alert" style="display:none;">
@@ -78,52 +76,49 @@
 
 <div id="categorylist" style="@List">
     <div class="modern-card">
-        <div class="modern-card-header">
-            <h2 class="modern-card-title">Category Management</h2>
+        <div class="d-flex justify-content-end mb-3">
+            <a id="lnkCreateCategory" class="modern-btn modern-btn-primary">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+                </svg>
+            </a>
         </div>
-        <a id="lnkCreateCategory" class="modern-btn modern-btn-primary mb-3">
-            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
-            </svg>
-            Create New Category
-        </a>
         <div class="modern-table-container" style="max-height: 500px; overflow-y: auto;">
             <table class="modern-table" id="tblCategoryMaster">
-            <thead>
-                <tr>
-                    <th scope="col">Category Name</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.lstcategory)
-                {
+                <thead>
                     <tr>
-                        <td>@item.Name</td>
-                        <td>@item.Description</td>
-                        <td>
-                            <span class="modern-badge @(item.IsActive ? "modern-badge-success" : "modern-badge-secondary")">
-                                @(item.IsActive ? "Active" : "Inactive")
-                            </span>
-                        </td>
-                        <td>
-                            <a asp-page-handler="Edit" asp-route-categoryId="@item.Id" class="modern-btn modern-btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem; margin-right: 0.5rem;">
-                                <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
-                                </svg>
-                                Edit
-                            </a>
-                            <a asp-page-handler="DeleteCategory" asp-route-categoryId="@item.Id" class="modern-btn modern-btn-danger btn-category-delete" style="padding: 0.5rem 1rem; font-size: 0.8rem;">
-                                <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                                </svg>
-                                Delete
-                            </a>
-                        </td>
+                        <th scope="col">Category Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
                     </tr>
-                }
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.lstcategory)
+                    {
+        <tr>
+            <td>@item.Name</td>
+            <td>@item.Description</td>
+            <td>
+                <span class="modern-badge @(item.IsActive ? "modern-badge-success" : "modern-badge-secondary")">
+                    @(item.IsActive ? "Active" : "Inactive")
+                </span>
+            </td>
+            <td>
+                <a asp-page-handler="Edit" asp-route-categoryId="@item.Id" class="modern-btn modern-btn-sm modern-btn-primary">
+                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                    </svg>
+                </a>
+                <a asp-page-handler="DeleteCategory" asp-route-categoryId="@item.Id" class="modern-btn modern-btn-sm modern-btn-danger btn-category-delete">
+                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"></path>
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                    </svg>
+                </a>
+            </td>
+        </tr>
+}
                 </tbody>
             </table>
         </div>
@@ -138,33 +133,32 @@
             <h2 class="modern-card-title">@(Convert.ToInt32(ViewData["PagePrimaryID"]) > 0 ? "Edit Category" : "Create New Category")</h2>
         </div>
         <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
-        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
-        {
-            <input asp-for="objCategory.Id" type="hidden" class="form-control" id="txtCategoryID">
-            <input asp-for="objCategory.ImageUrl200" type="hidden" class="form-control" id="txtImageUrl200">
-            <input asp-for="objCategory.ImageUrl500" type="hidden" class="form-control" id="txtImageUrl500">
-            <input asp-for="objCategory.IsDelete" type="hidden" class="form-control" id="txtIsDelete">
-            <input asp-for="objCategory.Createdby" type="hidden" class="form-control" id="txtCreatedby">
-            <input asp-for="objCategory.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
-            <input asp-for="objCategory.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
-            <input asp-for="objCategory.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
-        }
+            @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+            {
+<input asp-for="objCategory.Id" type="hidden" class="form-control" id="txtCategoryID">
+                <input asp-for="objCategory.ImageUrl200" type="hidden" class="form-control" id="txtImageUrl200">
+                                <input asp-for="objCategory.ImageUrl500" type="hidden" class="form-control" id="txtImageUrl500">
+                                                <input asp-for="objCategory.IsDelete" type="hidden" class="form-control" id="txtIsDelete">
+                                                                <input asp-for="objCategory.Createdby" type="hidden" class="form-control" id="txtCreatedby">
+                                                                                <input asp-for="objCategory.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
+                                                                                                <input asp-for="objCategory.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
+                                                                                                                <input asp-for="objCategory.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">}
 
-        <div class="modern-form-group">
-            <label for="txtCategory" class="modern-form-label">Category Name *</label>
-            <input asp-for="objCategory.Name" type="text" class="modern-form-input" id="txtCategory" required>
-        </div>
-        <div class="modern-form-group">
-            <label for="txtDescription" class="modern-form-label">Description</label>
-            <textarea asp-for="objCategory.Description" class="modern-form-input" id="txtDescription" rows="3" placeholder="Optional description..."></textarea>
-        </div>
-       @*  <div class="mb-3">
-                <input type="file" id="fileUpload" class="fileUpload" asp-for="Upload" accept="image/*" onchange="fileValidation()">
-                @if (imagePath != "")
-                {
-                    <img src="@imagePath" id="imgPath" alt="Sample Image" width="250" height="250" />
-                }
-        </div> *@
+            <div class="modern-form-group">
+                <label for="txtCategory" class="modern-form-label">Category Name *</label>
+                <input asp-for="objCategory.Name" type="text" class="modern-form-input" id="txtCategory" required>
+            </div>
+            <div class="modern-form-group">
+                <label for="txtDescription" class="modern-form-label">Description</label>
+                <textarea asp-for="objCategory.Description" class="modern-form-input" id="txtDescription" rows="3" placeholder="Optional description..."></textarea>
+            </div>
+            @*  <div class="mb-3">
+                        <input type="file" id="fileUpload" class="fileUpload" asp-for="Upload" accept="image/*" onchange="fileValidation()">
+                        @if (imagePath != "")
+                        {
+                            <img src="@imagePath" id="imgPath" alt="Sample Image" width="250" height="250" />
+                        }
+                </div> *@
 
             <div class="row">
                 <div class="col-md-12">
@@ -192,82 +186,71 @@
                             </div>
                             @if (imagePath != "")
                             {
-                                <div class="image-preview-container">
-                                    <img src="@imagePath" id="imgPath" alt="Category Image" class="preview-image" />
-                                    <div class="image-overlay">
-                                        <button type="button" class="change-image-btn" onclick="document.getElementById('fileUpload').click()">
-                                            Change Image
-                                        </button>
-                                    </div>
-                                </div>
-                            }
+                <div class="image-preview-container">
+                    <img src="@imagePath" id="imgPath" alt="Category Image" class="preview-image" />
+                    <div class="image-overlay">
+                        <button type="button" class="change-image-btn" onclick="document.getElementById('fileUpload').click()">
+                            Change Image
+                        </button>
+                    </div>
+                </div>}
                         </div>
                     </div>
                 </div>
             </div>
 
-        <div class="modern-form-group">
-            <label for="txtIsActive" class="modern-form-label">Category Status</label>
-            <div class="modern-toggle-container">
-                <input asp-for="objCategory.IsActive" type="checkbox" id="txtIsActive" class="modern-checkbox">
-                <label for="txtIsActive" class="modern-toggle-label">
-                    <div class="toggle-switch">
-                        <div class="toggle-slider"></div>
-                        <span class="toggle-text-off">Inactive</span>
-                        <span class="toggle-text-on">Active</span>
-                    </div>
-                </label>
+            <div class="modern-form-group">
+                <label for="txtIsActive" class="modern-form-label">Category Status</label>
+                <div class="modern-toggle-container">
+                    <input asp-for="objCategory.IsActive" type="checkbox" id="txtIsActive" class="modern-checkbox">
+                    <label for="txtIsActive" class="modern-toggle-label">
+                        <div class="toggle-switch">
+                            <div class="toggle-slider"></div>
+                            <span class="toggle-text-off">Inactive</span>
+                            <span class="toggle-text-on">Active</span>
+                        </div>
+                    </label>
+                </div>
             </div>
-        </div>
-
-        <div class="d-flex gap-2 flex-wrap">
-            <button type="submit" class="modern-btn modern-btn-primary category-submit">
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="modern-form-actions d-flex justify-content-end gap-2">
+                        <button type="submit" class="modern-btn modern-btn-primary category-submit">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            @(Convert.ToInt32(ViewData["PagePrimaryID"]) > 0 ? "Update Category" : "Create Category")
+                        </button>
+                        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+                        {
+            <a asp-page-handler="Reset" asp-route-categoryId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="modern-btn modern-btn-secondary">
                 <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"></path>
                 </svg>
-                @(Convert.ToInt32(ViewData["PagePrimaryID"]) > 0 ? "Update Category" : "Create Category")
-            </button>
-            @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
-            {
-                <a asp-page-handler="Reset" asp-route-categoryId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="modern-btn modern-btn-secondary">
-                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"></path>
-                    </svg>
-                    Reset
-                </a>
-            }
-            else
-            {
-                <a asp-page-handler="Clear" class="modern-btn modern-btn-secondary">
-                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                    </svg>
-                    Clear
-                </a>
-            }
-            <a asp-page="/Category" class="modern-btn modern-btn-secondary">
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                </svg>
-                Close
-            </a>
-        </div>
+                Reset
+            </a> }
+        else
+        {
+<a asp-page-handler="Clear" class="modern-btn modern-btn-secondary">
+    <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+    </svg>
+    Clear
+</a>}
+                        <a asp-page="/Category" class="modern-btn modern-btn-secondary">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                            Close
+                        </a>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
 </div>
-       
-      
 
-@if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
-{
-    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#success-alert").show();
-            $("#success-alert").fadeTo(2000, 3000).slideUp(3000, function () {
-                $("#success-alert").slideUp(3000);
-            });
-        });
 
-    </script>
-}
+
+@* Include Modern Alert System *@
+@await Html.PartialAsync("_ModernAlerts")

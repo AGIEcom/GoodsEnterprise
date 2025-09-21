@@ -31,6 +31,13 @@ namespace GoodsEnterprise.Model.Models
         public bool IsActive { get; set; }
         public bool IsDelete { get; set; }
 
+        public bool? IsPreferred { get; set; }
+        public int? LeadTimeDays { get; set; }
+        public string MoqCase { get; set; }
+        public decimal? LastCost { get; set; }
+        public string Incoterm { get; set; }
+        public DateTime? ValidFrom { get; set; }
+        public DateTime? ValidTo { get; set; }
         public virtual ICollection<BaseCost> BaseCosts { get; set; }
         public virtual ICollection<PromotionCost> PromotionCosts { get; set; }
         public virtual ICollection<Product> Products { get; set; }

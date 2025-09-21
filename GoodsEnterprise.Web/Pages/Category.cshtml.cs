@@ -64,10 +64,10 @@ namespace GoodsEnterprise.Web.Pages
                 }
                 ViewData["PagePrimaryID"] = 0;
                 lstcategory = await _category.GetAllAsync(filter: x => x.IsDelete != true, orderBy: mt => mt.OrderByDescending(m => m.ModifiedDate == null ? m.CreatedDate : m.ModifiedDate));
-                if (lstcategory == null || lstcategory?.Count == 0)
-                {
-                    ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
-                }
+                //if (lstcategory == null || lstcategory?.Count == 0)
+                //{
+                //    ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";
+                //}
             }
             catch (Exception ex)
             {
@@ -190,7 +190,7 @@ namespace GoodsEnterprise.Web.Pages
                             ViewData["PagePrimaryID"] = objCategory.Id;
                             ViewData["ImagePath"] = GetImageUrl(objCategory.ImageUrl500);
                         }
-                        ViewData["SuccessMsg"] = $"Category: {objCategory.Name} {Constants.AlreadyExistMessage}";
+                        ViewData["InfoMsg"] = $"Category: {objCategory.Name} {Constants.AlreadyExistMessage}";
                         return Page();
                     }
                 }
