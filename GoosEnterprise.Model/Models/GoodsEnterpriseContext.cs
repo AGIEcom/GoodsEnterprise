@@ -35,6 +35,7 @@ namespace GoodsEnterprise.Model.Models
         public virtual DbSet<Tax> Taxes { get; set; }
         public virtual DbSet<ProductList> ProductLists { get; set; }
         public virtual DbSet<PromotionCostList> PromotionCostLists { get; set; }
+        public virtual DbSet<BaseCostList> BaseCostLists { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -119,6 +120,10 @@ namespace GoodsEnterprise.Model.Models
                 entity.Property(e => e.StartDate).HasColumnType("datetime");
 
                 entity.Property(e => e.SupplierId).HasColumnName("SupplierID");
+
+                //entity.Property(e => e.IsActive).HasDefaultValue(true);
+
+                //entity.Property(e => e.IsDelete).HasDefaultValue(false);
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.BaseCosts)
@@ -621,6 +626,13 @@ namespace GoodsEnterprise.Model.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.Value).HasColumnType("decimal(16, 2)");
+            });
+
+            // Configure BaseCostList as keyless entity for stored procedure results
+            modelBuilder.Entity<BaseCostList>(entity =>
+            {
+                entity.HasNoKey();
+                entity.ToView(null); // This indicates it's not mapped to a table/view
             });
 
             OnModelCreatingPartial(modelBuilder);

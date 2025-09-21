@@ -1,0 +1,399 @@
+@page "/all-base-cost"
+@model GoodsEnterprise.Web.Pages.BaseCostModel
+@{
+
+    ViewData["Title"] = "Base Cost";
+    var Edit = "";
+    var List = ""; 
+
+    
+    if (Convert.ToString(ViewData["PageType"]) == "Edit")
+    {
+        Edit = "display:block;";
+        List = "display:none;";
+    }
+    else
+    {
+        Edit = "display:none;";
+        List = "display:block;";
+    }
+   
+}
+<link href="/css/common.css" rel="stylesheet" asp-append-version="true" />
+
+<style>
+    .selected-file-name {
+        margin-top: 10px;
+        padding: 8px 12px;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+    }
+    
+    .file-name-text {
+        color: #495057;
+        font-weight: 500;
+    }
+    
+    .remove-file-btn {
+        background: none;
+        border: none;
+        color: #dc3545;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 0;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .remove-file-btn:hover {
+        background-color: #dc3545;
+        color: white;
+        border-radius: 50%;
+    }
+</style>
+
+@Html.AntiForgeryToken()
+
+<input type="hidden" id="BasePageTypehtn" value="@ViewData["PageType"]" />
+
+<div class="modern-alert modern-alert-success" id="success-alert" style="display:none;">
+    <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+    </svg>
+    <span>@ViewData["SuccessMsg"]</span>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div id="productlist" style="@List">
+    <div class="modern-card">
+        <div class="modern-card-header">
+            <h2 class="modern-card-title">Base Cost Management</h2>
+        </div>
+        
+        <!-- Top row with Create button on left and Bulk Import/Export on right -->
+        <div class="d-flex justify-content-between align-items-start mb-4">
+            <!-- Left side - Create New Base Cost -->
+            <div>
+                <a asp-page-handler="Create" id="lnkCreateProduct" class="modern-btn modern-btn-primary">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+                    </svg>
+                    Create New Base Cost
+                </a>
+            </div>
+            
+            <!-- Right side - Bulk Import/Export -->
+            <div class="d-flex align-items-center" style="gap: 15px;">
+                <div class="text-end">
+                    <h5 class="mb-1">Bulk Import</h5>
+                    <small class="text-muted">Upload Excel file to import base costs</small>
+                </div>
+                <form id="UploadDownloadform" method="post" enctype="multipart/form-data" asp-page-handler="SubmitUpload" class="d-flex align-items-center" style="gap: 10px;">
+                    <div class="file-upload-container" style="margin: 0;">
+                        <div class="file-upload-area d-flex align-items-center" onclick="document.getElementById('productFileUpload').click()" style="padding: 8px 15px; min-height: auto; border: 2px dashed #ddd; border-radius: 6px; cursor: pointer; background: #f8f9fa;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17,8 12,3 7,8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                            <span style="font-size: 14px;">Choose Excel File (XLS, XLSX)</span>
+                        </div>
+                        <input type="file" id="productFileUpload" class="fileUpload-hidden d-none" asp-for="Upload" accept=".xls, .xlsx" onchange="baseCostFileValidation()">
+                        <div id="selectedBaseCostFileName" class="selected-file-name mt-2" style="display: none; padding: 5px 10px; font-size: 12px;">
+                            <span class="file-name-text"></span>
+                            <button type="button" class="remove-file-btn" onclick="clearBaseCostSelectedFile()">&times;</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="modern-btn modern-btn-primary UploadDownload-submit">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20" class="me-1">
+                        </svg>
+                        Import Data
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div style="max-height: 500px; overflow-y: auto; overflow-x: hidden;" class="container table-responsive py-5">
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="d-flex justify-content-end align-items-center" style="gap: 2rem;">
+                        <div class="d-flex align-items-center gap-2">
+                            <label for="searchByDropdownBaseCost" class="modern-form-label" style="font-size: 0.85rem; margin-bottom: 0; white-space: nowrap;">Search By:</label>
+                            <select id="searchByDropdownBaseCost" class="modern-select" style="width: 140px;">
+                                <option value="All">All Fields</option>
+                                <option value="ProductName">Product Name</option>
+                                <option value="SupplierName">Supplier Name</option>
+                            </select>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <label class="modern-form-label" style="font-size: 0.85rem; margin-bottom: 0; white-space: nowrap;">Search:</label>
+                            <input type="text" id="customSearchInputBaseCost" class="modern-form-input" style="width: 200px;" placeholder="Search...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-bordered table-hover display" style="width:100%" id="tblBaseCost">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">SupplierName</th>
+                        <th scope="col">ProductName</th>
+                        <th scope="col">BaseCost</th>
+                        <th scope="col">StartDate</th>
+                        <th scope="col">EndDate</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="divCreateUpdateProduct" style="@Edit">
+    <div class="modern-card">
+        <div class="modern-card-header">
+            <h2 class="modern-card-title">@(Convert.ToInt32(ViewData["PagePrimaryID"]) > 0 ? "Edit Base Cost" : "Create New Base Cost")</h2>
+        </div>
+        <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
+            <div asp-validation-summary="ModelOnly" class="modern-alert modern-alert-danger"></div>
+                    @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+                    {
+                    <input asp-for="objBaseCost.BaseCostId" type="hidden" class="form-control" id="txtBaseCostId">
+
+                    <input asp-for="objBaseCost.CreatedBy" type="hidden" class="form-control" id="txtCreatedby">
+                    <input asp-for="objBaseCost.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
+                    <input asp-for="objBaseCost.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
+                    <input asp-for="objBaseCost.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
+                    }
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="selectProductID" class="modern-form-label">Product *</label>
+                        <select asp-for="objBaseCost.ProductId" class="modern-select" data-live-search="true"
+                                asp-items="Model.selectProduct" id="selectProductID" required>
+                            <option value="">-- Select Product --</option>
+                        </select>
+                        <span asp-validation-for="objBaseCost.ProductId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="selectSupplierID" class="modern-form-label">Supplier *</label>
+                        <select asp-for="objBaseCost.SupplierId" class="modern-select" data-live-search="true"
+                                asp-items="Model.selectSupplier" id="selectSupplierID" required>
+                            <option value="">-- Select Supplier --</option>
+                        </select>
+                        <span asp-validation-for="objBaseCost.SupplierId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="modern-form-group">
+                        <label for="txtBaseCost" class="modern-form-label">Base Cost *</label>
+                        <input asp-for="objBaseCost.BaseCost1" type="text" inputmode="decimal" 
+                               oninput="validatePositiveDecimal(this)" class="modern-form-input" 
+                               id="txtBaseCost" placeholder="0.00" required>
+                        <span asp-validation-for="objBaseCost.BaseCost1" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="modern-form-group">
+                        <label for="txtStartDate" class="modern-form-label">Start Date *</label>
+                        <input asp-for="objBaseCost.StartDate" type="date" class="modern-form-input" id="txtStartDate" required>
+                        <span asp-validation-for="objBaseCost.StartDate" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="modern-form-group">
+                        <label for="txtEndDate" class="modern-form-label">End Date</label>
+                        <input asp-for="objBaseCost.EndDate" type="date" class="modern-form-input" id="txtEndDate">
+                        <span asp-validation-for="objBaseCost.EndDate" class="text-danger"></span>
+                    </div>
+                </div>
+               @*  <div class="col-md-4">
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Status</label>
+                        <div class="modern-toggle-container">
+                            <input type="checkbox" id="txtIsActive" class="modern-checkbox" 
+                                   value="true" name="objBaseCost.IsActive" 
+                                   @(Model.objBaseCost?.IsActive == true ? "checked" : "")>
+                            <input type="hidden" name="objBaseCost.IsActive" value="false">
+                            <label for="txtIsActive" class="modern-toggle-label">
+                                <div class="toggle-switch">
+                                    <div class="toggle-slider"></div>
+                                    <span class="toggle-text-off">Inactive</span>
+                                    <span class="toggle-text-on">Active</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div> *@
+
+                <div class="col-md-4">
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Status</label>
+                        <div class="modern-toggle-container">
+                            <input asp-for="objBaseCost.IsActive" type="checkbox" id="txtIsActive" class="modern-checkbox">
+                            <label for="txtIsActive" class="modern-toggle-label">
+                                <div class="toggle-switch">
+                                    <div class="toggle-slider"></div>
+                                    <span class="toggle-text-off">Inactive</span>
+                                    <span class="toggle-text-on">Active</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="modern-form-actions">
+                        <button type="submit" class="modern-btn modern-btn-primary product-submit">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            @(Convert.ToInt32(ViewData["PagePrimaryID"]) > 0 ? "Update Base Cost" : "Create Base Cost")
+                        </button>
+                        @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
+                        {
+                            <a asp-page-handler="Reset" asp-route-baseCostId=@Convert.ToInt32(ViewData["PagePrimaryID"]) class="modern-btn modern-btn-secondary">
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"></path>
+                                </svg>
+                                Reset
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-page-handler="Clear" class="modern-btn modern-btn-secondary">
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"></path>
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                </svg>
+                                Clear
+                            </a>
+                        }
+                        <a asp-page="/BaseCost" class="modern-btn modern-btn-secondary">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                            Close
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script src="~/js/ServerSidePagination.js" asp-append-version="true"></script>
+
+<script>
+
+
+    // Delete confirmation for BaseCost
+    $(document).on('click', '.btn-BaseCost-delete', function(e) {
+        e.preventDefault();
+        var result = confirm("Are you sure you want to delete this base cost record?");
+        if (result) {
+            window.location.href = $(this).attr('href');
+        }
+    });
+}
+</script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+@if (ViewData["SuccessMsg"] != null && ViewData["SuccessMsg"] != "")
+{
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#success-alert").show();
+            $("#success-alert").fadeTo(2000, 3000).slideUp(3000, function () {
+                $("#success-alert").slideUp(3000);
+            });
+        });
+
+        function baseCostFileValidation() {
+            var fileInput = document.getElementById('productFileUpload');
+            var selectedFileName = document.getElementById('selectedBaseCostFileName');
+            var btnUpload = document.querySelector('.UploadDownload-submit');
+
+            var filePath = fileInput.value;
+            if (filePath == '') {
+                if (selectedFileName) {
+                    selectedFileName.style.display = 'none';
+                }
+                btnUpload.disabled = true;
+                return true;
+            }
+
+            // Validate file extension
+            var allowedExtensions = /(\.xlsx|\.xls)$/i;
+            if (!allowedExtensions.exec(filePath)) {
+                alert('Please upload a valid Excel file (.xlsx or .xls)');
+                fileInput.value = '';
+                if (selectedFileName) {
+                    selectedFileName.style.display = 'none';
+                }
+                btnUpload.disabled = true;
+                return false;
+            }
+
+            // Show selected file name
+            if (selectedFileName && fileInput.files && fileInput.files[0]) {
+                var fileNameText = selectedFileName.querySelector('.file-name-text');
+                if (fileNameText) {
+                    fileNameText.textContent = fileInput.files[0].name;
+                    selectedFileName.style.display = 'flex';
+                    btnUpload.disabled = false;
+                }
+            }
+            return true;
+        }
+
+        function clearBaseCostSelectedFile() {
+            var fileInput = document.getElementById('productFileUpload');
+            var selectedFileName = document.getElementById('selectedBaseCostFileName');
+            var btnUpload = document.querySelector('.UploadDownload-submit');
+
+            fileInput.value = '';
+            selectedFileName.style.display = 'none';
+            btnUpload.disabled = true;
+        }
+
+        function validatePositiveDecimal(input) {
+            var value = input.value;
+            // Remove any non-digit and non-decimal point characters
+            value = value.replace(/[^0-9.]/g, '');
+            
+            // Ensure only one decimal point
+            var parts = value.split('.');
+            if (parts.length > 2) {
+                value = parts[0] + '.' + parts.slice(1).join('');
+            }
+            
+            // Update the input value
+            input.value = value;
+        }
+    </script>
+
+}
+

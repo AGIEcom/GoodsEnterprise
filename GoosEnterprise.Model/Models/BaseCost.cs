@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 #nullable disable
@@ -14,7 +14,8 @@ namespace GoodsEnterprise.Model.Models
         public DateTime? EndDate { get; set; }
         public string Remark { get; set; }
         public int? SupplierId { get; set; }
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsDelete { get; set; }
         public DateTime? CreatedDate { get; set; }
         public int? CreatedBy { get; set; }
         public int? Modifiedby { get; set; }
