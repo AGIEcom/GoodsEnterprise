@@ -3,6 +3,11 @@ if (typeof initDataTable !== 'function') {
     //console.error('initDataTable function is not available. Make sure site.js is loaded first.');
 }
 
+// Global variables to prevent multiple initializations
+var productTableInitialized = false;
+var promotionTableInitialized = false;
+var baseCostTableInitialized = false;
+
 $(document).ready(function () {
     // Initialize tables
     if ($('#ProductTypehtn').val() == 'List') {
@@ -12,15 +17,14 @@ $(document).ready(function () {
         PromotionPriceGridDataLoading();
     }
     if ($('#BasePageTypehtn').val() == 'List') {
-
-        BaseCostGridDataLoading(); // Commented out to prevent automatic loading during import
+        BaseCostGridDataLoading();
     }
     // Reload table when search filter changes
     //$('#searchByDropdown').on('change', function() {
     //    const table = $('#tblProductMaster').DataTable();
     //    if (table) {
     //        table.ajax.reload(null, false); // false = don't reset paging
-            
+
     //        // Refresh the table after data is loaded
     //        table.on('draw', function() {
     //            if (typeof resizeDataTables === 'function') {
@@ -29,9 +33,9 @@ $(document).ready(function () {
     //        });
     //    }
     //});
-    
+
     // Prevent table reinitialization on window focus
-    $(window).on('focus', function() {
+    $(window).on('focus', function () {
         console.log('Window focused - tables should remain stable');
     });
 
@@ -56,13 +60,13 @@ $(document).ready(function () {
         }
     });
     $('#clearProductSearch').on('click', function () {
-        $('#customSearchInputProduct').val("");        
+        $('#customSearchInputProduct').val("");
         const table = $('#tblProductMaster').DataTable();
         if (table) {
             table.ajax.reload(null, false); // false = don't reset paging
         }
     });
-    
+
 
     // PromotionCost search dropdown removed - using custom search instead
 
@@ -75,7 +79,7 @@ $(document).ready(function () {
             }
         }
     });
-   
+
 
     // Window resize handler removed - no longer needed for DataTables
 
@@ -85,7 +89,7 @@ $(document).ready(function () {
             console.log('ProductGrid DataTable already initialized, skipping...');
             return $('#tblProductMaster').DataTable();
         }
-        
+
         // Check if DataTable already exists and is properly initialized
         if ($.fn.DataTable.isDataTable('#tblProductMaster')) {
             console.log('ProductGrid DataTable already exists, skipping initialization');
@@ -95,7 +99,7 @@ $(document).ready(function () {
 
         console.log('Initializing ProductGrid DataTable...');
         productTableInitialized = true;
-        
+
         // Initialize with our custom function (now returns a Promise)
         return $('#tblProductMaster').DataTable({
             // const table = initDataTable('#tblProductMaster', {
@@ -208,7 +212,7 @@ $(document).ready(function () {
     }
     function deleteConfirm(event, entityName, deleteUrl) {
         event.preventDefault(); // Prevent default link behavior
-        
+
         showModernConfirm(
             'Delete Confirmation',
             `Are you sure you want to delete this ${entityName}? This action cannot be undone.`,
@@ -219,14 +223,14 @@ $(document).ready(function () {
                 window.location.href = deleteUrl;
             }
         );
-        
+
         return false; // Prevent default link behavior
     }
 
     // Make deleteConfirm globally available for other DataTables
     window.deleteConfirm = deleteConfirm;
-   
-    
+
+
     function PromotionPriceGridDataLoading() {
         if (!$('#tblPromotionCost').length) {
             //console.error('#tblPromotionCost not found');
@@ -238,7 +242,7 @@ $(document).ready(function () {
             console.log('PromotionCost DataTable already initialized, skipping...');
             return $('#tblPromotionCost').DataTable();
         }
-        
+
         // Check if DataTable already exists and is properly initialized
         if ($.fn.DataTable.isDataTable('#tblPromotionCost')) {
             console.log('PromotionCost DataTable already exists, skipping initialization');
@@ -251,7 +255,7 @@ $(document).ready(function () {
 
         // Initialize with our custom function
         return $('#tblPromotionCost').DataTable({
-       // const table = initDataTable('#tblPromotionCost', {
+            // const table = initDataTable('#tblPromotionCost', {
             processing: true,
             serverSide: true,
             responsive: false, // Disable responsive to prevent collapse
@@ -346,13 +350,29 @@ $(document).ready(function () {
 
 
     function BaseCostGridDataLoading() {
+        // Check if already initialized using global variable
+        if (baseCostTableInitialized) {
+            console.log('BaseCost DataTable already initialized, skipping...');
+            return $('#tblBaseCost').DataTable();
+        }
+
         if (!$('#tblBaseCost').length) {
             console.error('#tblBaseCost not found');
             return;
         }
 
+        // Check if DataTable already exists and is properly initialized
+        if ($.fn.DataTable.isDataTable('#tblBaseCost')) {
+            console.log('BaseCost DataTable already exists, skipping initialization');
+            baseCostTableInitialized = true;
+            return $('#tblBaseCost').DataTable();
+        }
+
+        console.log('Initializing BaseCost DataTable...');
+        baseCostTableInitialized = true;
+
         // Initialize with our custom function
-        var tblBaseCost = $('#tblBaseCost').DataTable({
+        return $('#tblBaseCost').DataTable({
             processing: true,
             serverSide: true,
             responsive: true,
