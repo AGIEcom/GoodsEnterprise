@@ -165,7 +165,7 @@ namespace GoodsEnterprise.Web.Controller
             try
             {
 
-                List<BaseCostList> lstproduct = new List<BaseCostList>();
+                List<BaseCostList> lstBaseCost = new List<BaseCostList>();
 
                 // Extract SearchBy parameter from AdditionalValues
                 string searchBy = "All";
@@ -177,7 +177,7 @@ namespace GoodsEnterprise.Web.Controller
                 // Map column index to actual database column names for BaseCost
                 string[] baseCostColumns = { "SupplierName", "ProductName", "BaseCost", "StartDate", "EndDate", "Status", "BaseCostID" };
                 int columnIndex = param.Order != null && param.Order.Any() ? param.Order[0].Column : -1;
-                string sortColumn = columnIndex >= 0 && columnIndex < baseCostColumns.Length ? baseCostColumns[columnIndex] : "DefaultSort";
+                string sortColumn = columnIndex >= 0 && columnIndex < baseCostColumns.Length ? baseCostColumns[columnIndex] : "ModifiedDate";
 
                 DBPaginationParams dBPaginationParams = new DBPaginationParams()
                 {
@@ -192,14 +192,14 @@ namespace GoodsEnterprise.Web.Controller
 
                 };
 
-                lstproduct = await _baseCost.GetAllWithPaginationAsync(dBPaginationParams);
+                lstBaseCost = await _baseCost.GetAllWithPaginationAsync(dBPaginationParams);
 
-                if (lstproduct == null || lstproduct.Count == 0)
+                if (lstBaseCost == null || lstBaseCost.Count == 0)
                 {
                     var returnvaule = new JsonResult(new JqueryDataTablesResult<BaseCostList>
                     {
                         Draw = param.Draw,
-                        Data = lstproduct,
+                        Data = lstBaseCost,
                         RecordsFiltered = 0,
                         RecordsTotal = 0
                     });
@@ -210,9 +210,9 @@ namespace GoodsEnterprise.Web.Controller
                     var returnvaule = new JsonResult(new JqueryDataTablesResult<BaseCostList>
                     {
                         Draw = param.Draw,
-                        Data = lstproduct,
-                        RecordsFiltered = lstproduct[0].FilterTotalCount,
-                        RecordsTotal = lstproduct[0].FilterTotalCount
+                        Data = lstBaseCost,
+                        RecordsFiltered = lstBaseCost[0].FilterTotalCount,
+                        RecordsTotal = lstBaseCost[0].FilterTotalCount
                     });
                     return returnvaule;
                 }

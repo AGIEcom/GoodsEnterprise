@@ -508,8 +508,50 @@ namespace GoodsEnterprise.Web.Pages
             var allProducts = await _product.GetAllAsync(x => x.IsActive == true && (x.IsDelete == null || x.IsDelete != true));
             var allSuppliers = await _supplier.GetAllAsync(x => x.IsActive == true && (x.IsDelete == null || x.IsDelete != true));
 
-            var productLookup = allProducts.ToDictionary(p => p.Code.ToUpper(), p => p);
-            var supplierLookup = allSuppliers.ToDictionary(s => s.Name.ToUpper(), s => s);
+            // Create lookups with null checks to prevent exceptions
+            Dictionary<string, Product> productLookup;
+            Dictionary<string, Supplier> supplierLookup;
+            
+            try
+            {
+                // Handle duplicate product codes by taking the first occurrence
+                var productGroups = allProducts
+                    .Where(p => !string.IsNullOrEmpty(p.Code))
+                    .GroupBy(p => p.Code.ToUpper())
+                    .ToList();
+                
+                // Log duplicate product codes for data cleanup
+                var duplicateProducts = productGroups.Where(g => g.Count() > 1).ToList();
+                if (duplicateProducts.Any())
+                {
+                    Log.Warning($"Found {duplicateProducts.Count} duplicate product codes: {string.Join(", ", duplicateProducts.Select(g => g.Key))}");
+                }
+                
+                productLookup = productGroups.ToDictionary(g => g.Key, g => g.First());
+                
+                // Handle duplicate supplier names by taking the first occurrence
+                var supplierGroups = allSuppliers
+                    .Where(s => !string.IsNullOrEmpty(s.Name))
+                    .GroupBy(s => s.Name.ToUpper())
+                    .ToList();
+                
+                // Log duplicate supplier names for data cleanup
+                var duplicateSuppliers = supplierGroups.Where(g => g.Count() > 1).ToList();
+                if (duplicateSuppliers.Any())
+                {
+                    Log.Warning($"Found {duplicateSuppliers.Count} duplicate supplier names: {string.Join(", ", duplicateSuppliers.Select(g => g.Key))}");
+                }
+                
+                supplierLookup = supplierGroups.ToDictionary(g => g.Key, g => g.First());
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error creating lookup dictionaries in SaveBaseCostDataAsync");
+                return (0, 0, new List<string> { $"Error creating lookup dictionaries: {ex.Message}" });
+            }
+
+            Log.Information($"SaveBaseCostDataAsync: Found {productLookup.Count} products and {supplierLookup.Count} suppliers for validation");
+            Log.Information($"SaveBaseCostDataAsync: Processing {dataTable.Rows.Count} rows from Excel");
 
             foreach (DataRow row in dataTable.Rows)
             {
