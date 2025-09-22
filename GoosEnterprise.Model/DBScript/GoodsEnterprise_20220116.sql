@@ -142,7 +142,7 @@ CREATE TABLE [dbo].[BaseCost](
 	[Remark] [varchar](500) NULL,
 	[SupplierID] [int] NULL,
 	[IsActive] [bit] NOT NULL,
-	[IsDelete] [bit] NOT NULL,
+	[IsDelete] [bit] NOT NULL,v
 	[CreatedDate] [datetime] NULL,
 	[CreatedBy] [int] NULL,
 	[Modifiedby] [int] NULL,
