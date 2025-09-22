@@ -1628,21 +1628,111 @@
     }
     
     function resetImportForm() {
+        // Reset form elements
         const form = document.getElementById('importForm');
-        const progressSection = document.getElementById('importProgress');
-        const startBtn = document.getElementById('startImport');
+        const fileInput = document.getElementById('supplierFileUpload');
+        const validateDataCheckbox = document.getElementById('validateData');
         
         if (form) form.reset();
+        if (fileInput) fileInput.value = '';
+        if (validateDataCheckbox) validateDataCheckbox.checked = true;
+        
+        // Hide and reset progress section
+        const progressSection = document.getElementById('importProgress');
+        const loadingMessage = document.getElementById('loadingMessage');
+        const recordsProcessed = document.getElementById('recordsProcessed');
+        
         if (progressSection) progressSection.style.display = 'none';
+        if (loadingMessage) loadingMessage.textContent = 'Importing your data...';
+        if (recordsProcessed) recordsProcessed.textContent = 'Please wait while we process your file';
+        
+        // Reset import results summary
+        const importResultsSummary = document.getElementById('importResultsSummary');
+        const successCount = document.getElementById('successCount');
+        const errorCount = document.getElementById('errorCount');
+        const totalCount = document.getElementById('totalCount');
+        
+        if (importResultsSummary) importResultsSummary.style.display = 'none';
+        if (successCount) successCount.textContent = '0';
+        if (errorCount) errorCount.textContent = '0';
+        if (totalCount) totalCount.textContent = '0';
+        
+        // Reset import results details
+        const importResultsDetails = document.getElementById('importResultsDetails');
+        const successfulRecords = document.getElementById('successfulRecords');
+        const failedRecords = document.getElementById('failedRecords');
+        
+        if (importResultsDetails) importResultsDetails.style.display = 'none';
+        if (successfulRecords) successfulRecords.innerHTML = '';
+        if (failedRecords) failedRecords.innerHTML = '';
+        
+        // Reset import status
+        const importStatus = document.getElementById('importStatus');
+        if (importStatus) importStatus.innerHTML = '';
+        
+        // Reset preview results (if they exist)
+        const importPreviewResults = document.getElementById('importPreviewResults');
+        if (importPreviewResults) {
+            importPreviewResults.innerHTML = '';
+            importPreviewResults.style.display = 'none';
+        }
+        
+        // Reset import results (if they exist)
+        const importResults = document.getElementById('importResults');
+        if (importResults) {
+            importResults.innerHTML = '';
+            importResults.style.display = 'none';
+        }
+        
+        // Reset validation messages
+        const validationMessages = document.querySelectorAll('.validation-message, .alert, .import-status');
+        validationMessages.forEach(msg => {
+            if (msg.parentNode) {
+                msg.parentNode.removeChild(msg);
+            }
+        });
+        
+        // Reset start button to initial disabled state
+        const startBtn = document.getElementById('startImport');
         if (startBtn) {
-            startBtn.disabled = false;
+            startBtn.disabled = true;
+            startBtn.classList.remove('btn-primary');
+            startBtn.classList.add('btn-disabled');
             startBtn.innerHTML = `
                 <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
                 </svg>
-                Start Import
+                Cannot Import
             `;
+            startBtn.title = 'Please select a file to import';
         }
+        
+        // Reset tabs to default state
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+        
+        tabButtons.forEach((btn, index) => {
+            if (index === 0) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        
+        tabPanes.forEach((pane, index) => {
+            if (index === 0) {
+                pane.classList.add('active');
+            } else {
+                pane.classList.remove('active');
+            }
+        });
+        
+        // Reset supplier import configuration if available
+        if (window.supplierImportConfig && typeof window.supplierImportConfig.reset === 'function') {
+            window.supplierImportConfig.reset();
+        }
+
+        console.log('Import form has been completely reset');
     }
     
     function startExcelImport() {

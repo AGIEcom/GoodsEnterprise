@@ -329,12 +329,21 @@ namespace GoodsEnterprise.Web.Pages
                         return new { success = false, message = "No data rows found in the Excel file." };
                     }
 
-                    // Validate headers (optional - you can enable this if needed)
+                    // Create column mapping from header row
                     var headerRow = worksheet.GetRow(0);
-                    if (headerRow != null)
+                    if (headerRow == null)
                     {
-                        var expectedHeaders = new[] { "SupplierName", "SKUCode", "IsActive", "IsPreferred", "LeadTimeDays", "MoqCase", "LastCost", "Incoterm", "ValidFrom", "ValidTo" };
-                        // You can add header validation here if needed
+                        return new { success = false, message = "Header row not found in the Excel file." };
+                    }
+                    
+                    var columnMapping = CreateColumnMapping(headerRow);
+                    
+                    // Validate required columns exist
+                    var requiredColumns = new[] { "SupplierName", "SKUCode" };
+                    var missingColumns = requiredColumns.Where(col => !columnMapping.ContainsKey(col)).ToList();
+                    if (missingColumns.Any())
+                    {
+                        return new { success = false, message = $"Missing required columns: {string.Join(", ", missingColumns)}" };
                     }
 
                     // Process each row
@@ -348,17 +357,17 @@ namespace GoodsEnterprise.Web.Pages
                             var supplier = new Supplier();
                             var rowErrors = new List<string>();
 
-                            // Extract data from Excel row using NPOI
-                            var supplierName = GetCellValue(row, 0)?.Trim();
-                            var skuCode = GetCellValue(row, 1)?.Trim();
-                            var isActiveText = GetCellValue(row, 2)?.Trim();
-                            var isPreferredText = GetCellValue(row, 3)?.Trim();
-                            var leadTimeDaysText = GetCellValue(row, 4)?.Trim();
-                            var moqCaseText = GetCellValue(row, 5)?.Trim();
-                            var lastCostText = GetCellValue(row, 6)?.Trim();
-                            var incoterm = GetCellValue(row, 7)?.Trim();
-                            var validFromText = GetCellValue(row, 8)?.Trim();
-                            var validToText = GetCellValue(row, 9)?.Trim();
+                            // Extract data from Excel row using column names
+                            var supplierName = GetCellValue(row, "SupplierName", columnMapping)?.Trim();
+                            var skuCode = GetCellValue(row, "SKUCode", columnMapping)?.Trim();
+                            var isActiveText = GetCellValue(row, "IsActive", columnMapping)?.Trim();
+                            var isPreferredText = GetCellValue(row, "IsPreferred", columnMapping)?.Trim();
+                            var leadTimeDaysText = GetCellValue(row, "LeadTimeDays", columnMapping)?.Trim();
+                            var moqCaseText = GetCellValue(row, "MoqCase", columnMapping)?.Trim();
+                            var lastCostText = GetCellValue(row, "LastCost", columnMapping)?.Trim();
+                            var incoterm = GetCellValue(row, "Incoterm", columnMapping)?.Trim();
+                            var validFromText = GetCellValue(row, "ValidFrom", columnMapping)?.Trim();
+                            var validToText = GetCellValue(row, "ValidTo", columnMapping)?.Trim();
 
                             // Validate required fields
                             if (validateData)
@@ -561,7 +570,32 @@ namespace GoodsEnterprise.Web.Pages
         }
 
         /// <summary>
-        /// GetCellValue - Helper method to get cell value from NPOI row
+        /// CreateColumnMapping - Helper method to create column name to index mapping from header row
+        /// </summary>
+        /// <param name="headerRow"></param>
+        /// <returns></returns>
+        private Dictionary<string, int> CreateColumnMapping(IRow headerRow)
+        {
+            var columnMapping = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            
+            for (int i = 0; i < headerRow.LastCellNum; i++)
+            {
+                var cell = headerRow.GetCell(i);
+                if (cell != null)
+                {
+                    var columnName = cell.StringCellValue?.Trim();
+                    if (!string.IsNullOrEmpty(columnName))
+                    {
+                        columnMapping[columnName] = i;
+                    }
+                }
+            }
+            
+            return columnMapping;
+        }
+
+        /// <summary>
+        /// GetCellValue - Helper method to get cell value from Excel row by column index
         /// </summary>
         /// <param name="row"></param>
         /// <param name="columnIndex"></param>
@@ -598,6 +632,23 @@ namespace GoodsEnterprise.Web.Pages
                 default:
                     return cell.ToString();
             }
+        }
+
+        /// <summary>
+        /// GetCellValue - Helper method to get cell value from Excel row by column name
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="columnName"></param>
+        /// <param name="columnMapping"></param>
+        /// <returns></returns>
+        private string GetCellValue(IRow row, string columnName, Dictionary<string, int> columnMapping)
+        {
+            if (columnMapping.TryGetValue(columnName, out int columnIndex))
+            {
+                return GetCellValue(row, columnIndex);
+            }
+            
+            return string.Empty; // Column not found
         }
 
         /// <summary>

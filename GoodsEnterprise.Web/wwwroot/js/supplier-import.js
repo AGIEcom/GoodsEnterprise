@@ -182,12 +182,33 @@ class SupplierImportConfig {
                 background-color: #e9ecef;
                 cursor: help;
             }
+            
+            /* Start Import Button States */
+            .btn-disabled {
+                background-color: #6c757d !important;
+                border-color: #6c757d !important;
+                color: #ffffff !important;
+                cursor: not-allowed !important;
+                opacity: 0.7 !important;
+                pointer-events: none !important;
+            }
+            
+            .btn-disabled:hover {
+                background-color: #6c757d !important;
+                border-color: #6c757d !important;
+                transform: none !important;
+                box-shadow: none !important;
+                pointer-events: none !important;
+            }
         `;
         document.head.appendChild(style);
     }
 
     setupValidation() {
         if (!this.config) return;
+
+        // Initially disable the Start Import button
+        this.disableStartImportButton('Please select a file to import');
 
         const fileInput = document.getElementById('supplierFileUpload'); 
         const importForm = document.getElementById('importForm');
@@ -215,6 +236,7 @@ class SupplierImportConfig {
         // File size validation
         if (file.size > maxSize) {
             this.showValidationError(`File size (${this.formatFileSize(file.size)}) exceeds maximum allowed size (${settings.maxFileSize})`);
+            this.disableStartImportButton('File size too large');
             return false;
         }
         
@@ -222,10 +244,12 @@ class SupplierImportConfig {
         const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
         if (!settings.supportedFormats.includes(fileExtension)) {
             this.showValidationError(`File type ${fileExtension} is not supported. Allowed formats: ${settings.supportedFormats.join(', ')}`);
+            this.disableStartImportButton('Invalid file type');
             return false;
         }
         
         this.showValidationSuccess(`File "${file.name}" is valid and ready for import.`);
+        // Don't enable here - wait for preview results to check CanProceedWithImport
         return true;
     }
 
@@ -418,12 +442,45 @@ class SupplierImportConfig {
         }
         
         XLSX.utils.book_append_sheet(wb, instructionsWs, "Instructions");
-        
         // Generate Excel file and download
         const filename = `supplier-import-template-${new Date().toISOString().slice(0, 10)}.xlsx`;
         XLSX.writeFile(wb, filename);
         
         this.showValidationSuccess('Excel template downloaded successfully!');
+        console.log('Supplier import configuration loaded successfully');
+    }
+
+    reset() {
+        // Reset file input
+        const fileInput = document.getElementById('supplierFileUpload');
+        if (fileInput) {
+            fileInput.value = '';
+        }
+
+        // Hide and clear preview results
+        const previewContainer = document.getElementById('importPreviewResults');
+        if (previewContainer) {
+            previewContainer.innerHTML = '';
+            previewContainer.style.display = 'none';
+        }
+
+        // Hide and clear import results
+        const resultsContainer = document.getElementById('importResults');
+        if (resultsContainer) {
+            resultsContainer.innerHTML = '';
+            resultsContainer.style.display = 'none';
+        }
+
+        // Reset button to initial disabled state
+        this.disableStartImportButton('Please select a file to import');
+
+        // Clear any validation messages
+        const validationContainer = document.querySelector('.validation-container');
+        if (validationContainer) {
+            validationContainer.innerHTML = '';
+        }
+
+        console.log('Supplier import configuration has been reset');
     }
 
     // API Integration Methods
@@ -451,10 +508,12 @@ class SupplierImportConfig {
                 this.displayPreviewResults(result);
             } else {
                 this.showValidationError(result.error || 'Failed to preview import data.');
+                this.disableStartImportButton('Preview failed');
             }
         } catch (error) {
             console.error('Preview error:', error);
             this.showValidationError('Error analyzing file. Please try again.');
+            this.disableStartImportButton('Error analyzing file');
         } finally {
             this.hideLoadingState();
         }
@@ -506,6 +565,9 @@ class SupplierImportConfig {
 
     displayPreviewResults(previewData) {
         const container = document.getElementById('importPreviewResults') || this.createPreviewContainer();
+        
+        // Control Start Import button based on CanProceedWithImport
+        this.updateStartImportButtonState(previewData);
         
         container.innerHTML = `
             <div class="preview-summary">
@@ -570,6 +632,89 @@ class SupplierImportConfig {
         `;
         
         container.style.display = 'block';
+    }
+
+    updateStartImportButtonState(previewData) {
+        const startImportBtn = document.getElementById('startImport');
+        if (!startImportBtn) return;
+
+        // Handle case where previewData might be undefined or null
+        if (!previewData || !previewData.data) {
+            console.error('Preview data is undefined or missing data property');
+            this.disableStartImportButton('Invalid preview data');
+            return;
+        }
+
+        // Check if import can proceed based on server response
+        const canProceed = previewData.data.CanProceedWithImport === true || previewData.data.canProceedWithImport === true;
+
+        if (canProceed) {
+            // Enable the button and show success state
+            startImportBtn.disabled = false;
+            startImportBtn.classList.remove('btn-disabled');
+            startImportBtn.classList.add('btn-primary');
+            startImportBtn.innerHTML = `
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                Start Import (${previewData.data.validRecords || 0} records)
+            `;
+            startImportBtn.title = `Ready to import ${previewData.data.validRecords || 0} valid records`;
+            
+            // Remove click prevention when enabling
+            startImportBtn.style.pointerEvents = '';
+            startImportBtn.removeAttribute('aria-disabled');
+            
+            // Remove the prevention handler if it exists
+            if (startImportBtn._preventClickHandler) {
+                startImportBtn.removeEventListener('click', startImportBtn._preventClickHandler, true);
+                delete startImportBtn._preventClickHandler;
+            }
+        } else {
+            // Disable the button and show error state
+            startImportBtn.disabled = true;
+            startImportBtn.classList.add('btn-disabled');
+            startImportBtn.classList.remove('btn-primary');
+            startImportBtn.innerHTML = `
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                Cannot Import (${previewData.data.invalidRecords || 0} errors)
+            `;
+            startImportBtn.title = 'Please fix validation errors before importing';
+        }
+    }
+
+    disableStartImportButton(reason) {
+        const startImportBtn = document.getElementById('startImport');
+        if (!startImportBtn) return;
+
+        startImportBtn.disabled = true;
+        startImportBtn.classList.add('btn-disabled');
+        startImportBtn.classList.remove('btn-primary');
+        startImportBtn.innerHTML = `
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+            </svg>
+            Cannot Import
+        `;
+        startImportBtn.title = reason || 'Please fix validation errors before importing';
+        
+        // Add click event prevention
+        startImportBtn.style.pointerEvents = 'none';
+        startImportBtn.setAttribute('aria-disabled', 'true');
+        
+        // Remove any existing click handlers and add a prevention handler
+        const preventClick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            return false;
+        };
+        
+        // Store the prevention handler for later removal
+        startImportBtn._preventClickHandler = preventClick;
+        startImportBtn.addEventListener('click', preventClick, true);
     }
 
     displayImportResults(result) {

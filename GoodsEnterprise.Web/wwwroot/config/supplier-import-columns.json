@@ -127,7 +127,6 @@
         "type": "string",
         "required": false,
         "maxLength": 20,
-        "acceptedValues": [ "EXW", "FCA", "CPT", "CIP", "DAT", "DAP", "DDP", "FAS", "FOB", "CFR", "CIF" ],
         "description": "International commercial terms"
       },
       {

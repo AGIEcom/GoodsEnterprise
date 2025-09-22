@@ -405,15 +405,15 @@ namespace GoodsEnterprise.Web.Services
                 }
 
                 // Rule 4: Incoterm validation
-                if (!string.IsNullOrEmpty(supplier.Incoterm))
-                {
-                    var validIncoterms = new[] { "EXW", "FCA", "CPT", "CIP", "DAT", "DAP", "DDP", "FAS", "FOB", "CFR", "CIF" };
-                    if (!validIncoterms.Contains(supplier.Incoterm.ToUpperInvariant()))
-                    {
-                        result.RuleViolations.Add($"Invalid Incoterm: {supplier.Incoterm}. Valid values: {string.Join(", ", validIncoterms)}");
-                        result.IsValid = false;
-                    }
-                }
+                ////if (!string.IsNullOrEmpty(supplier.Incoterm))
+                ////{
+                ////    var validIncoterms = new[] { "EXW", "FCA", "CPT", "CIP", "DAT", "DAP", "DDP", "FAS", "FOB", "CFR", "CIF" };
+                ////    if (!validIncoterms.Contains(supplier.Incoterm.ToUpperInvariant()))
+                ////    {
+                ////        result.RuleViolations.Add($"Invalid Incoterm: {supplier.Incoterm}. Valid values: {string.Join(", ", validIncoterms)}");
+                ////        result.IsValid = false;
+                ////    }
+                ////}
 
                 // Rule 5: Phone number format validation
                 if (!string.IsNullOrEmpty(supplier.Phone))
@@ -550,23 +550,23 @@ namespace GoodsEnterprise.Web.Services
                     }
 
                     // Check Email duplicates
-                    if (!string.IsNullOrEmpty(supplier.Email))
-                    {
-                        var existing = existingSuppliers.FirstOrDefault(s => 
-                            s.Email?.Equals(supplier.Email, StringComparison.OrdinalIgnoreCase) == true);
+                    //if (!string.IsNullOrEmpty(supplier.Email))
+                    //{
+                    //    var existing = existingSuppliers.FirstOrDefault(s => 
+                    //        s.Email?.Equals(supplier.Email, StringComparison.OrdinalIgnoreCase) == true);
                         
-                        if (existing != null)
-                        {
-                            duplicates.Add(new DuplicateInfo
-                            {
-                                RowNumber = supplier.RowNumber,
-                                Field = "Email",
-                                Value = supplier.Email,
-                                DuplicateType = "Database",
-                                ExistingId = existing.Id
-                            });
-                        }
-                    }
+                    //    if (existing != null)
+                    //    {
+                    //        duplicates.Add(new DuplicateInfo
+                    //        {
+                    //            RowNumber = supplier.RowNumber,
+                    //            Field = "Email",
+                    //            Value = supplier.Email,
+                    //            DuplicateType = "Database",
+                    //            ExistingId = existing.Id
+                    //        });
+                    //    }
+                    //}
                 }
             }
             catch (Exception ex)
