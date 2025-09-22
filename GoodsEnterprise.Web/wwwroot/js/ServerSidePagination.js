@@ -3,6 +3,11 @@ if (typeof initDataTable !== 'function') {
     //console.error('initDataTable function is not available. Make sure site.js is loaded first.');
 }
 
+// Global variables to track table initialization
+var productTableInitialized = false;
+var promotionTableInitialized = false;
+var supplierTableInitialized = false;
+
 $(document).ready(function () {
     // Initialize tables
     if ($('#ProductTypehtn').val() == 'List') {
@@ -12,8 +17,10 @@ $(document).ready(function () {
         PromotionPriceGridDataLoading();
     }
     if ($('#BasePageTypehtn').val() == 'List') {
-
         BaseCostGridDataLoading(); // Commented out to prevent automatic loading during import
+    }
+    if ($('#SupplierTypehtn').val() == 'List') {
+        SupplierGridDataLoading();
     }
     // Reload table when search filter changes
     //$('#searchByDropdown').on('change', function() {
@@ -58,6 +65,31 @@ $(document).ready(function () {
     $('#clearProductSearch').on('click', function () {
         $('#customSearchInputProduct').val("");        
         const table = $('#tblProductMaster').DataTable();
+        if (table) {
+            table.ajax.reload(null, false); // false = don't reset paging
+        }
+    });
+
+    // Supplier search functionality
+    $('#customSearchInputSupplier').on('keyup', function () {
+        if (this.value.length >= 3) {
+            const table = $('#tblSupplierMaster').DataTable();
+            if (table) {
+                table.ajax.reload(null, false); // false = don't reset paging
+            }
+        }
+    });
+    $('#refreshSupplierTable').on('click', function () {
+        $('#customSearchInputSupplier').val("");
+        $('#searchByDropdownSupplier').val("All");
+        const table = $('#tblSupplierMaster').DataTable();
+        if (table) {
+            table.ajax.reload(null, false); // false = don't reset paging
+        }
+    });
+    $('#clearSupplierSearch').on('click', function () {
+        $('#customSearchInputSupplier').val("");        
+        const table = $('#tblSupplierMaster').DataTable();
         if (table) {
             table.ajax.reload(null, false); // false = don't reset paging
         }
@@ -195,8 +227,18 @@ $(document).ready(function () {
                     name: "Id",
                     render: function (data, type, row) {
                         if (type === 'display') {
-                            return '<a class="modern-btn modern-btn-primary modern-btn-sm" href="/all-product?productId=' + row.id + '&amp;handler=Edit">Edit</a> ' +
-                                '<a href="/all-product?productId=' + row.id + '&amp;handler=DeleteProduct" class="modern-btn modern-btn-sm modern-btn-danger btn-product-delete" onclick="return deleteConfirm(event, \'Product\', this.href)">Delete</a>';
+                            return '<a class="modern-btn modern-btn-primary modern-btn-sm" href="/all-product?productId=' + row.id + '&amp;handler=Edit" title="Edit Product">' +
+                                '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                                '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>' +
+                                '<path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>' +
+                                '</svg></a> ' +
+                                '<a href="/all-product?productId=' + row.id + '&amp;handler=DeleteProduct" class="modern-btn modern-btn-sm modern-btn-danger btn-product-delete" onclick="return deleteConfirm(event, \'Product\', this.href)" title="Delete Product">' +
+                                '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                                '<polyline points="3,6 5,6 21,6"></polyline>' +
+                                '<path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"></path>' +
+                                '<line x1="10" y1="11" x2="10" y2="17"></line>' +
+                                '<line x1="14" y1="11" x2="14" y2="17"></line>' +
+                                '</svg></a>';
                         }
                         return data;
                     }
@@ -332,8 +374,18 @@ $(document).ready(function () {
                 {
                     data: function (row) {
                         var id = row.PromotionCostID || row.promotionCostID || '';
-                        return '<a class="btn btn-primary" href="/all-promotion-cost?PromotionCostId=' + id + '&amp;handler=Edit">Edit</a> | ' +
-                            '<a href="/all-promotion-cost?PromotionCostId=' + id + '&amp;handler=Delete" class="btn btn-primary btn-PromotionCost-delete" onclick="return deleteConfirm(event, \'PromotionCost\', this.href)">Delete</a>';
+                        return '<a class="modern-btn modern-btn-primary modern-btn-sm" href="/all-promotion-cost?PromotionCostId=' + id + '&amp;handler=Edit" title="Edit Promotion Cost">' +
+                            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                            '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>' +
+                            '<path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>' +
+                            '</svg></a> ' +
+                            '<a href="/all-promotion-cost?PromotionCostId=' + id + '&amp;handler=Delete" class="modern-btn modern-btn-sm modern-btn-danger btn-PromotionCost-delete" onclick="return deleteConfirm(event, \'PromotionCost\', this.href)" title="Delete Promotion Cost">' +
+                            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                            '<polyline points="3,6 5,6 21,6"></polyline>' +
+                            '<path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"></path>' +
+                            '<line x1="10" y1="11" x2="10" y2="17"></line>' +
+                            '<line x1="14" y1="11" x2="14" y2="17"></line>' +
+                            '</svg></a>';
                     }
                 }
             ],
@@ -441,8 +493,18 @@ $(document).ready(function () {
                 {
                     data: function (row) {
                         var id = row.BaseCostId || row.baseCostId || '';
-                        return '<a class="btn btn-primary" href="/all-base-cost?BaseCostId=' + id + '&amp;handler=Edit">Edit</a> | ' +
-                            '<a href="/all-base-cost?BaseCostId=' + id + '&amp;handler=Delete" class="btn btn-primary btn-BaseCost-delete">Delete</a>';
+                        return '<a class="modern-btn modern-btn-primary modern-btn-sm" href="/all-base-cost?BaseCostId=' + id + '&amp;handler=Edit" title="Edit Base Cost">' +
+                            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                            '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>' +
+                            '<path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>' +
+                            '</svg></a> ' +
+                            '<a href="/all-base-cost?BaseCostId=' + id + '&amp;handler=Delete" class="modern-btn modern-btn-sm modern-btn-danger btn-BaseCost-delete" onclick="return deleteConfirm(event, \'BaseCost\', this.href)" title="Delete Base Cost">' +
+                            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                            '<polyline points="3,6 5,6 21,6"></polyline>' +
+                            '<path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"></path>' +
+                            '<line x1="10" y1="11" x2="10" y2="17"></line>' +
+                            '<line x1="14" y1="11" x2="14" y2="17"></line>' +
+                            '</svg></a>';
                     }
                 }
             ],
@@ -452,13 +514,134 @@ $(document).ready(function () {
             }
         });
 
-        // Delete confirmation for BaseCost
-        $(document).on('click', '.btn-BaseCost-delete', function (e) {
-            e.preventDefault();
-            var result = confirm("Are you sure you want to delete this base cost record?");
-            if (result) {
-                window.location.href = $(this).attr('href');
-            }
+        // Delete confirmation for BaseCost - now handled by deleteConfirm function
+        // The onclick="return deleteConfirm(event, 'BaseCost', this.href)" handles this
+    }
+
+    function SupplierGridDataLoading() {
+        // Check if already initialized using global variable
+        if (supplierTableInitialized) {
+            console.log('Supplier DataTable already initialized, skipping...');
+            return $('#tblSupplierMaster').DataTable();
+        }
+        
+        // Check if DataTable already exists and is properly initialized
+        if ($.fn.DataTable.isDataTable('#tblSupplierMaster')) {
+            console.log('Supplier DataTable already exists, skipping initialization');
+            supplierTableInitialized = true;
+            return $('#tblSupplierMaster').DataTable();
+        }
+
+        console.log('Initializing Supplier DataTable...');
+        supplierTableInitialized = true;
+        
+        // Initialize with our custom function
+        return $('#tblSupplierMaster').DataTable({
+            processing: true,
+            serverSide: true,
+            responsive: false, // Disable responsive to prevent collapse
+            autoWidth: false,
+            scrollX: true,
+            scrollCollapse: false,
+            lengthMenu: [5, 10, 20, 50],
+            pageLength: 10,
+            searching: false, // Disable default search to use our custom search
+            order: [], // No default client-side ordering, let server handle default sort
+            deferRender: true,
+            columnDefs: [{
+                targets: [5], /* column index - Actions column (0-based: SupplierName, SKUCode, Email, Description, Status, Actions) */
+                orderable: false, /* true or false */
+            }],
+            initComplete: function () {
+                // Using custom search controls, no need to move DataTables search input
+                // The default search is disabled and we use our custom search input
+            },
+            ajax: {
+                type: "POST",
+                url: './api/DataBasePagination/getsupplierdata',
+                contentType: "application/json; charset=utf-8",
+                headers: {
+                    "XSRF-TOKEN": document.querySelector('[name="__RequestVerificationToken"]').value
+                },
+                async: true,
+                data: function (data) {
+                    let additionalValues = [];
+                    additionalValues[0] = $("#searchByDropdownSupplier").val() || "All";
+                    data.AdditionalValues = additionalValues;
+
+                    // Add custom search text for Supplier
+                    var customSearchText = $('#customSearchInputSupplier').val() || '';
+                    data.search = { value: customSearchText };
+
+                    // Force modifiedDate sorting on initial load
+                    if (data.start === 0 && (!data.search || !data.search.value)) {
+                        data.SortOrder = "modifiedDate DESC";
+                    }
+
+                    return JSON.stringify(data);
+                },
+                error: function (jqXHR, exception) {
+                    var msg = '';
+                    if (jqXHR.status === 0) {
+                        msg = 'Not connect.\n Verify Network.';
+                    } else if (jqXHR.status == 404) {
+                        msg = 'Requested page not found. [404]';
+                    } else if (jqXHR.status == 500) {
+                        msg = 'Internal Server Error [500].';
+                    } else if (exception === 'parsererror') {
+                        msg = 'Requested JSON parse failed.';
+                    } else if (exception === 'timeout') {
+                        msg = 'Time out error.';
+                    } else if (exception === 'abort') {
+                        msg = 'Ajax request aborted.';
+                    } else {
+                        msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                    }
+                }
+            },
+            columns: [
+                {
+                    data: "supplierName",
+                    name: "SupplierName"
+                },
+                {
+                    data: "skuCode",
+                    name: "SKUCode"
+                },
+                {
+                    data: "email",
+                    name: "Email"
+                },
+                {
+                    data: "description",
+                    name: "Description"
+                },
+                {
+                    data: "status",
+                    name: "Status"
+                },
+                {
+                    data: "id",
+                    name: "Id",
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                            return '<a class="modern-btn modern-btn-primary modern-btn-sm" href="/all-supplier?supplierId=' + row.id + '&amp;handler=Edit" title="Edit Supplier">' +
+                                '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                                '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>' +
+                                '<path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>' +
+                                '</svg></a> ' +
+                                '<a href="/all-supplier?supplierId=' + row.id + '&amp;handler=DeleteSupplier" class="modern-btn modern-btn-sm modern-btn-danger btn-supplier-delete" onclick="return deleteConfirm(event, \'Supplier\', this.href)" title="Delete Supplier">' +
+                                '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                                '<polyline points="3,6 5,6 21,6"></polyline>' +
+                                '<path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"></path>' +
+                                '<line x1="10" y1="11" x2="10" y2="17"></line>' +
+                                '<line x1="14" y1="11" x2="14" y2="17"></line>' +
+                                '</svg></a>';
+                        }
+                        return data;
+                    }
+                }
+            ]
         });
     }
 

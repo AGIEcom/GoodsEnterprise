@@ -18,15 +18,17 @@ namespace GoodsEnterprise.Web.Controller
         private readonly IGeneralRepository<ProductList> _product;
         private readonly IGeneralRepository<PromotionCostList> _promotionCost;
         private readonly IGeneralRepository<BaseCostList> _baseCost;
+        private readonly IGeneralRepository<SupplierList> _supplier;
         private readonly IGeneralRepository<Category> _category;
         private readonly IGeneralRepository<SubCategory> _subCategory;
         private readonly IGeneralRepository<Brand> _brand;
        // public List<Product> lstproduct = new List<Product>();
-        public DataBasePaginationController(IGeneralRepository<ProductList> product, IGeneralRepository<PromotionCostList> promotionCost, IGeneralRepository<BaseCostList> baseCost)
+        public DataBasePaginationController(IGeneralRepository<ProductList> product, IGeneralRepository<PromotionCostList> promotionCost, IGeneralRepository<BaseCostList> baseCost, IGeneralRepository<SupplierList> supplier)
         {
             _product = product;
             _promotionCost = promotionCost;
             _baseCost = baseCost;
+            _supplier = supplier;
         }
         [HttpPost]
         [Route("getproductdata")]
@@ -220,6 +222,69 @@ namespace GoodsEnterprise.Web.Controller
             catch (Exception ex)
             {
                 Log.Error(ex, $"Error in BaseCostTable(), DataBasePaginationController");
+                return new JsonResult(new { error = "Internal Server Error" });
+            }
+        }
+
+        [HttpPost]
+        [Route("getsupplierdata")]
+        public async Task<IActionResult> LoadSupplierTable([FromBody] JqueryDataTablesParameters param)
+        {
+            try
+            {
+                List<SupplierList> lstsupplier = new List<SupplierList>();
+                
+                // Extract SearchBy parameter from AdditionalValues
+                string searchBy = "All";
+                if (param.AdditionalValues != null && param.AdditionalValues.Any())
+                {
+                    searchBy = param.AdditionalValues.FirstOrDefault()?.ToString() ?? "All";
+                }
+                
+                // Map column index to actual database column names for Supplier
+                string[] supplierColumns = { "supplierName", "skuCode", "email", "description", "status" };
+                int columnIndex = param.Order != null && param.Order.Any() ? param.Order[0].Column : -1;
+                string sortColumn = columnIndex >= 0 && columnIndex < supplierColumns.Length ? supplierColumns[columnIndex] : "modifiedDate";
+
+                DBPaginationParams dBPaginationParams = new DBPaginationParams()
+                {
+                    sortOrder = param.Order != null && param.Order.Any() ? param.Order[0].Dir.ToString() : "desc",
+                    sortColumn = sortColumn,
+                    OffsetValue = param.Start,
+                    PagingSize = param.Length,
+                    SearchText = param.Search.Value,
+                    SearchBy = searchBy,
+                    StoredProcuder = "SPUI_GetSupplierDetails"
+                };
+
+                lstsupplier = await _supplier.GetAllWithPaginationAsync(dBPaginationParams);
+                 
+                if (lstsupplier.Count == 0)
+                {
+                    var returnvaule = new JsonResult(new JqueryDataTablesResult<SupplierList>
+                    {
+                        Draw = param.Draw,
+                        Data = lstsupplier,
+                        RecordsFiltered = 0,
+                        RecordsTotal = 0
+                    });
+                    return returnvaule;
+                }
+                else
+                {
+                    var returnvaule = new JsonResult(new JqueryDataTablesResult<SupplierList>
+                    {
+                        Draw = param.Draw,
+                        Data = lstsupplier,
+                        RecordsFiltered = lstsupplier[0].FilterTotalCount,
+                        RecordsTotal = lstsupplier[0].FilterTotalCount
+                    });
+                    return returnvaule;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Error in LoadSupplierTable(), DataBasePaginationController");
                 return new JsonResult(new { error = "Internal Server Error" });
             }
         }

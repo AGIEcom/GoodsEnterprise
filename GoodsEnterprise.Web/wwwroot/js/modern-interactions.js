@@ -1153,6 +1153,129 @@
                 color: #6c757d;
                 font-style: italic;
             }
+            
+            /* Enhanced DataTable Controls */
+            .modern-datatable-container {
+                background: white;
+                border-radius: 0.5rem;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+            }
+            
+            .datatable-header-controls {
+                background: #f8f9fa;
+                padding: 1rem;
+                border-bottom: 1px solid #dee2e6;
+            }
+            
+            .filter-group {
+                display: flex;
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+            
+            .filter-label {
+                font-size: 0.875rem;
+                font-weight: 500;
+                color: #495057;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin-bottom: 0;
+            }
+            
+            .modern-select-enhanced {
+                padding: 0.5rem 0.75rem;
+                border: 1px solid #ced4da;
+                border-radius: 0.375rem;
+                background-color: white;
+                font-size: 0.875rem;
+                transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+                min-width: 150px;
+            }
+            
+            .modern-select-enhanced:focus {
+                border-color: #007bff;
+                outline: 0;
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            }
+            
+            .modern-search-input {
+                padding: 0.5rem 0.75rem;
+                border: 1px solid #ced4da;
+                border-radius: 0.375rem;
+                background-color: white;
+                font-size: 0.875rem;
+                transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+                min-width: 200px;
+            }
+            
+            .modern-search-input:focus {
+                border-color: #007bff;
+                outline: 0;
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            }
+            
+            .modern-search-input::placeholder {
+                color: #6c757d;
+                font-style: italic;
+            }
+            
+            /* DataTable Processing Indicator */
+            .dataTables_processing {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 200px;
+                margin-left: -100px;
+                margin-top: -26px;
+                text-align: center;
+                padding: 1rem;
+                background: rgba(255, 255, 255, 0.9);
+                border: 1px solid #ddd;
+                border-radius: 0.375rem;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                font-weight: 500;
+                color: #007bff;
+            }
+            
+            /* DataTable Pagination Styling */
+            .dataTables_wrapper .dataTables_paginate .paginate_button {
+                padding: 0.375rem 0.75rem;
+                margin: 0 0.125rem;
+                border: 1px solid #dee2e6;
+                border-radius: 0.375rem;
+                background: white;
+                color: #007bff;
+                text-decoration: none;
+                transition: all 0.15s ease-in-out;
+            }
+            
+            .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+                background: #007bff;
+                color: white;
+                border-color: #007bff;
+            }
+            
+            .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+                background: #007bff;
+                color: white;
+                border-color: #007bff;
+            }
+            
+            .dataTables_wrapper .dataTables_length select {
+                padding: 0.375rem 0.75rem;
+                border: 1px solid #ced4da;
+                border-radius: 0.375rem;
+                background-color: white;
+                font-size: 0.875rem;
+            }
+            
+            .dataTables_wrapper .dataTables_info {
+                color: #6c757d;
+                font-size: 0.875rem;
+                padding-top: 0.5rem;
+            }
         `;
         document.head.appendChild(style);
     }

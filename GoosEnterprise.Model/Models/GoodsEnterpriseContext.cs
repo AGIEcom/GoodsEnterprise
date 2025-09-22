@@ -36,6 +36,7 @@ namespace GoodsEnterprise.Model.Models
         public virtual DbSet<ProductList> ProductLists { get; set; }
         public virtual DbSet<PromotionCostList> PromotionCostLists { get; set; }
         public virtual DbSet<BaseCostList> BaseCostLists { get; set; }
+        public virtual DbSet<SupplierList> SupplierList { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -630,6 +631,12 @@ namespace GoodsEnterprise.Model.Models
 
             // Configure BaseCostList as keyless entity for stored procedure results
             modelBuilder.Entity<BaseCostList>(entity =>
+            {
+                entity.HasNoKey();
+                entity.ToView(null); // This indicates it's not mapped to a table/view
+            });
+            // Configure SupplierList as keyless entity for stored procedure results
+            modelBuilder.Entity<SupplierList>(entity =>
             {
                 entity.HasNoKey();
                 entity.ToView(null); // This indicates it's not mapped to a table/view

@@ -58,7 +58,7 @@ namespace GoodsEnterprise.Web.Pages
                     HttpContext.Session.SetString(Constants.StatusMessage, "");
                 }
                 ViewData["PagePrimaryID"] = 0;
-                lstsupplier = await _supplier.GetAllAsync(filter: x => x.IsDelete != true, orderBy: mt => mt.OrderByDescending(m => m.ModifiedDate == null ? m.CreatedDate : m.ModifiedDate));
+               // lstsupplier = await _supplier.GetAllAsync(filter: x => x.IsDelete != true, orderBy: mt => mt.OrderByDescending(m => m.ModifiedDate == null ? m.CreatedDate : m.ModifiedDate));
                 //if (lstsupplier == null || lstsupplier?.Count == 0)
                 //{
                 //    ViewData["SuccessMsg"] = $"{Constants.NoRecordsFoundMessage}";

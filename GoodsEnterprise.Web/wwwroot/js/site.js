@@ -54,15 +54,7 @@ $(document).ready(function () {
         "pageLength": 5
     });
 
-    $('#tblSupplierMaster').DataTable({
-        'columnDefs': [
-            { 'targets': [3], 'orderable': false },
-            { 'searchable': false, "targets": [1, 2, 3] }
-        ],
-        "order": [],
-        lengthMenu: [5, 10, 20, 50],
-        "pageLength": 5
-    });
+ 
 
     $('#tblRoleMaster').DataTable({
         'columnDefs': [

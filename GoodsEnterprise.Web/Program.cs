@@ -48,7 +48,7 @@ namespace GoodsEnterprise
             Log.Logger = logConfig.CreateLogger();
 
             #endregion
-
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             try
             {
                 CreateHostBuilder(args).Build().Run();

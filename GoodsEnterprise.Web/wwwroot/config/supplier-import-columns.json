@@ -1,0 +1,178 @@
+{
+  "supplierImportColumns": {
+    "title": "Supplier Import Configuration",
+    "description": "Excel column configuration for supplier data import",
+    "requiredColumns": [
+      {
+        "name": "SupplierName",
+        "displayName": "Supplier Name",
+        "type": "string",
+        "required": true,
+        "maxLength": 100,
+        "description": "Name of the supplier (Required)"
+      },
+      {
+        "name": "SKUCode",
+        "displayName": "SKU Code",
+        "type": "string",
+        "required": true,
+        "maxLength": 50,
+        "description": "Unique SKU code for the supplier (Required)"
+      }
+    ],
+    "optionalColumns": [
+      {
+        "name": "FirstName",
+        "displayName": "First Name",
+        "type": "string",
+        "required": false,
+        "maxLength": 50,
+        "description": "Supplier contact first name"
+      },
+      {
+        "name": "LastName",
+        "displayName": "Last Name",
+        "type": "string",
+        "required": false,
+        "maxLength": 50,
+        "description": "Supplier contact last name"
+      },
+      {
+        "name": "Email",
+        "displayName": "Email Address",
+        "type": "email",
+        "required": false,
+        "maxLength": 100,
+        "description": "Valid email address (Required)"
+      },
+      {
+        "name": "Phone",
+        "displayName": "Phone Number",
+        "type": "string",
+        "required": false,
+        "maxLength": 20,
+        "description": "Contact phone number"
+      },
+      {
+        "name": "Address1",
+        "displayName": "Address Line 1",
+        "type": "string",
+        "required": false,
+        "maxLength": 200,
+        "description": "Primary address line"
+      },
+      {
+        "name": "Address2",
+        "displayName": "Address Line 2",
+        "type": "string",
+        "required": false,
+        "maxLength": 200,
+        "description": "Secondary address line"
+      },
+      {
+        "name": "Description",
+        "displayName": "Description",
+        "type": "string",
+        "required": false,
+        "maxLength": 500,
+        "description": "Supplier description or notes"
+      },
+      {
+        "name": "IsActive",
+        "displayName": "Active Status",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": true,
+        "acceptedValues": [ "true", "false", "1", "0", "yes", "no", "active", "inactive" ],
+        "description": "Supplier active status (Default: Active)"
+      },
+      {
+        "name": "IsPreferred",
+        "displayName": "Preferred Supplier",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": false,
+        "acceptedValues": [ "true", "false", "1", "0", "yes", "no" ],
+        "description": "Mark as preferred supplier (Default: No)"
+      },
+      {
+        "name": "LeadTimeDays",
+        "displayName": "Lead Time (Days)",
+        "type": "integer",
+        "required": false,
+        "min": 0,
+        "max": 365,
+        "description": "Lead time in days (0-365)"
+      },
+      {
+        "name": "MoqCase",
+        "displayName": "MOQ Case",
+        "type": "string",
+        "required": false,
+        "maxLength": 50,
+        "description": "Minimum Order Quantity case information"
+      },
+      {
+        "name": "LastCost",
+        "displayName": "Last Cost",
+        "type": "decimal",
+        "required": false,
+        "min": 0,
+        "precision": 2,
+        "description": "Last known cost/price"
+      },
+      {
+        "name": "Incoterm",
+        "displayName": "Incoterm",
+        "type": "string",
+        "required": false,
+        "maxLength": 20,
+        "acceptedValues": [ "EXW", "FCA", "CPT", "CIP", "DAT", "DAP", "DDP", "FAS", "FOB", "CFR", "CIF" ],
+        "description": "International commercial terms"
+      },
+      {
+        "name": "ValidFrom",
+        "displayName": "Valid From Date",
+        "type": "date",
+        "required": false,
+        "format": "MM/DD/YYYY or YYYY-MM-DD",
+        "description": "Start date of validity"
+      },
+      {
+        "name": "ValidTo",
+        "displayName": "Valid To Date",
+        "type": "date",
+        "required": false,
+        "format": "MM/DD/YYYY or YYYY-MM-DD",
+        "description": "End date of validity"
+      }
+    ],
+    "importSettings": {
+      "maxFileSize": "50MB",
+      "supportedFormats": [".xlsx", ".xls"],
+      "maxRows": 10000,
+      "validateData": true,
+      "skipEmptyRows": true,
+      "trimWhitespace": true
+    },
+    "validationRules": {
+      "duplicateCheck": {
+        "enabled": true,
+        "checkFields": ["SKUCode"],
+        "action": "reject"
+      },
+      "requiredFieldValidation": {
+        "enabled": true,
+        "action": "reject"
+      },
+      "dataTypeValidation": {
+        "enabled": true,
+        "action": "warn"
+      },
+      "lengthValidation": {
+        "enabled": true,
+        "action": "reject"
+      }
+    }
+  }
+}

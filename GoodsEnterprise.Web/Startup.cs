@@ -72,6 +72,9 @@ namespace GoodsEnterprise
             });
             services.AddScoped<IUploadDownloadDA, UploadDownloadDA>(); 
             services.AddScoped(typeof(IGeneralRepository<>), typeof(GeneralRepository<>));
+            services.AddScoped<IExcelReaderService, ExcelReaderService>();
+            services.AddScoped<ISupplierValidationService, SupplierValidationService>();
+            services.AddScoped<ISupplierImportService, SupplierImportService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             var autoMapconfig = new MapperConfiguration(c =>
             {

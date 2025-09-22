@@ -16,6 +16,9 @@
                     List = "display:block;";
                 } }
 
+@Html.AntiForgeryToken()
+<input type="hidden" id="SupplierTypehtn" value="@ViewData["PageType"]" />
+
 <div class="modern-alert modern-alert-success" id="success-alert" style="display:none;">
     <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
@@ -48,47 +51,74 @@
                 Add Supplier
             </a>
         </div>
-        <div class="modern-table-container">
+        <!-- Enhanced Supplier DataTable Container -->
+        <div class="modern-datatable-container">
+            <!-- Advanced Search & Filter Controls -->
+            <div class="datatable-header-controls">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <div class="d-flex flex-wrap align-items-center gap-3">
+                            <!-- Search Filter Dropdown -->
+                            <div class="filter-group">
+                                <label for="searchByDropdownSupplier" class="filter-label">
+                                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
+                                    </svg>
+                                    Filter By:
+                                </label>
+                                <select id="searchByDropdownSupplier" class="modern-select-enhanced">
+                                    <option value="All">🔍 All Fields</option>
+                                    <option value="SupplierName">🏢 Supplier Name</option>
+                                    <option value="Email">📧 Email</option>
+                                    <option value="SKUCode">🔢 SKU Code</option>
+                                    <option value="Description">📝 Description</option>
+                                </select>
+                            </div>
+
+                            <!-- Custom Search Input -->
+                            <div class="filter-group">
+                                <label for="customSearchInputSupplier" class="filter-label">
+                                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                    </svg>
+                                    Search:
+                                </label>
+                                <input type="text" id="customSearchInputSupplier" class="modern-search-input" placeholder="Type to search suppliers..." />
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="filter-group">
+                                <button id="refreshSupplierTable" class="modern-btn modern-btn-secondary modern-btn-sm">
+                                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                                    </svg>
+                                    Refresh
+                                </button>
+                                <button id="clearSupplierSearch" class="modern-btn modern-btn-outline-secondary modern-btn-sm">
+                                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                                    </svg>
+                                    Clear
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <table class="modern-table" id="tblSupplierMaster">
                 <thead>
                     <tr>
                         <th scope="col">Supplier Name</th>
-                        <th scope="col">Description</th>
+                        <th scope="col">SKU Code</th>
                         <th scope="col">Email</th>
+                        <th scope="col">Description</th>
                         <th scope="col">Status</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach (var item in Model.lstsupplier)
-                    {
-        <tr>
-            <td>@item.Name</td>
-            <td>@item.Description</td>
-            <td>@item.Email</td>
-            <td>
-                <span class="modern-badge @(item.IsActive ? "modern-badge-success" : "modern-badge-secondary")">
-                    @(item.IsActive ? "Active" : "Inactive")
-                </span>
-            </td>
-            <td>
-                <div class="modern-btn-group">
-                    <a asp-page-handler="Edit" asp-route-supplierId="@item.Id" class="modern-btn modern-btn-sm modern-btn-primary">
-                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
-                        </svg>
-                    </a>
-                    <a asp-page-handler="DeleteSupplier" asp-route-supplierId="@item.Id" class="modern-btn modern-btn-sm modern-btn-danger btn-supplier-delete">
-                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"></path>
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                        </svg>
-                    </a>
-                </div>
-            </td>
-        </tr>
-}
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
     </div>
@@ -198,40 +228,35 @@
             <div class="modern-form-group">
                 <label for="excelFile" class="modern-form-label">Select Excel File *</label>
                 <div class="file-upload-container">
-                    <input type="file" id="excelFile" name="excelFile" accept=".xlsx,.xls" class="modern-form-input" required>
+                    <input type="file" id="supplierFileUpload" name="excelFile" accept=".xlsx,.xls" class="modern-form-input" required>
                     <small class="form-text text-muted">
                         Supported formats: .xlsx, .xls (Max size: 50MB)
                     </small>
+                </div>
+                <div class="mt-2">
+                    <button type="button" id="downloadTemplate" class="modern-btn modern-btn-outline-primary modern-btn-sm">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                        Download Template
+                    </button>
                 </div>
             </div>
 
             <div class="modern-form-group">
                 <label class="modern-form-label">Expected Excel Columns:</label>
-                <div class="excel-columns-info">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <ul style="font-size: 0.9rem; color: #666;">
-                                <li>SupplierName</li>
-                                <li>SKUCode</li>
-                                <li>IsActive</li>
-                                <li>IsPreferred</li>
-                                <li>LeadTimeDays</li>
-                            </ul>
+                <div class="excel-columns-info" id="excel-columns-container">
+                    <!-- Column information will be loaded dynamically from JSON -->
+                    <div class="d-flex justify-content-center align-items-center" style="min-height: 100px;">
+                        <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+                            <span class="visually-hidden">Loading...</span>
                         </div>
-                        <div class="col-md-6">
-                            <ul style="font-size: 0.9rem; color: #666;">
-                                <li>MoqCase</li>
-                                <li>LastCost</li>
-                                <li>Incoterm</li>
-                                <li>ValidFrom</li>
-                                <li>ValidTo</li>
-                            </ul>
-                        </div>
+                        <span class="text-muted">Loading column configuration...</span>
                     </div>
                 </div>
             </div>
 
-            <div class="modern-form-group">
+            <div class="modern-form-group d-none">
                 <div class="modern-toggle-container">
                     <input type="checkbox" id="validateData" class="modern-checkbox" checked>
                     <label for="validateData" class="modern-toggle-label">
@@ -381,3 +406,10 @@
 
 @* Include Modern Alert System *@
 @await Html.PartialAsync("_ModernAlerts")
+
+@section Scripts {
+    <!-- SheetJS library for Excel file generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="~/js/ServerSidePagination.js" asp-append-version="true"></script>
+    <script src="~/js/supplier-import.js" asp-append-version="true"></script>
+}
