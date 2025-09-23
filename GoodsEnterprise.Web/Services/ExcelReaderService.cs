@@ -29,7 +29,7 @@ namespace GoodsEnterprise.Web.Services
             _logger = logger;
             _environment = environment;
             _columnMapping = LoadColumnMapping();
-            
+
             // Register ExcelDataReader encoding provider
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
@@ -51,7 +51,7 @@ namespace GoodsEnterprise.Web.Services
                 using var stream = new MemoryStream();
                 await file.CopyToAsync(stream);
                 stream.Position = 0;
-                
+
                 using var reader = ExcelReaderFactory.CreateReader(stream);
                 var dataSet = reader.AsDataSet(new ExcelDataSetConfiguration()
                 {
@@ -60,7 +60,7 @@ namespace GoodsEnterprise.Web.Services
                         UseHeaderRow = true
                     }
                 });
-                
+
                 var dataTable = dataSet.Tables[0];
                 if (dataTable == null || dataTable.Rows.Count == 0)
                 {
@@ -70,17 +70,17 @@ namespace GoodsEnterprise.Web.Services
 
                 // Get column mapping
                 result.ColumnMapping = GetColumnMappingFromDataTable(dataTable);
-                
+
                 if (result.ColumnMapping.Count() == 0)
                 {
                     result.Errors.Add("No valid columns found. Please ensure the first row contains column headers.");
                     return result;
                 }
 
-                // Validate required columns
-                var requiredColumns = new[] { "SupplierName", "SKUCode", "Email" };
+                // Validate required columns 
+                var requiredColumns = GetRequiredColumnsFromConfig();
                 var missingColumns = requiredColumns.Where(col => !result.ColumnMapping.ContainsKey(col)).ToList();
-                
+
                 if (missingColumns.Any())
                 {
                     result.Errors.Add($"Missing required columns: {string.Join(", ", missingColumns)}");
@@ -96,9 +96,9 @@ namespace GoodsEnterprise.Web.Services
                     {
                         var supplier = ReadSupplierFromDataRow(dataTable.Rows[i], result.ColumnMapping);
                         supplier.RowNumber = i + 1;
-                        
+
                         result.Data.Add(supplier);
-                        
+
                         if (supplier.HasErrors)
                         {
                             result.ErrorRows++;
@@ -116,7 +116,7 @@ namespace GoodsEnterprise.Web.Services
                     }
                 }
 
-                _logger.LogInformation("Excel read completed. Total: {Total}, Valid: {Valid}, Errors: {Errors}", 
+                _logger.LogInformation("Excel read completed. Total: {Total}, Valid: {Valid}, Errors: {Errors}",
                     result.TotalRows, result.ValidRows, result.ErrorRows);
 
             }
@@ -166,10 +166,10 @@ namespace GoodsEnterprise.Web.Services
                     using var stream = new MemoryStream();
                     await file.CopyToAsync(stream);
                     stream.Position = 0;
-                    
+
                     using var reader = ExcelReaderFactory.CreateReader(stream);
                     var dataSet = reader.AsDataSet();
-                    
+
                     if (dataSet.Tables.Count == 0)
                     {
                         result.Errors.Add("No worksheets found in the Excel file.");
@@ -196,7 +196,7 @@ namespace GoodsEnterprise.Web.Services
                 using var stream = new MemoryStream();
                 await file.CopyToAsync(stream);
                 stream.Position = 0;
-                
+
                 using var reader = ExcelReaderFactory.CreateReader(stream);
                 var dataSet = reader.AsDataSet(new ExcelDataSetConfiguration()
                 {
@@ -205,7 +205,7 @@ namespace GoodsEnterprise.Web.Services
                         UseHeaderRow = true
                     }
                 });
-                
+
                 return GetColumnMappingFromDataTable(dataSet.Tables[0]);
             }
             catch (Exception ex)
@@ -218,7 +218,7 @@ namespace GoodsEnterprise.Web.Services
         private Dictionary<string, int> GetColumnMappingFromDataTable(DataTable dataTable)
         {
             var mapping = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-            
+
             if (dataTable?.Columns == null) return mapping;
 
             for (int col = 0; col < dataTable.Columns.Count; col++)
@@ -288,10 +288,10 @@ namespace GoodsEnterprise.Web.Services
                 // Validate required fields
                 if (string.IsNullOrEmpty(supplier.SupplierName))
                     errors.Add("Supplier Name is required");
-                
+
                 if (string.IsNullOrEmpty(supplier.SKUCode))
                     errors.Add("SKU Code is required");
-                
+
                 if (string.IsNullOrEmpty(supplier.Email))
                     errors.Add("Email is required");
                 else if (!IsValidEmail(supplier.Email))
@@ -300,7 +300,7 @@ namespace GoodsEnterprise.Web.Services
                 // Validate field lengths
                 if (!string.IsNullOrEmpty(supplier.SupplierName) && supplier.SupplierName.Length > 100)
                     errors.Add("Supplier Name exceeds 100 characters");
-                
+
                 if (!string.IsNullOrEmpty(supplier.SKUCode) && supplier.SKUCode.Length > 50)
                     errors.Add("SKU Code exceeds 50 characters");
 
@@ -331,7 +331,7 @@ namespace GoodsEnterprise.Web.Services
         private bool ParseBoolean(string value, bool defaultValue = false)
         {
             if (string.IsNullOrEmpty(value)) return defaultValue;
-            
+
             value = value.Trim().ToLowerInvariant();
             return value == "true" || value == "1" || value == "yes" || value == "active";
         }
@@ -339,10 +339,10 @@ namespace GoodsEnterprise.Web.Services
         private DateTime? ParseDate(string value)
         {
             if (string.IsNullOrEmpty(value)) return null;
-            
+
             if (DateTime.TryParse(value, out DateTime date))
                 return date;
-            
+
             return null;
         }
 
@@ -395,6 +395,35 @@ namespace GoodsEnterprise.Web.Services
                 "SupplierName", "SKUCode", "Email", "FirstName", "LastName", "Phone",
                 "Address1", "Address2", "Description", "IsActive", "IsPreferred",
                 "LeadTimeDays", "MoqCase", "LastCost", "Incoterm", "ValidFrom", "ValidTo"
+            };
+        }
+
+        private List<string> GetRequiredColumnsFromConfig()
+        {
+            try
+            {
+                var configPath = Path.Combine(_environment.WebRootPath, "config", "supplier-import-columns.json");
+                if (File.Exists(configPath))
+                {
+                    var jsonContent = File.ReadAllText(configPath);
+                    var config = JsonSerializer.Deserialize<SupplierImportConfig>(jsonContent, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+
+                    return config?.SupplierImportColumns?.RequiredColumns?.Select(c => c.Name).ToList()
+                   ?? new List<string> { "SupplierName", "SKUCode", "Email" };
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading column configuration, using default columns");
+            }
+
+            // Fallback to hardcoded columns if config loading fails
+            return new List<string>
+            {
+                "SupplierName", "SKUCode", "Email"
             };
         }
 

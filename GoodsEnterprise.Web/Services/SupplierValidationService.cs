@@ -308,7 +308,7 @@ namespace GoodsEnterprise.Web.Services
                 foreach (var duplicate in result.Duplicates)
                 {
                     var supplier = suppliers.FirstOrDefault(s => s.RowNumber == duplicate.RowNumber);
-                    if (supplier != null && !supplier.HasErrors)
+                    if (supplier != null )
                     {
                         supplier.ValidationErrors.Add($"Duplicate {duplicate.Field}: {duplicate.Value} ({duplicate.DuplicateType})");
                         supplier.HasErrors = true;
@@ -322,6 +322,7 @@ namespace GoodsEnterprise.Web.Services
                             result.InvalidRecords++;
                         }
                     }
+
                 }
 
                 // Global validations
