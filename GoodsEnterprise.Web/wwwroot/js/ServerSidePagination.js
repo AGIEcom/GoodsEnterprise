@@ -562,7 +562,7 @@ $(document).ready(function () {
             scrollX: true,
             scrollCollapse: false,
             lengthMenu: [5, 10, 20, 50],
-            pageLength: 10,
+            pageLength: 5,
             searching: false, // Disable default search to use our custom search
             order: [], // No default client-side ordering, let server handle default sort
             deferRender: true,
@@ -570,9 +570,10 @@ $(document).ready(function () {
                 targets: [5], /* column index - Actions column (0-based: SupplierName, SKUCode, Email, Description, Status, Actions) */
                 orderable: false, /* true or false */
             }],
+            dom: 'lrtip', // Ensure the length menu is created
             initComplete: function () {
-                // Using custom search controls, no need to move DataTables search input
-                // The default search is disabled and we use our custom search input
+                // Move the length menu to our custom placeholder
+                $('#tblSupplierMaster_wrapper .dataTables_length').appendTo('#supplier-length-menu-placeholder');
             },
             ajax: {
                 type: "POST",
