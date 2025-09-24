@@ -111,7 +111,25 @@ $(document).ready(function () {
     });
 
 
-    // Window resize handler removed - no longer needed for DataTables
+    // Window resize handler to fix column alignment issues
+    $(window).on('resize', function () {
+        // Add a small delay to ensure the resize is complete
+        setTimeout(function () {
+            // Adjust columns for all initialized DataTables
+            if (productTableInitialized && $.fn.DataTable.isDataTable('#tblProductMaster')) {
+                $('#tblProductMaster').DataTable().columns.adjust();
+            }
+            if (promotionTableInitialized && $.fn.DataTable.isDataTable('#tblPromotionCost')) {
+                $('#tblPromotionCost').DataTable().columns.adjust();
+            }
+            if (baseCostTableInitialized && $.fn.DataTable.isDataTable('#tblBaseCost')) {
+                $('#tblBaseCost').DataTable().columns.adjust();
+            }
+            if (supplierTableInitialized && $.fn.DataTable.isDataTable('#tblSupplierMaster')) {
+                $('#tblSupplierMaster').DataTable().columns.adjust();
+            }
+        }, 250);
+    });
 
     function ProductGridDataLoading() {
         // Check if already initialized using global variable
