@@ -580,7 +580,7 @@ $(document).ready(function () {
             scrollX: true,
             scrollCollapse: false,
             lengthMenu: [5, 10, 20, 50],
-            pageLength: 5,
+            pageLength: 10,
             searching: false, // Disable default search to use our custom search
             order: [], // No default client-side ordering, let server handle default sort
             deferRender: true,

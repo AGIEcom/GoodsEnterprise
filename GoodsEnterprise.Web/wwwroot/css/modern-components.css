@@ -613,11 +613,11 @@
     transition: visibility 0.1s ease;
 }
 
-/* DataTable Wrapper - Clean Layout */
+/* DataTable Wrapper - Compact Layout */
 .dataTables_wrapper {
     width: 100%;
     margin: 0;
-    padding: 20px;
+    padding: 15px;
     clear: both;
     background: white;
     border-radius: 8px;
@@ -632,7 +632,7 @@
     clear: both;
 }
 
-/* DataTable Scroll Container */
+/* DataTable Scroll Container - Optimized for 10 rows */
 .dataTables_wrapper .dataTables_scroll {
     width: 100%;
     overflow-x: auto;
@@ -645,6 +645,8 @@
     overflow-x: auto;
     margin: 0;
     padding: 0;
+    height: 400px !important; /* Height for approximately 10 rows */
+    overflow-y: auto !important;
 }
 
 /* DataTable Cell Styling */
@@ -721,18 +723,18 @@
     margin-left: 8px;
 }
 
-/* DataTable Bottom Controls Layout */
+/* DataTable Bottom Controls Layout - Compact */
 .dataTables_wrapper .dataTables_info {
     float: left;
-    margin: 15px 0;
-    padding: 8px 0;
+    margin: 8px 0;
+    padding: 4px 0;
     color: #6c757d;
     font-size: 0.875rem;
 }
 
 .dataTables_wrapper .dataTables_paginate {
     float: right;
-    margin: 15px 0;
+    margin: 8px 0;
     padding: 0;
 }
 
@@ -1289,9 +1291,9 @@
     background-color: #f5f5f5;
 }
 
-/* Enhanced Pagination */
+/* Enhanced Pagination - Compact */
 .dataTables_wrapper .dataTables_paginate {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
     float: right;
 }
 
@@ -1338,19 +1340,14 @@
     box-shadow: none;
 }
 
-/* Enhanced Info Display */
+/* Hide DataTables Info (showing X to Y of Z entries) */
 .dataTables_wrapper .dataTables_info {
-    margin-top: 1rem;
-    font-size: 0.875rem;
-    color: #6c757d;
-    font-weight: 500;
-    float: left;
-    line-height: 2.5rem;
+    display: none !important;
 }
 
-/* Enhanced Length Menu */
+/* Enhanced Length Menu - Compact */
 .dataTables_wrapper .dataTables_length {
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     float: left;
 }
 
@@ -1383,9 +1380,9 @@
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
-/* Enhanced Search */
+/* Enhanced Search - Compact */
 .dataTables_wrapper .dataTables_filter {
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     float: right;
 }
 
@@ -1502,7 +1499,7 @@
     .dataTables_wrapper .dataTables_paginate {
         float: none;
         text-align: center;
-        margin-top: 0.75rem;
+        margin-top: 0.5rem;
         width: 100%;
     }
     
