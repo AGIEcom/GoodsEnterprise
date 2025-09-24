@@ -44,6 +44,220 @@
     #tblSupplierMaster_wrapper.dataTables_wrapper {
         padding: 0 !important;
     }
+
+    /* Action buttons styling */
+    .action-buttons {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        gap: 4px !important;
+    }
+
+    .action-buttons .modern-btn {
+        padding: 4px 8px !important;
+        font-size: 12px !important;
+        min-width: auto !important;
+        line-height: 1.2 !important;
+    }
+
+    .action-buttons .modern-btn svg {
+        width: 14px !important;
+        height: 14px !important;
+    }
+
+    /* Table column width adjustments - removed fixed widths to allow auto-adjustment */
+    #tblSupplierMaster {
+        width: 100%;
+    }
+
+    /* Specific column width controls */
+    #tblSupplierMaster th:nth-child(2), /* SKU Code - reduced to half */
+    #tblSupplierMaster td:nth-child(2) {
+        width: 8% !important; /* Reduced to half */
+    }
+
+    #tblSupplierMaster th:nth-child(4), /* Description - increased */
+    #tblSupplierMaster td:nth-child(4) {
+        width: 40% !important; /* Increased for more space */
+    }
+
+    /* Removed fixed column widths to allow DataTable auto-sizing */
+    /* #tblSupplierMaster th:nth-child(1), #tblSupplierMaster td:nth-child(1) { width: 20% !important; } */
+    /* #tblSupplierMaster th:nth-child(3), #tblSupplierMaster td:nth-child(3) { width: 18% !important; } */
+    /* #tblSupplierMaster th:nth-child(5), #tblSupplierMaster td:nth-child(5) { width: 10% !important; } */
+    /* #tblSupplierMaster th:nth-child(6), #tblSupplierMaster td:nth-child(6) { width: 5% !important; } */
+
+    /* Ensure description text shows in one line */
+    #tblSupplierMaster td:nth-child(4) {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        max-width: 0 !important; /* This helps with ellipsis */
+    }
+
+    /* Make sure table doesn't exceed container */
+    #tblSupplierMaster_wrapper .dataTables_scrollBody {
+        overflow-x: auto !important;
+    }
+
+    /* Style Show entries dropdown to match Filter by dropdown */
+    #supplier-length-menu-placeholder .dataTables_length select {
+        /* Apply same styling as modern-select-enhanced */
+        background-color: #fff;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        padding: 8px 12px !important;
+        font-size: 14px;
+        color: #374151;
+        min-width: 80px;
+        height: 40px !important;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    #supplier-length-menu-placeholder .dataTables_length select:hover {
+        border-color: #9ca3af;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    #supplier-length-menu-placeholder .dataTables_length select:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    /* Style the label to match filter-label */
+    #supplier-length-menu-placeholder .dataTables_length label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 0;
+        margin-right: 8px;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    /* Column resizing functionality */
+    #tblSupplierMaster {
+        border-collapse: separate;
+    }
+
+    #tblSupplierMaster th {
+        position: relative;
+        user-select: none;
+    }
+
+    /* Add resize handles to table headers */
+    #tblSupplierMaster th:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        cursor: col-resize;
+        background: linear-gradient(to bottom, transparent, #ddd, transparent);
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
+
+    #tblSupplierMaster th:not(:last-child):hover::after {
+        opacity: 1;
+    }
+
+    /* Right-align all table headers except Actions */
+    #tblSupplierMaster th:nth-child(1),
+    #tblSupplierMaster th:nth-child(2),
+    #tblSupplierMaster th:nth-child(3),
+    #tblSupplierMaster th:nth-child(4),
+    #tblSupplierMaster th:nth-child(5) {
+        text-align: left !important;
+    }
+
+    /* Keep Actions column header centered */
+    #tblSupplierMaster th:nth-child(6) {
+        text-align: center !important;
+    }
+
+    /* Right-align table data cells for consistency */
+    #tblSupplierMaster td:nth-child(1),
+    #tblSupplierMaster td:nth-child(2),
+    #tblSupplierMaster td:nth-child(3),
+    #tblSupplierMaster td:nth-child(4),
+    #tblSupplierMaster td:nth-child(5) {
+        text-align: left !important;
+    }
+
+    /* Keep Actions column data centered */
+    #tblSupplierMaster td:nth-child(6) {
+        text-align: center !important;
+    }
+
+    /* Custom Pagination Styling */
+    #tblSupplierMaster_wrapper .dataTables_paginate {
+        margin-top: 1rem !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    #tblSupplierMaster_wrapper .dataTables_paginate .paginate_button {
+        background: #fff !important;
+        border: 1px solid #d1d5db !important;
+        border-radius: 6px !important;
+        padding: 0 !important;
+        margin: 0 2px !important;
+        font-size: 14px !important;
+        color: #374151 !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+        text-decoration: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-width: 36px !important;
+        height: 36px !important;
+    }
+
+    #tblSupplierMaster_wrapper .dataTables_paginate .paginate_button:hover {
+        background: #f3f4f6 !important;
+        border-color: #9ca3af !important;
+        color: #111827 !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    #tblSupplierMaster_wrapper .dataTables_paginate .paginate_button.current,
+    #tblSupplierMaster_wrapper .dataTables_paginate .paginate_button.current:hover {
+        background: #3b82f6 !important;
+        border-color: #3b82f6 !important;
+        color: #fff !important;
+        font-weight: 600 !important;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+    }
+
+    #tblSupplierMaster_wrapper .dataTables_paginate .paginate_button.disabled,
+    #tblSupplierMaster_wrapper .dataTables_paginate .paginate_button.disabled:hover {
+        background: #f9fafb !important;
+        border-color: #e5e7eb !important;
+        color: #9ca3af !important;
+        cursor: not-allowed !important;
+        opacity: 0.6 !important;
+    }
+
+    #tblSupplierMaster_wrapper .dataTables_paginate .paginate_button.previous,
+    #tblSupplierMaster_wrapper .dataTables_paginate .paginate_button.next {
+        font-weight: 500 !important;
+    }
+
+    /* Pagination info text */
+    #tblSupplierMaster_wrapper .dataTables_info {
+        color: #6b7280 !important;
+        font-size: 14px !important;
+        margin-top: 1rem !important;
+        text-align: center !important;
+    }
+
 </style>
 
 <div class="modern-alert modern-alert-success" id="success-alert" style="display:none;">
@@ -62,7 +276,7 @@
             <!-- Advanced Search & Filter Controls -->
             <div class="datatable-header-controls">
                 <div class="d-flex justify-content-between align-items-center w-100 gap-3">
-                    <div class="d-flex align-items-center flex-grow-1 gap-3">
+                    <div class="d-flex align-items-center flex-grow-1" style="gap: 20px;">
                         <!-- Search Filter Dropdown -->
                         <div class="filter-group">
                             <label for="searchByDropdownSupplier" class="filter-label">Filter By:</label>
@@ -96,7 +310,7 @@
                         </div>
                     </div>
 
-                    <div class="d-flex align-items-center gap-2">
+                    <div class="d-flex align-items-center" style="gap: 20px;">
                         <button id="btnImportSuppliers" class="modern-btn modern-btn-info" title="Import Excel">
                             <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
@@ -416,4 +630,53 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="~/js/ServerSidePagination.js" asp-append-version="true"></script>
     <script src="~/js/supplier-import.js" asp-append-version="true"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Column resizing functionality
+            let isResizing = false;
+            let startX = 0;
+            let startWidth = 0;
+            let $currentTh = null;
+
+            // Mouse down on resize handle
+            $('#tblSupplierMaster th:not(:last-child)').on('mousedown', function(e) {
+                if (e.offsetX > $(this).outerWidth() - 10) { // Click near the right edge
+                    isResizing = true;
+                    $currentTh = $(this);
+                    startX = e.clientX;
+                    startWidth = $currentTh.outerWidth();
+
+                    // Prevent text selection during resize
+                    e.preventDefault();
+                    $('body').css('cursor', 'col-resize');
+                    $('body').css('user-select', 'none');
+                }
+            });
+
+            // Mouse move during resize
+            $(document).on('mousemove', function(e) {
+                if (isResizing) {
+                    const diffX = e.clientX - startX;
+                    const newWidth = Math.max(50, startWidth + diffX); // Minimum width of 50px
+
+                    // Update column width
+                    const columnIndex = $currentTh.index() + 1; // 1-based index
+                    $(`#tblSupplierMaster th:nth-child(${columnIndex}), #tblSupplierMaster td:nth-child(${columnIndex})`).css('width', newWidth + 'px');
+
+                    // Update the CSS variable or store the width for persistence
+                    // For now, we'll just update the inline styles
+                }
+            });
+
+            // Mouse up to end resize
+            $(document).on('mouseup', function() {
+                if (isResizing) {
+                    isResizing = false;
+                    $('body').css('cursor', '');
+                    $('body').css('user-select', '');
+                }
+            });
+        });
+    </script>
 }

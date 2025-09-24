@@ -558,7 +558,7 @@ $(document).ready(function () {
             processing: true,
             serverSide: true,
             responsive: false, // Disable responsive to prevent collapse
-            autoWidth: false,
+            autoWidth: true, // Enable automatic column width calculation
             scrollX: true,
             scrollCollapse: false,
             lengthMenu: [5, 10, 20, 50],
@@ -644,18 +644,20 @@ $(document).ready(function () {
                     name: "Id",
                     render: function (data, type, row) {
                         if (type === 'display') {
-                            return '<a class="modern-btn modern-btn-primary modern-btn-sm" href="/all-supplier?supplierId=' + row.id + '&amp;handler=Edit" title="Edit Supplier">' +
-                                '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                            return '<div class="action-buttons d-flex gap-1">' +
+                                '<a class="modern-btn modern-btn-primary modern-btn-xs" href="/all-supplier?supplierId=' + row.id + '&amp;handler=Edit" title="Edit Supplier">' +
+                                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
                                 '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>' +
                                 '<path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>' +
-                                '</svg></a> ' +
-                                '<a href="/all-supplier?supplierId=' + row.id + '&amp;handler=DeleteSupplier" class="modern-btn modern-btn-sm modern-btn-danger btn-supplier-delete" onclick="return deleteConfirm(event, \'Supplier\', this.href)" title="Delete Supplier">' +
-                                '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                                '</svg></a>' +
+                                '<a href="/all-supplier?supplierId=' + row.id + '&amp;handler=DeleteSupplier" class="modern-btn modern-btn-xs modern-btn-danger btn-supplier-delete" onclick="return deleteConfirm(event, \'Supplier\', this.href)" title="Delete Supplier">' +
+                                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
                                 '<polyline points="3,6 5,6 21,6"></polyline>' +
                                 '<path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"></path>' +
                                 '<line x1="10" y1="11" x2="10" y2="17"></line>' +
                                 '<line x1="14" y1="11" x2="14" y2="17"></line>' +
-                                '</svg></a>';
+                                '</svg></a>' +
+                                '</div>';
                         }
                         return data;
                     }
