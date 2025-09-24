@@ -593,14 +593,14 @@
 .dataTables_wrapper .dataTable td:nth-child(3) {
     width: 15%;
     min-width: 80px;
-    text-align: center;
+    text-align: left;
 }
 
 .dataTables_wrapper .dataTable th:nth-child(4),
 .dataTables_wrapper .dataTable td:nth-child(4) {
     width: 35%;
     min-width: 120px;
-    text-align: center;
+    text-align: left;
 }
 
 /* Prevent table collapse during initialization */
@@ -683,12 +683,10 @@
     background-color: #fdfdfd;
 }
 
-/* Action Column Styling */
+/* Action Column Header - Center Aligned */
+.dataTables_wrapper .dataTable th:nth-child(6),
 .dataTables_wrapper .dataTable .action-column {
-    width: 150px;
-    min-width: 150px;
-    text-align: center;
-    white-space: nowrap;
+    text-align: center !important;
 }
 
 /* DataTable Top Controls Layout */
@@ -981,11 +979,11 @@
     background: #f8fafc;
 }
 
-/* Action Column Specific */
+/* Action Column Specific - Center Aligned */
 .action-column {
     width: 120px;
     min-width: 120px;
-    text-align: center;
+    text-align: center !important;
 }
 
 /* Responsive Design */
