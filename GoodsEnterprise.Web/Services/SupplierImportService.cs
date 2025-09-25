@@ -71,13 +71,13 @@ namespace GoodsEnterprise.Web.Services
 
         private List<string> GetRequiredColumns()
         {
-            return _config?.SupplierImportColumns?.RequiredColumns?.Select(c => c.Name).ToList() 
+            return _config?.ImportColumns?.RequiredColumns?.Select(c => c.Name).ToList() 
                    ?? new List<string> { "SupplierName", "SKUCode", "Email" };
         }
 
         private List<string> GetValidColumns()
         {
-            if (_config?.SupplierImportColumns == null)
+            if (_config?.ImportColumns == null)
             {
                 return new List<string>
                 {
@@ -88,8 +88,8 @@ namespace GoodsEnterprise.Web.Services
             }
 
             var allColumns = new List<string>();
-            allColumns.AddRange(_config.SupplierImportColumns.RequiredColumns?.Select(c => c.Name) ?? new List<string>());
-            allColumns.AddRange(_config.SupplierImportColumns.OptionalColumns?.Select(c => c.Name) ?? new List<string>());
+            allColumns.AddRange(_config.ImportColumns.RequiredColumns?.Select(c => c.Name) ?? new List<string>());
+            allColumns.AddRange(_config.ImportColumns.OptionalColumns?.Select(c => c.Name) ?? new List<string>());
             return allColumns;
         }
 
@@ -407,7 +407,7 @@ namespace GoodsEnterprise.Web.Services
     // Configuration classes for JSON deserialization
     public class SupplierImportConfig
     {
-        public SupplierImportColumns SupplierImportColumns { get; set; }
+        public SupplierImportColumns ImportColumns { get; set; }
     }
 
     public class SupplierImportColumns
