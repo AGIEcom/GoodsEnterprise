@@ -1,5 +1,5 @@
 {
-  "supplierImportColumns": {
+  "ImportColumns": {
     "title": "Supplier Import Configuration",
     "description": "Excel column configuration for supplier data import",
     "requiredColumns": [
@@ -43,7 +43,7 @@
         "type": "email",
         "required": false,
         "maxLength": 100,
-        "description": "Valid email address (Required)"
+        "description": "Supplier email address"
       },
       {
         "name": "Phone",
@@ -148,7 +148,7 @@
     ],
     "importSettings": {
       "maxFileSize": "50MB",
-      "supportedFormats": [".xlsx", ".xls"],
+      "supportedFormats": [ ".xlsx", ".xls" ],
       "maxRows": 10000,
       "validateData": true,
       "skipEmptyRows": true,
@@ -157,7 +157,7 @@
     "validationRules": {
       "duplicateCheck": {
         "enabled": true,
-        "checkFields": ["SKUCode"],
+        "checkFields": [ "SKUCode" ],
         "action": "reject"
       },
       "requiredFieldValidation": {
@@ -173,5 +173,25 @@
         "action": "reject"
       }
     }
+  },
+  "ColumnMappings": {
+    "SupplierName": "SupplierName",
+    "SKUCode": "SKUCode",
+    "Email": "Email",
+    "FirstName": "FirstName",
+    "LastName": "LastName",
+    "Phone": "Phone",
+    "StartDate": "StartDate",
+    "Address1": "Address1",
+    "Address2": "Address2",
+    "Description": "Description",
+    "IsActive": "IsActive",
+    "IsPreferred": "IsPreferred",
+    "LeadTimeDays": "LeadTimeDays",
+    "MoqCase": "MoqCase",
+    "LastCost": "LastCost",
+    "Incoterm": "Incoterm",
+    "ValidFrom": "ValidFrom",
+    "ValidTo": "ValidTo"
   }
 }

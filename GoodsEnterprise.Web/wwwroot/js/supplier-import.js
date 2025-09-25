@@ -26,7 +26,7 @@ class SupplierImportConfig {
         const container = document.getElementById('excel-columns-container');
         if (!container) return;
 
-        const { requiredColumns, optionalColumns } = this.config.supplierImportColumns;
+        const { requiredColumns, optionalColumns } = this.config.ImportColumns;
         
         container.innerHTML = `
             <div class="row">
@@ -230,7 +230,7 @@ class SupplierImportConfig {
     validateFile(file) {
         if (!file || !this.config) return;
 
-        const settings = this.config.supplierImportColumns.importSettings;
+        const settings = this.config.ImportColumns.importSettings;
         const maxSize = this.parseFileSize(settings.maxFileSize);
         
         // File size validation
@@ -313,18 +313,18 @@ class SupplierImportConfig {
     }
 
     getValidationRules() {
-        return this.config ? this.config.supplierImportColumns.validationRules : null;
+        return this.config ? this.config.ImportColumns.validationRules : null;
     }
 
     getImportSettings() {
-        return this.config ? this.config.supplierImportColumns.importSettings : null;
+        return this.config ? this.config.ImportColumns.importSettings : null;
     }
 
     // Generate Excel template for download
     generateExcelTemplate() {
         if (!this.config) return;
 
-        const { requiredColumns, optionalColumns } = this.config.supplierImportColumns;
+        const { requiredColumns, optionalColumns } = this.config.ImportColumns;
         const allColumns = [...requiredColumns, ...optionalColumns];
         
         // Create Excel workbook using SheetJS

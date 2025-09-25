@@ -1,0 +1,73 @@
+{
+  "ImportColumns": {
+    "RequiredColumns": [
+      {
+        "Name": "ProductCode",
+        "DisplayName": "Product Code",
+        "DataType": "string",
+        "ValidationRules": "required,maxLength:50"
+      },
+      {
+        "Name": "PromotionCost",
+        "DisplayName": "Promotion Cost",
+        "DataType": "decimal",
+        "ValidationRules": "required,min:0.01"
+      },
+      {
+        "Name": "StartDate",
+        "DisplayName": "Start Date",
+        "DataType": "datetime",
+        "ValidationRules": "required"
+      },
+      {
+        "Name": "EndDate",
+        "DisplayName": "End Date",
+        "DataType": "datetime",
+        "ValidationRules": "required"
+      }
+    ],
+    "OptionalColumns": [
+      {
+        "Name": "ProductName",
+        "DisplayName": "Product Name",
+        "DataType": "string",
+        "ValidationRules": "maxLength:200"
+      },
+      {
+        "Name": "Remark",
+        "DisplayName": "Remark",
+        "DataType": "string",
+        "ValidationRules": "maxLength:500"
+      },
+      {
+        "Name": "SupplierName",
+        "DisplayName": "Supplier Name",
+        "DataType": "string",
+        "ValidationRules": "maxLength:100"
+      },
+      {
+        "Name": "IsActive",
+        "DisplayName": "Is Active",
+        "DataType": "boolean",
+        "ValidationRules": ""
+      }
+    ]
+  },
+  "ColumnMappings": {
+    "Product Code": "ProductCode",
+    "Product Name": "ProductName",
+    "Promotion Cost": "PromotionCost",
+    "Promo Cost": "PromotionCost",
+    "Cost": "PromotionCost",
+    "Start Date": "StartDate",
+    "From Date": "StartDate",
+    "End Date": "EndDate",
+    "To Date": "EndDate",
+    "Remark": "Remark",
+    "Comments": "Remark",
+    "Supplier Name": "SupplierName",
+    "Supplier": "SupplierName",
+    "Active": "IsActive",
+    "Is Active": "IsActive"
+  }
+}

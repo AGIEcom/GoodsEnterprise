@@ -77,7 +77,7 @@ namespace GoodsEnterprise.Web.Services
 
         private async Task ValidateUsingJsonConfig(SupplierImport supplier, ValidationResult result)
         {
-            if (_config?.SupplierImportColumns == null)
+            if (_config?.ImportColumns == null)
             {
                 // Fallback to basic validation if config not loaded
                 await ValidateFallbackRules(supplier, result);
@@ -85,7 +85,7 @@ namespace GoodsEnterprise.Web.Services
             }
 
             // Validate required fields from JSON config
-            var requiredColumns = _config.SupplierImportColumns.RequiredColumns ?? new List<ColumnDefinition>();
+            var requiredColumns = _config.ImportColumns.RequiredColumns ?? new List<ColumnDefinition>();
             foreach (var column in requiredColumns)
             {
                 var value = GetPropertyValue(supplier, column.Name);
@@ -103,7 +103,7 @@ namespace GoodsEnterprise.Web.Services
             }
 
             // Validate optional fields from JSON config
-            var optionalColumns = _config.SupplierImportColumns.OptionalColumns ?? new List<ColumnDefinition>();
+            var optionalColumns = _config.ImportColumns.OptionalColumns ?? new List<ColumnDefinition>();
             foreach (var column in optionalColumns)
             {
                 var value = GetPropertyValue(supplier, column.Name);
@@ -308,7 +308,7 @@ namespace GoodsEnterprise.Web.Services
                 foreach (var duplicate in result.Duplicates)
                 {
                     var supplier = suppliers.FirstOrDefault(s => s.RowNumber == duplicate.RowNumber);
-                    if (supplier != null && !supplier.HasErrors)
+                    if (supplier != null )
                     {
                         supplier.ValidationErrors.Add($"Duplicate {duplicate.Field}: {duplicate.Value} ({duplicate.DuplicateType})");
                         supplier.HasErrors = true;
@@ -322,6 +322,7 @@ namespace GoodsEnterprise.Web.Services
                             result.InvalidRecords++;
                         }
                     }
+
                 }
 
                 // Global validations
@@ -580,10 +581,10 @@ namespace GoodsEnterprise.Web.Services
         // Configuration classes for JSON deserialization (shared with SupplierImportService)
         private class SupplierImportConfig
         {
-            public SupplierImportColumns SupplierImportColumns { get; set; }
+            public ImportColumns ImportColumns { get; set; }
         }
 
-        private class SupplierImportColumns
+        private class ImportColumns
         {
             public List<ColumnDefinition> RequiredColumns { get; set; }
             public List<ColumnDefinition> OptionalColumns { get; set; }
