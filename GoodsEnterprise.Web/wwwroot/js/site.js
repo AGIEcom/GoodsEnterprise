@@ -7,13 +7,59 @@
 //datatable initialization
 $(document).ready(function () {
     $('#tblBrandMaster').DataTable({
+        "dom": "t<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>", // Show table with pagination and info at bottom
         'columnDefs': [
             { 'targets': [3], 'orderable': false },
-            { 'searchable': false, "targets": [1, 2, 3] }
+            { 'searchable': false, "targets": [1, 2, 3] },
+            { 'className': 'text-center', 'targets': [2, 3] },
+            { 'width': '35%', 'targets': [0] },
+            { 'width': '50%', 'targets': [1] },
+            { 'width': '10%', 'targets': [2] },
+            { 'width': '5%', 'targets': [3] }
         ],
         "order": [],
         lengthMenu: [5, 10, 20, 50],
-        "pageLength": 5
+        "pageLength": 10,
+        "responsive": true,
+        "scrollX": true,
+        "autoWidth": false,
+        "initComplete": function(settings, json) {
+            // Wait for DOM to be ready before connecting controls
+            setTimeout(function() {
+                var table = $('#tblBrandMaster').DataTable();
+
+                // Handle custom length select
+                $('#brandLengthSelect').on('change', function() {
+                    var newLength = parseInt($(this).val());
+                    table.page.len(newLength).draw();
+                });
+
+                // Handle custom search input
+                $('#brandSearchInput').on('keyup change', function() {
+                    table.search($(this).val()).draw();
+                });
+
+                // Update the custom controls when table changes
+                table.on('draw', function() {
+                    $('#brandLengthSelect').val(table.page.len());
+                    $('#brandSearchInput').val(table.search());
+                });
+
+                // Set initial values
+                $('#brandLengthSelect').val(table.page.len());
+                $('#brandSearchInput').val(table.search());
+            }, 100); // Small delay to ensure DOM is ready
+        },
+        "drawCallback": function(settings) {
+            // Fallback: Ensure controls work even if initComplete doesn't run
+            try {
+                var table = $('#tblBrandMaster').DataTable();
+                $('#brandLengthSelect').val(table.page.len());
+                $('#brandSearchInput').val(table.search());
+            } catch (e) {
+                console.log('DataTable not ready yet, will retry...');
+            }
+        }
     });
     $('#tblCategoryMaster').DataTable({
         'columnDefs': [

@@ -1,4 +1,4 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
 a.navbar-brand {
@@ -202,7 +202,6 @@ input[type="date"] {
         opacity: 1;
         cursor: pointer;
     }
-
 .datepicker-wrapper {
     position: relative;
 }
@@ -216,3 +215,26 @@ input[type="date"] {
         pointer-events: none;
     }
 
+/* Override sticky footer styles to remove scrollbars and footer
+-------------------------------------------------- */
+html {
+    position: fixed !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+body {
+    margin-bottom: 0 !important;
+    overflow: hidden !important;
+    min-height: 100vh !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100vh !important;
+}
+
+/* Hide footer completely */
+.footer, #footer {
+    display: none !important;
+}

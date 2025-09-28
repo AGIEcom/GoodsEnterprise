@@ -833,3 +833,39 @@ a.article, a.article:hover {
     }
 
 }
+
+/* Remove scrollbars and ensure content fits the page */
+html, body {
+    overflow: hidden !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Ensure main content area fits without scrolling */
+#mainContent {
+    height: 100vh !important;
+    overflow: hidden !important;
+}
+
+/* Remove any footer spacing */
+#footer {
+    display: none !important;
+}
+
+/* Ensure sidebar and content fit properly */
+#sidebar {
+    height: 100vh !important;
+    overflow-y: auto !important;
+}
+
+#content {
+    height: 100vh !important;
+    overflow: hidden !important;
+}
+
+/* Remove page-level scrolling */
+.container-fluid, .container {
+    height: 100% !important;
+    overflow: hidden !important;
+}
