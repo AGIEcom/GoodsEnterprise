@@ -154,7 +154,7 @@ namespace GoodsEnterprise.Model.Models
         
         // BaseCost fields for import
         public int? ProductId { get; set; }
-        public string ProductCode { get; set; } // For lookup during import
+      //  public string ProductCode { get; set; } // For lookup during import
         public string ProductName { get; set; } // For lookup during import
         public decimal? BaseCost { get; set; }
         public DateTime? StartDate { get; set; }
@@ -179,7 +179,7 @@ namespace GoodsEnterprise.Model.Models
         
         // PromotionCost fields for import
         public int? ProductId { get; set; }
-        public string ProductCode { get; set; } // For lookup during import
+       // public string ProductCode { get; set; } // For lookup during import
         public string ProductName { get; set; } // For lookup during import
         public decimal? PromotionCost { get; set; }
         public DateTime? StartDate { get; set; }
@@ -188,6 +188,12 @@ namespace GoodsEnterprise.Model.Models
         public int? SupplierId { get; set; }
         public string SupplierName { get; set; } // For lookup during import
         public bool IsActive { get; set; } = true;
+        
+        // Additional fields from PromotionCost model
+        public DateTime? SelloutStartDate { get; set; }
+        public DateTime? SelloutEndDate { get; set; }
+        public string BonusDescription { get; set; }
+        public string SellOutDescription { get; set; }
         
         // Import metadata
         public int RowNumber { get; set; }

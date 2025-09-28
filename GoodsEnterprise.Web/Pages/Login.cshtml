@@ -90,7 +90,7 @@
             
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div class="modern-form-group mb-0">
-                    <input type="checkbox" id="remember" class="modern-checkbox">
+                    <input type="checkbox" id="remember" class="modern-checkbox" asp-for="RememberMe">
                     <label for="remember" class="modern-checkbox-label">Remember me</label>
                 </div>
                 <button type="submit" class="modern-btn modern-btn-primary" style="width: auto; padding: 0.5rem 1.5rem;">
@@ -195,6 +195,26 @@
         $('#forgotPasswordModal').on('hidden.bs.modal', function () {
             $('#forgotPasswordForm')[0].reset();
             $('#forgotPasswordMessage').hide();
+        });
+
+        // Fix modal backdrop issue
+        $('#forgotPasswordModal').on('show.bs.modal', function (e) {
+            // Ensure backdrop is properly created
+            if (!$('.modal-backdrop').length) {
+                $('body').append('<div class="modal-backdrop fade show"></div>');
+            }
+            $('body').addClass('modal-open');
+        });
+
+        $('#forgotPasswordModal').on('hidden.bs.modal', function (e) {
+            // Clean up backdrop
+            $('.modal-backdrop').remove();
+            $('body').removeClass('modal-open');
+        });
+
+        // Handle click outside modal to close
+        $(document).on('click', '.modal-backdrop', function() {
+            $('#forgotPasswordModal').modal('hide');
         });
     });
 </script>

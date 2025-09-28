@@ -414,7 +414,7 @@ namespace GoodsEnterprise.Web.Services
             try
             {
                 // Required fields
-                baseCost.ProductCode = GetCellValueFromDataRow(dataRow, columnMapping, "ProductCode")?.Trim();
+               // baseCost.ProductCode = GetCellValueFromDataRow(dataRow, columnMapping, "ProductCode")?.Trim();
                 baseCost.ProductName = GetCellValueFromDataRow(dataRow, columnMapping, "ProductName")?.Trim();
                 baseCost.SupplierName = GetCellValueFromDataRow(dataRow, columnMapping, "SupplierName")?.Trim();
 
@@ -433,7 +433,7 @@ namespace GoodsEnterprise.Web.Services
                 baseCost.EndDate = ParseDate(GetCellValueFromDataRow(dataRow, columnMapping, "EndDate"));
 
                 // Validate required fields
-                if (string.IsNullOrEmpty(baseCost.ProductCode) && string.IsNullOrEmpty(baseCost.ProductName))
+                if (string.IsNullOrEmpty(baseCost.ProductName))
                     errors.Add("Either Product Code or Product Name is required");
                 if (!baseCost.BaseCost.HasValue || baseCost.BaseCost <= 0)
                     errors.Add("Base Cost is required and must be greater than 0");
@@ -460,8 +460,7 @@ namespace GoodsEnterprise.Web.Services
 
             try
             {
-                // Required fields
-                promotionCost.ProductCode = GetCellValueFromDataRow(dataRow, columnMapping, "ProductCode")?.Trim();
+                // Required fields 
                 promotionCost.ProductName = GetCellValueFromDataRow(dataRow, columnMapping, "ProductName")?.Trim();
                 promotionCost.SupplierName = GetCellValueFromDataRow(dataRow, columnMapping, "SupplierName")?.Trim();
 
@@ -480,7 +479,7 @@ namespace GoodsEnterprise.Web.Services
                 promotionCost.EndDate = ParseDate(GetCellValueFromDataRow(dataRow, columnMapping, "EndDate"));
 
                 // Validate required fields
-                if (string.IsNullOrEmpty(promotionCost.ProductCode) && string.IsNullOrEmpty(promotionCost.ProductName))
+                if (string.IsNullOrEmpty(promotionCost.ProductName))
                     errors.Add("Either Product Code or Product Name is required");
                 if (!promotionCost.PromotionCost.HasValue || promotionCost.PromotionCost <= 0)
                     errors.Add("Promotion Cost is required and must be greater than 0");
@@ -561,10 +560,19 @@ namespace GoodsEnterprise.Web.Services
                         PropertyNameCaseInsensitive = true
                     });
 
-                    var allColumns = new List<string>();
-                    allColumns.AddRange(config?.ImportColumns?.RequiredColumns?.Select(c => c.Name) ?? new List<string>());
-                    allColumns.AddRange(config?.ImportColumns?.OptionalColumns?.Select(c => c.Name) ?? new List<string>());
-                    return allColumns;
+                    // Handle new unified format
+                    if (config?.ImportColumns?.Columns != null)
+                    {
+                        return config.ImportColumns.Columns.Select(c => c.Name).ToList();
+                    }
+                    // Legacy format support
+                    else
+                    {
+                        var allColumns = new List<string>();
+                        allColumns.AddRange(config?.ImportColumns?.RequiredColumns?.Select(c => c.Name) ?? new List<string>());
+                        allColumns.AddRange(config?.ImportColumns?.OptionalColumns?.Select(c => c.Name) ?? new List<string>());
+                        return allColumns;
+                    }
                 }
             }
             catch (Exception ex)
@@ -593,8 +601,16 @@ namespace GoodsEnterprise.Web.Services
                         PropertyNameCaseInsensitive = true
                     });
 
-                    return config?.ImportColumns?.RequiredColumns?.Select(c => c.Name).ToList()
-                   ?? GetDefaultRequiredColumnsForImportType(importType);
+                    // Handle new unified format
+                    if (config?.ImportColumns?.Columns != null)
+                    {
+                        return config.ImportColumns.Columns.Where(c => c.Required).Select(c => c.Name).ToList();
+                    }
+                    // Legacy format support
+                    else if (config?.ImportColumns?.RequiredColumns != null)
+                    {
+                        return config.ImportColumns.RequiredColumns.Select(c => c.Name).ToList();
+                    }
                 }
             }
             catch (Exception ex)
@@ -697,6 +713,10 @@ namespace GoodsEnterprise.Web.Services
 
         private class ImportColumns
         {
+            // New unified format
+            public List<ColumnDefinition> Columns { get; set; }
+            
+            // Legacy format support
             public List<ColumnDefinition> RequiredColumns { get; set; }
             public List<ColumnDefinition> OptionalColumns { get; set; }
         }
@@ -779,11 +799,20 @@ namespace GoodsEnterprise.Web.Services
                 var modelType = model.GetType();
                 var allColumns = new List<ColumnDefinition>();
 
-                // Combine required and optional columns
-                if (config.ImportColumns.RequiredColumns != null)
-                    allColumns.AddRange(config.ImportColumns.RequiredColumns);
-                if (config.ImportColumns.OptionalColumns != null)
-                    allColumns.AddRange(config.ImportColumns.OptionalColumns);
+                // Handle new unified format
+                if (config.ImportColumns.Columns != null)
+                {
+                    allColumns.AddRange(config.ImportColumns.Columns);
+                }
+                // Legacy format support
+                else
+                {
+                    // Combine required and optional columns
+                    if (config.ImportColumns.RequiredColumns != null)
+                        allColumns.AddRange(config.ImportColumns.RequiredColumns);
+                    if (config.ImportColumns.OptionalColumns != null)
+                        allColumns.AddRange(config.ImportColumns.OptionalColumns);
+                }
 
                 foreach (var column in allColumns)
                 {

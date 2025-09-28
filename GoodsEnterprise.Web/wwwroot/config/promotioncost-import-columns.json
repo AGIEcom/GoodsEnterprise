@@ -1,73 +1,147 @@
 {
   "ImportColumns": {
-    "RequiredColumns": [
+    "title": "Promotion Cost Import Configuration",
+    "description": "Excel column configuration for promotion cost data import based on PromotionCost model",
+    "columns": [     
       {
-        "Name": "ProductCode",
-        "DisplayName": "Product Code",
-        "DataType": "string",
-        "ValidationRules": "required,maxLength:50"
+        "name": "ProductName",
+        "displayName": "Product Name",
+        "type": "string",
+        "required": true,
+        "maxLength": 200,
+        "description": "Product name for reference (Optional - used for lookup)"
       },
       {
-        "Name": "PromotionCost",
-        "DisplayName": "Promotion Cost",
-        "DataType": "decimal",
-        "ValidationRules": "required,min:0.01"
+        "name": "PromotionCost",
+        "displayName": "Promotion Cost",
+        "type": "decimal",
+        "required": true,
+        "min": 0.01,
+        "max": 999999.99,
+        "precision": 2,
+        "description": "Promotional cost amount (Required, must be > 0)"
       },
       {
-        "Name": "StartDate",
-        "DisplayName": "Start Date",
-        "DataType": "datetime",
-        "ValidationRules": "required"
+        "name": "StartDate",
+        "displayName": "Start Date",
+        "type": "date",
+        "required": true,
+        "format": "MM/DD/YYYY or YYYY-MM-DD",
+        "description": "Promotion start date (Required)"
       },
       {
-        "Name": "EndDate",
-        "DisplayName": "End Date",
-        "DataType": "datetime",
-        "ValidationRules": "required"
+        "name": "EndDate",
+        "displayName": "End Date",
+        "type": "date",
+        "required": true,
+        "format": "MM/DD/YYYY or YYYY-MM-DD",
+        "description": "Promotion end date (Required, must be >= StartDate)"
+      },
+      {
+        "name": "Remark",
+        "displayName": "Remark",
+        "type": "string",
+        "required": false,
+        "maxLength": 500,
+        "description": "Additional remarks or notes about the promotion"
+      },
+      {
+        "name": "SupplierName",
+        "displayName": "Supplier Name",
+        "type": "string",
+        "required": true,
+        "maxLength": 100,
+        "description": "Supplier name (Required for lookup)"
+      },
+      {
+        "name": "IsActive",
+        "displayName": "Is Active",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": true,
+        "acceptedValues": [ "true", "false", "1", "0", "yes", "no", "active", "inactive" ],
+        "description": "Promotion record active status (Default: Active)"
+      },
+      {
+        "name": "SelloutStartDate",
+        "displayName": "Sellout Start Date",
+        "type": "date",
+        "required": false,
+        "format": "MM/DD/YYYY or YYYY-MM-DD",
+        "description": "Sellout period start date (Optional)"
+      },
+      {
+        "name": "SelloutEndDate",
+        "displayName": "Sellout End Date",
+        "type": "date",
+        "required": false,
+        "format": "MM/DD/YYYY or YYYY-MM-DD",
+        "description": "Sellout period end date (Optional, must be >= SelloutStartDate if provided)"
+      },
+      {
+        "name": "BonusDescription",
+        "displayName": "Bonus Description",
+        "type": "string",
+        "required": false,
+        "maxLength": 1000,
+        "description": "Description of bonus or incentive details"
+      },
+      {
+        "name": "SellOutDescription",
+        "displayName": "Sell Out Description",
+        "type": "string",
+        "required": false,
+        "maxLength": 1000,
+        "description": "Description of sellout terms and conditions"
       }
     ],
-    "OptionalColumns": [
-      {
-        "Name": "ProductName",
-        "DisplayName": "Product Name",
-        "DataType": "string",
-        "ValidationRules": "maxLength:200"
+    "importSettings": {
+      "maxFileSize": "50MB",
+      "supportedFormats": [ ".xlsx", ".xls" ],
+      "maxRows": 10000,
+      "validateData": true,
+      "skipEmptyRows": true,
+      "trimWhitespace": true
+    },
+    "validationRules": {
+      "duplicateCheck": {
+        "enabled": true,
+        "checkFields": [ "ProductCode", "SupplierName", "StartDate", "EndDate" ],
+        "action": "reject"
       },
-      {
-        "Name": "Remark",
-        "DisplayName": "Remark",
-        "DataType": "string",
-        "ValidationRules": "maxLength:500"
+      "requiredFieldValidation": {
+        "enabled": true,
+        "action": "reject"
       },
-      {
-        "Name": "SupplierName",
-        "DisplayName": "Supplier Name",
-        "DataType": "string",
-        "ValidationRules": "maxLength:100"
+      "dataTypeValidation": {
+        "enabled": true,
+        "action": "reject"
       },
-      {
-        "Name": "IsActive",
-        "DisplayName": "Is Active",
-        "DataType": "boolean",
-        "ValidationRules": ""
+      "lengthValidation": {
+        "enabled": true,
+        "action": "reject"
+      },
+      "businessRules": {
+        "enabled": true,
+        "dateRangeValidation": true,
+        "promotionDurationWarning": 365,
+        "costRangeValidation": true,
+        "productExistenceCheck": true,
+        "supplierExistenceCheck": true
       }
-    ]
+    }
   },
-  "ColumnMappings": {
-    "Product Code": "ProductCode",
+  "ColumnMappings": { 
     "Product Name": "ProductName",
-    "Promotion Cost": "PromotionCost",
-    "Promo Cost": "PromotionCost",
-    "Cost": "PromotionCost",
-    "Start Date": "StartDate",
-    "From Date": "StartDate",
-    "End Date": "EndDate",
-    "To Date": "EndDate",
-    "Remark": "Remark",
-    "Comments": "Remark",
-    "Supplier Name": "SupplierName",
-    "Supplier": "SupplierName",
-    "Active": "IsActive",
-    "Is Active": "IsActive"
+    "Promotion Cost": "PromotionCost",  
+    "Start Date": "StartDate",  
+    "End Date": "EndDate",  
+    "Remark": "Remark", 
+    "Supplier Name": "SupplierName", 
+    "Active": "IsActive",  
+    "Sellout Start Date": "SelloutStartDate", 
+    "Sellout End Date": "SelloutEndDate", 
+    "Bonus Description": "BonusDescription",  
+    "Sell Out Description": "SellOutDescription"
   }
 }

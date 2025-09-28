@@ -75,6 +75,13 @@ namespace GoodsEnterprise
             services.AddScoped<IExcelReaderService, ExcelReaderService>();
             services.AddScoped<ISupplierValidationService, SupplierValidationService>();
             services.AddScoped<ISupplierImportService, SupplierImportService>();
+
+            services.AddScoped<IBaseCostImportService, BaseCostImportService>();
+            services.AddScoped<IBaseCostValidationService, BaseCostValidationService>();
+            services.AddScoped<IPromotionCostImportService, PromotionCostImportService>();
+            services.AddScoped<IPromotionCostValidationService, PromotionCostValidationService>();
+            services.AddScoped<IProductImportService, ProductImportService>();
+            services.AddScoped<IProductValidationService, ProductValidationService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             var autoMapconfig = new MapperConfiguration(c =>
             {

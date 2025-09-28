@@ -23,6 +23,8 @@ namespace GoodsEnterprise.Model.Models
         public bool IsDelete { get; set; }
         public string ResetPasswordToken { get; set; }
         public DateTime? ResetPasswordExpiry { get; set; }
+        public string RememberMeToken { get; set; }
+        public DateTime? RememberMeExpiry { get; set; }
 
         public virtual Role Role { get; set; }
     }

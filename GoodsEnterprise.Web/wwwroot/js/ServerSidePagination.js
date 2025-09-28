@@ -169,6 +169,7 @@ $(document).ready(function () {
 
             }],
             initComplete: function () {
+                $('#tblProductMaster_wrapper .dataTables_length').appendTo('#product-length-menu-placeholder');
                 // Using custom search controls, no need to move DataTables search input
                 // The default search is disabled and we use our custom search input
             },
@@ -410,6 +411,7 @@ $(document).ready(function () {
                 }
             ],
             initComplete: function () {
+                $('#tblPromotionCost_wrapper .dataTables_length').appendTo('#promotion-cost-length-menu-placeholder');
                 // Using custom search controls, no need to move DataTables search input
                 // The default search is disabled and we use our custom search input
             }
@@ -546,6 +548,8 @@ $(document).ready(function () {
             ],
 
             initComplete: function () {
+                // Move the length menu to our custom placeholder
+                $('#tblBaseCost_wrapper .dataTables_length').appendTo('#base-cost-length-menu-placeholder');
                 console.log('BaseCost DataTable initialized successfully');
             }
         });

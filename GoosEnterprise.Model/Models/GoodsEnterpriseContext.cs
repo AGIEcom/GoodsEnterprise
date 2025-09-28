@@ -87,6 +87,12 @@ namespace GoodsEnterprise.Model.Models
                     .HasMaxLength(500)
                     .IsUnicode(false);
 
+                entity.Property(e => e.RememberMeExpiry).HasColumnType("datetime");
+
+                entity.Property(e => e.RememberMeToken)
+                    .HasMaxLength(500)
+                    .IsUnicode(false);
+
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.Admins)
                     .HasForeignKey(d => d.RoleId)
