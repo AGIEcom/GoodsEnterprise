@@ -527,7 +527,8 @@ namespace GoodsEnterprise.Web.Services
             try
             {
                 // Get all existing suppliers for comparison
-                var existingSuppliers = await _supplierRepository.GetAllAsync();
+                var skuCodes = suppliers.Select(s => s.SKUCode).Where(c => !string.IsNullOrEmpty(c)).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+                var existingSuppliers = await _supplierRepository.GetAllAsync(filter: x => skuCodes.Contains(x.Skucode));
 
                 foreach (var supplier in suppliers)
                 {

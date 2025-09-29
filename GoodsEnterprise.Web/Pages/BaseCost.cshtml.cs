@@ -71,6 +71,13 @@ namespace GoodsEnterprise.Web.Pages
                 {
                     objBaseCost = new BaseCost();
                 }
+                ViewData["PageType"] = "List";
+                if (!string.IsNullOrEmpty(HttpContext.Session.GetString(Constants.StatusMessage)))
+                {
+                    ViewData["SuccessMsg"] = HttpContext.Session.GetString(Constants.StatusMessage);
+                    HttpContext.Session.SetString(Constants.StatusMessage, "");
+                }
+                ViewData["PagePrimaryID"] = 0;
 
                 await LoadProduct();
                 await LoadSupplier();
@@ -724,8 +731,13 @@ namespace GoodsEnterprise.Web.Pages
         {
             try
             {
-                selectProduct = new SelectList(await _product.GetAllAsync(filter: x => x.IsDelete != true),
-                                          "Id", "ProductName", objBaseCost?.ProductId);
+                var products = await _product.GetAllAsync(filter: x => x.IsDelete != true);
+                var productList = products.Select(p => new {
+                    Id = p.Id,
+                    DisplayText = $"{p.ProductName} ({p.Code})"
+                }).ToList();
+
+                selectProduct = new SelectList(productList, "Id", "DisplayText", objBaseCost?.ProductId);
             }
             catch (Exception ex)
             {

@@ -1,153 +1,236 @@
 {
   "ImportColumns": {
-    "RequiredColumns": [
+    "title": "Product Import Configuration",
+    "description": "Excel column configuration for product data import",
+    "columns": [
       {
-        "Name": "Code",
-        "DisplayName": "Product Code",
-        "DataType": "string",
-        "ValidationRules": "required,maxLength:50"
+        "name": "Code",
+        "displayName": "Product Code",
+        "type": "string",
+        "required": true,
+        "maxLength": 50,
+        "description": "Unique product code (Required)"
       },
       {
-        "Name": "ProductName",
-        "DisplayName": "Product Name",
-        "DataType": "string",
-        "ValidationRules": "required,maxLength:200"
+        "name": "ProductName",
+        "displayName": "Product Name",
+        "type": "string",
+        "required": true,
+        "maxLength": 200,
+        "description": "Name of the product (Required)"
+      },
+      {
+        "name": "ProductDescription",
+        "displayName": "Product Description",
+        "type": "string",
+        "required": false,
+        "maxLength": 500,
+        "description": "Detailed product description"
+      },
+      {
+        "name": "BrandName",
+        "displayName": "Brand Name",
+        "type": "string",
+        "required": false,
+        "maxLength": 100,
+        "description": "Product brand name"
+      },
+      {
+        "name": "CategoryName",
+        "displayName": "Category Name",
+        "type": "string",
+        "required": false,
+        "maxLength": 100,
+        "description": "Product category"
+      },
+      {
+        "name": "SubCategoryName",
+        "displayName": "Sub Category Name",
+        "type": "string",
+        "required": false,
+        "maxLength": 100,
+        "description": "Product sub-category"
+      },
+      {
+        "name": "InnerEan",
+        "displayName": "Inner EAN",
+        "type": "string",
+        "required": false,
+        "maxLength": 50,
+        "description": "Inner EAN barcode"
+      },
+      {
+        "name": "OuterEan",
+        "displayName": "Outer EAN",
+        "type": "string",
+        "required": false,
+        "maxLength": 50,
+        "description": "Outer EAN barcode"
+      },
+      {
+        "name": "UnitSize",
+        "displayName": "Unit Size",
+        "type": "string",
+        "required": false,
+        "maxLength": 50,
+        "description": "Product unit size"
+      },
+      {
+        "name": "Upc",
+        "displayName": "UPC",
+        "type": "integer",
+        "required": false,
+        "min": 0,
+        "description": "Universal Product Code"
+      },
+      {
+        "name": "LayerQuantity",
+        "displayName": "Layer Quantity",
+        "type": "integer",
+        "required": false,
+        "min": 0,
+        "description": "Quantity per layer"
+      },
+      {
+        "name": "PalletQuantity",
+        "displayName": "Pallet Quantity",
+        "type": "integer",
+        "required": false,
+        "min": 0,
+        "description": "Quantity per pallet"
+      },
+      {
+        "name": "CasePrice",
+        "displayName": "Case Price",
+        "type": "decimal",
+        "required": false,
+        "min": 0,
+        "precision": 2,
+        "description": "Price per case"
+      },
+      {
+        "name": "ShelfLifeInWeeks",
+        "displayName": "Shelf Life (Weeks)",
+        "type": "integer",
+        "required": false,
+        "min": 0,
+        "description": "Product shelf life in weeks"
+      },
+      {
+        "name": "PackHeight",
+        "displayName": "Pack Height",
+        "type": "decimal",
+        "required": false,
+        "min": 0,
+        "precision": 2,
+        "description": "Package height in cm"
+      },
+      {
+        "name": "PackDepth",
+        "displayName": "Pack Depth",
+        "type": "decimal",
+        "required": false,
+        "min": 0,
+        "precision": 2,
+        "description": "Package depth in cm"
+      },
+      {
+        "name": "PackWidth",
+        "displayName": "Pack Width",
+        "type": "decimal",
+        "required": false,
+        "min": 0,
+        "precision": 2,
+        "description": "Package width in cm"
+      },
+      {
+        "name": "NetCaseWeightKg",
+        "displayName": "Net Case Weight (Kg)",
+        "type": "decimal",
+        "required": false,
+        "min": 0,
+        "precision": 2,
+        "description": "Net weight per case in kg"
+      },
+      {
+        "name": "GrossCaseWeightKg",
+        "displayName": "Gross Case Weight (Kg)",
+        "type": "decimal",
+        "required": false,
+        "min": 0,
+        "precision": 2,
+        "description": "Gross weight per case in kg"
+      },
+      {
+        "name": "IsActive",
+        "displayName": "Is Active",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": true,
+        "acceptedValues": [ "true", "false", "1", "0", "yes", "no", "active", "inactive" ],
+        "description": "Product active status (Default: Active)"
+      },
+      {
+        "name": "isTaxable",
+        "displayName": "Is Taxable",
+        "type": "boolean",
+        "required": false,
+        "defaultValue": true,
+        "acceptedValues": [ "true", "false", "1", "0", "yes", "no" ],
+        "description": "Whether product is taxable (Default: Yes)"
+      },
+      {
+        "name": "SupplierName",
+        "displayName": "Supplier Name",
+        "type": "string",
+        "required": false,
+        "maxLength": 100,
+        "description": "Primary supplier name"
+      },
+      {
+        "name": "ExpriyDate",
+        "displayName": "Expiry Date",
+        "type": "date",
+        "required": false,
+        "format": "MM/DD/YYYY or YYYY-MM-DD",
+        "description": "Product expiry date"
+      },
+      {
+        "name": "TaxslabName",
+        "displayName": "Tax Slab Name",
+        "type": "string",
+        "required": false,
+        "maxLength": 100,
+        "description": "Applicable tax slab"
       }
     ],
-    "OptionalColumns": [
-      {
-        "Name": "ProductDescription",
-        "DisplayName": "Product Description",
-        "DataType": "string",
-        "ValidationRules": "maxLength:500"
+    "importSettings": {
+      "maxFileSize": "50MB",
+      "supportedFormats": [ ".xlsx", ".xls" ],
+      "maxRows": 10000,
+      "validateData": true,
+      "skipEmptyRows": true,
+      "trimWhitespace": true
+    },
+    "validationRules": {
+      "duplicateCheck": {
+        "enabled": true,
+        "checkFields": [ "Code" ],
+        "action": "reject"
       },
-      {
-        "Name": "BrandName",
-        "DisplayName": "Brand Name",
-        "DataType": "string",
-        "ValidationRules": "maxLength:100"
+      "requiredFieldValidation": {
+        "enabled": true,
+        "action": "reject"
       },
-      {
-        "Name": "CategoryName",
-        "DisplayName": "Category Name",
-        "DataType": "string",
-        "ValidationRules": "maxLength:100"
+      "dataTypeValidation": {
+        "enabled": true,
+        "action": "warn"
       },
-      {
-        "Name": "SubCategoryName",
-        "DisplayName": "Sub Category Name",
-        "DataType": "string",
-        "ValidationRules": "maxLength:100"
-      },
-      {
-        "Name": "InnerEan",
-        "DisplayName": "Inner EAN",
-        "DataType": "string",
-        "ValidationRules": "maxLength:50"
-      },
-      {
-        "Name": "OuterEan",
-        "DisplayName": "Outer EAN",
-        "DataType": "string",
-        "ValidationRules": "maxLength:50"
-      },
-      {
-        "Name": "UnitSize",
-        "DisplayName": "Unit Size",
-        "DataType": "string",
-        "ValidationRules": "maxLength:50"
-      },
-      {
-        "Name": "Upc",
-        "DisplayName": "UPC",
-        "DataType": "integer",
-        "ValidationRules": "min:0"
-      },
-      {
-        "Name": "LayerQuantity",
-        "DisplayName": "Layer Quantity",
-        "DataType": "integer",
-        "ValidationRules": "min:0"
-      },
-      {
-        "Name": "PalletQuantity",
-        "DisplayName": "Pallet Quantity",
-        "DataType": "integer",
-        "ValidationRules": "min:0"
-      },
-      {
-        "Name": "CasePrice",
-        "DisplayName": "Case Price",
-        "DataType": "decimal",
-        "ValidationRules": "min:0"
-      },
-      {
-        "Name": "ShelfLifeInWeeks",
-        "DisplayName": "Shelf Life (Weeks)",
-        "DataType": "integer",
-        "ValidationRules": "min:0"
-      },
-      {
-        "Name": "PackHeight",
-        "DisplayName": "Pack Height",
-        "DataType": "decimal",
-        "ValidationRules": "min:0"
-      },
-      {
-        "Name": "PackDepth",
-        "DisplayName": "Pack Depth",
-        "DataType": "decimal",
-        "ValidationRules": "min:0"
-      },
-      {
-        "Name": "PackWidth",
-        "DisplayName": "Pack Width",
-        "DataType": "decimal",
-        "ValidationRules": "min:0"
-      },
-      {
-        "Name": "NetCaseWeightKg",
-        "DisplayName": "Net Case Weight (Kg)",
-        "DataType": "decimal",
-        "ValidationRules": "min:0"
-      },
-      {
-        "Name": "GrossCaseWeightKg",
-        "DisplayName": "Gross Case Weight (Kg)",
-        "DataType": "decimal",
-        "ValidationRules": "min:0"
-      },
-      {
-        "Name": "IsActive",
-        "DisplayName": "Is Active",
-        "DataType": "boolean",
-        "ValidationRules": ""
-      },
-      {
-        "Name": "isTaxable",
-        "DisplayName": "Is Taxable",
-        "DataType": "boolean",
-        "ValidationRules": ""
-      },
-      {
-        "Name": "SupplierName",
-        "DisplayName": "Supplier Name",
-        "DataType": "string",
-        "ValidationRules": "maxLength:100"
-      },
-      {
-        "Name": "ExpriyDate",
-        "DisplayName": "Expiry Date",
-        "DataType": "datetime",
-        "ValidationRules": ""
-      },
-      {
-        "Name": "TaxslabName",
-        "DisplayName": "Tax Slab Name",
-        "DataType": "string",
-        "ValidationRules": "maxLength:100"
+      "lengthValidation": {
+        "enabled": true,
+        "action": "reject"
       }
-    ]
+    }
   },
   "ColumnMappings": {
     "Product Code": "Code",

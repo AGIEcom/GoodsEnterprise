@@ -2,7 +2,7 @@
   "ImportColumns": {
     "title": "Supplier Import Configuration",
     "description": "Excel column configuration for supplier data import",
-    "requiredColumns": [
+    "columns": [
       {
         "name": "SupplierName",
         "displayName": "Supplier Name",
@@ -18,9 +18,7 @@
         "required": true,
         "maxLength": 50,
         "description": "Unique SKU code for the supplier (Required)"
-      }
-    ],
-    "optionalColumns": [
+      },
       {
         "name": "FirstName",
         "displayName": "First Name",

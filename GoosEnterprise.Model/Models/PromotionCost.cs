@@ -27,6 +27,10 @@ namespace GoodsEnterprise.Model.Models
         [Required(ErrorMessage = "Supplier is required")]
         public int? SupplierId { get; set; }
         public bool IsActive { get; set; }
+        public DateTime? SelloutStartDate { get; set; }
+        public DateTime? SelloutEndDate { get; set; }
+        public string BonusDescription { get; set; }
+        public string SellOutDescription { get; set; }
         public DateTime? CreatedDate { get; set; }
         public int? CreatedBy { get; set; }
         public int? Modifiedby { get; set; }

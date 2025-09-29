@@ -1721,3 +1721,371 @@ html, body {
     --formal-gray-800: #1e293b;
     --formal-gray-900: #0f172a;
 }
+
+/* Modern Accordion Styles */
+.modern-accordion {
+    border: 1px solid var(--formal-gray-200);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.accordion-item {
+    border: none;
+    background-color: transparent;
+}
+
+.accordion-item:not(:last-child) {
+    border-bottom: 1px solid var(--formal-gray-200);
+}
+
+.accordion-header {
+    margin-bottom: 0;
+}
+
+.accordion-button {
+    background-color: var(--formal-gray-50);
+    border: none;
+    color: var(--formal-gray-700);
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 1rem 1.25rem;
+    border-radius: 0;
+    box-shadow: none;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    text-align: left;
+    position: relative;
+}
+
+.accordion-button:hover {
+    background-color: var(--formal-gray-100);
+    color: var(--formal-gray-800);
+    box-shadow: none;
+}
+
+.accordion-button:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: transparent;
+    outline: none;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #e3f2fd;
+    color: var(--formal-primary);
+    box-shadow: none;
+    border-bottom: 2px solid var(--formal-primary);
+}
+
+.accordion-button:not(.collapsed):hover {
+    background-color: #bbdefb;
+    color: var(--formal-primary-dark);
+}
+
+.accordion-button::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23475569'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-size: 16px;
+    transition: transform 0.2s ease;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.accordion-button:not(.collapsed)::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%231e40af'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    transform: rotate(-180deg);
+}
+
+/* Accordion animation - Simple show/hide approach */
+.accordion-collapse {
+    display: none;
+    border: none;
+}
+
+.accordion-collapse.show {
+    display: block !important;
+}
+
+/* Ensure accordion buttons have proper styling */
+.accordion-button {
+    cursor: pointer !important;
+    user-select: none;
+    transition: all 0.2s ease;
+    border: none;
+    background-color: var(--formal-gray-50);
+    color: var(--formal-gray-700);
+    font-weight: 500;
+    padding: 1rem 1.25rem;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.accordion-button:hover {
+    background-color: var(--formal-gray-100);
+    color: var(--formal-gray-800);
+}
+
+.accordion-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: transparent;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #e3f2fd;
+    color: var(--formal-primary);
+    border-bottom: 2px solid var(--formal-primary);
+}
+
+.accordion-button:not(.collapsed):hover {
+    background-color: #bbdefb;
+    color: var(--formal-primary-dark);
+}
+
+.accordion-button::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23475569'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-size: 16px;
+    transition: transform 0.2s ease;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.accordion-button:not(.collapsed)::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%231e40af'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    transform: rotate(-180deg);
+}
+
+/* Smooth accordion body transitions */
+.accordion-body {
+    padding: 1.25rem;
+    background-color: #ffffff;
+    border-top: 1px solid var(--formal-gray-200);
+    color: var(--formal-gray-700);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Ensure smooth transitions without height changes */
+.modern-accordion .accordion-collapse {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    border: none;
+}
+
+.modern-accordion .accordion-item {
+    border: none;
+    background-color: transparent;
+    margin-bottom: 0;
+}
+
+.modern-accordion .accordion-item:not(:last-child) {
+    border-bottom: 1px solid var(--formal-gray-200);
+}
+
+/* Import specific accordion styles */
+.import-accordion .accordion-body {
+    padding: 1rem;
+}
+
+.import-accordion .accordion-button {
+    font-size: 0.9rem;
+    padding: 0.875rem 1rem;
+}
+
+/* Remember Me Checkbox Styles */
+.modern-checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #64748b;
+    user-select: none;
+    position: relative;
+    padding-left: 28px;
+}
+
+.modern-checkbox-label::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    border: 2px solid #d1d5db;
+    border-radius: 4px;
+    background: #ffffff;
+    transition: all 0.3s ease;
+}
+
+.modern-checkbox:checked + .modern-checkbox-label::before {
+    background: linear-gradient(135deg, #3182ce, #2c5282);
+    border-color: #3182ce;
+}
+
+.modern-checkbox-label::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.modern-checkbox:checked + .modern-checkbox-label::after {
+    opacity: 1;
+}
+
+.modern-checkbox-label:hover::before {
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+.modern-checkbox:focus + .modern-checkbox-label::before {
+    outline: 2px solid #3182ce;
+    outline-offset: 2px;
+}
+
+/* Modal Background Fix */
+.modal-backdrop {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 1040 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 1050 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    outline: 0 !important;
+}
+
+.modal.fade .modal-dialog {
+    transition: transform 0.3s ease-out !important;
+    transform: translate(0, -50px) !important;
+}
+
+.modal.show .modal-dialog {
+    transform: none !important;
+}
+
+.modal-dialog {
+    position: relative !important;
+    width: auto !important;
+    margin: 1.75rem !important;
+    pointer-events: none !important;
+}
+
+.modal-content {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    pointer-events: auto !important;
+    background-color: #fff !important;
+    background-clip: padding-box !important;
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    outline: 0 !important;
+}
+
+/* Ensure modal appears above everything */
+.modal-open {
+    overflow: hidden !important;
+}
+
+.modal-header {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+    padding: 1rem 1rem !important;
+    border-bottom: 1px solid #dee2e6 !important;
+    border-top-left-radius: calc(0.5rem - 1px) !important;
+    border-top-right-radius: calc(0.5rem - 1px) !important;
+}
+
+.modal-title {
+    margin-bottom: 0 !important;
+    line-height: 1.5 !important;
+    font-size: 1.25rem !important;
+    font-weight: 500 !important;
+}
+
+.modal-body {
+    position: relative !important;
+    flex: 1 1 auto !important;
+    padding: 1rem !important;
+}
+
+.modal-footer {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    padding: 0.75rem !important;
+    border-top: 1px solid #dee2e6 !important;
+    border-bottom-right-radius: calc(0.5rem - 1px) !important;
+    border-bottom-left-radius: calc(0.5rem - 1px) !important;
+}
+
+.modal-footer > * {
+    margin: 0.25rem !important;
+}
+
+/* Close button styling */
+.close {
+    float: right !important;
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    color: #000 !important;
+    text-shadow: 0 1px 0 #fff !important;
+    opacity: 0.5 !important;
+    background: transparent !important;
+    border: 0 !important;
+    cursor: pointer !important;
+}
+
+.close:hover {
+    color: #000 !important;
+    text-decoration: none !important;
+    opacity: 0.75 !important;
+}
+
+/* Responsive modal */
+@media (min-width: 576px) {
+    .modal-dialog {
+        max-width: 500px !important;
+        margin: 1.75rem auto !important;
+    }
+}

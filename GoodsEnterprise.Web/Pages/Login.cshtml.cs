@@ -43,6 +43,55 @@ namespace GoodsEnterprise.Web.Pages
         public ForgotPasswordModel ForgotPasswordModel { get; set; }
         [BindProperty()]
         public Admin objAdmin { get; set; }
+        [BindProperty]
+        public bool RememberMe { get; set; }
+
+        /// <summary>
+        /// OnGet - Check for remember me cookie
+        /// </summary>
+        public async Task<IActionResult> OnGetAsync()
+        {
+            try
+            {
+                // Check if user is already logged in via session
+                var sessionUser = HttpContext.Session.GetString(Constants.LoginSession);
+                if (!string.IsNullOrEmpty(sessionUser))
+                {
+                    return RedirectToPage("UploadDownload");
+                }
+
+                // Check for remember me cookie
+                if (Request.Cookies.TryGetValue("RememberMeToken", out string rememberToken) && 
+                    !string.IsNullOrEmpty(rememberToken))
+                {
+                    var admin = await _admin.GetAsync(filter: x => x.RememberMeToken == rememberToken && 
+                                                                   x.RememberMeExpiry > DateTime.UtcNow &&
+                                                                   x.IsDelete != true);
+                    if (admin != null)
+                    {
+                        // Auto-login the user
+                        HttpContext.Session.SetString(Constants.LoginSession, JsonConvert.SerializeObject(admin));
+                        
+                        // Refresh the remember me token and extend expiry
+                        await RefreshRememberMeToken(admin);
+                        
+                        return RedirectToPage("UploadDownload");
+                    }
+                    else
+                    {
+                        // Invalid or expired token, remove the cookie
+                        Response.Cookies.Delete("RememberMeToken");
+                    }
+                }
+
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error in OnGetAsync() for Login page");
+                return Page();
+            }
+        }
 
         /// <summary>
         /// OnGetLogOut
@@ -50,6 +99,12 @@ namespace GoodsEnterprise.Web.Pages
         public void OnGetLogOut()
         {
             HttpContext.Session.Clear();
+            
+            // Clear remember me cookie if it exists
+            if (Request.Cookies.ContainsKey("RememberMeToken"))
+            {
+                Response.Cookies.Delete("RememberMeToken");
+            }
         }
         /// <summary>
         /// Login Post method
@@ -66,6 +121,18 @@ namespace GoodsEnterprise.Web.Pages
                     if (existingAdmin.Password.Decrypt(Constants.EncryptDecryptSecurity) == objAdmin.Password)
                     {
                         HttpContext.Session.SetString(Constants.LoginSession, JsonConvert.SerializeObject(existingAdmin));
+                        
+                        // Handle Remember Me functionality
+                        if (RememberMe)
+                        {
+                            await SetRememberMeToken(existingAdmin);
+                        }
+                        else
+                        {
+                            // Clear any existing remember me token
+                            await ClearRememberMeToken(existingAdmin);
+                        }
+                        
                         return RedirectToPage("UploadDownload");
                     }
                     else
@@ -150,6 +217,99 @@ namespace GoodsEnterprise.Web.Pages
                     success = false, 
                     message = "An error occurred while processing your request. Please try again later." 
                 });
+            }
+        }
+
+        /// <summary>
+        /// Set remember me token and cookie
+        /// </summary>
+        private async Task SetRememberMeToken(Admin admin)
+        {
+            try
+            {
+                // Generate a secure random token
+                var token = Guid.NewGuid().ToString() + "-" + Guid.NewGuid().ToString();
+                
+                // Set token and expiry in database (30 days)
+                admin.RememberMeToken = token;
+                admin.RememberMeExpiry = DateTime.UtcNow.AddDays(30);
+                admin.ModifiedDate = DateTime.UtcNow;
+                
+                await _admin.UpdateAsync(admin);
+                
+                // Set secure HTTP-only cookie (30 days)
+                var cookieOptions = new CookieOptions
+                {
+                    Expires = DateTime.UtcNow.AddDays(30),
+                    HttpOnly = true,
+                    Secure = Request.IsHttps,
+                    SameSite = SameSiteMode.Lax,
+                    Path = "/"
+                };
+                
+                Response.Cookies.Append("RememberMeToken", token, cookieOptions);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error setting remember me token for admin {AdminId}", admin.Id);
+            }
+        }
+
+        /// <summary>
+        /// Clear remember me token from database and cookie
+        /// </summary>
+        private async Task ClearRememberMeToken(Admin admin)
+        {
+            try
+            {
+                // Clear token from database
+                admin.RememberMeToken = null;
+                admin.RememberMeExpiry = null;
+                admin.ModifiedDate = DateTime.UtcNow;
+                
+                await _admin.UpdateAsync(admin);
+                
+                // Clear cookie
+                Response.Cookies.Delete("RememberMeToken");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error clearing remember me token for admin {AdminId}", admin.Id);
+            }
+        }
+
+        /// <summary>
+        /// Refresh remember me token to extend expiry
+        /// </summary>
+        private async Task RefreshRememberMeToken(Admin admin)
+        {
+            try
+            {
+                // Generate new token
+                var newToken = Guid.NewGuid().ToString() + "-" + Guid.NewGuid().ToString();
+                
+                // Update database
+                admin.RememberMeToken = newToken;
+                admin.RememberMeExpiry = DateTime.UtcNow.AddDays(30);
+                admin.ModifiedDate = DateTime.UtcNow;
+                
+                await _admin.UpdateAsync(admin);
+                
+                // Update cookie
+                var cookieOptions = new CookieOptions
+                {
+                    Expires = DateTime.UtcNow.AddDays(30),
+                    HttpOnly = true,
+                    Secure = Request.IsHttps,
+                    SameSite = SameSiteMode.Lax,
+                    Path = "/"
+                };
+                
+                Response.Cookies.Append("RememberMeToken", newToken, cookieOptions);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error refreshing remember me token for admin {AdminId}", admin.Id);
             }
         }
     }
