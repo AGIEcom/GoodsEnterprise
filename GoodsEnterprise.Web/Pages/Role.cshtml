@@ -18,6 +18,244 @@
     }
 }
 
+<link href="/css/common.css" rel="stylesheet" asp-append-version="true" />
+
+<style>
+    /* DataTables styling - exactly like Tax page */
+    .dataTables_length select,
+    .dataTables_filter input {
+        background-color: #fff;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        padding: 0.375rem 0.75rem;
+        font-size: 14px;
+        color: #374151;
+        transition: all 0.2s ease;
+    }
+
+    .dataTables_length select:hover,
+    .dataTables_filter input:hover {
+        border-color: #9ca3af;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .dataTables_length select:focus,
+    .dataTables_filter input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .d-flex.justify-content-between {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .d-flex.align-items-center.gap-3 {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .dataTables_filter input {
+            width: 150px;
+        }
+    }
+
+    /* Pagination styling */
+    #tblRoleMaster_wrapper .dataTables_paginate {
+        margin: 0 !important;
+        display: flex !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
+    }
+
+    #tblRoleMaster_wrapper .dataTables_paginate .paginate_button {
+        background: #fff !important;
+        border: 1px solid #d1d5db !important;
+        border-radius: 6px !important;
+        padding: 0 !important;
+        margin: 0 2px !important;
+        font-size: 14px !important;
+        color: #374151 !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+        text-decoration: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-width: 36px !important;
+        height: 36px !important;
+    }
+
+    #tblRoleMaster_wrapper .dataTables_paginate .paginate_button:hover {
+        background: #f3f4f6 !important;
+        border-color: #9ca3af !important;
+        color: #111827 !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    #tblRoleMaster_wrapper .dataTables_paginate .paginate_button.current,
+    #tblRoleMaster_wrapper .dataTables_paginate .paginate_button.current:hover {
+        background: #3b82f6 !important;
+        border-color: #3b82f6 !important;
+        color: #fff !important;
+        font-weight: 600 !important;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+    }
+
+    #tblRoleMaster_wrapper .dataTables_paginate .paginate_button.disabled,
+    #tblRoleMaster_wrapper .dataTables_paginate .paginate_button.disabled:hover {
+        background: #f9fafb !important;
+        border-color: #e5e7eb !important;
+        color: #9ca3af !important;
+        cursor: not-allowed !important;
+        opacity: 0.6 !important;
+    }
+
+    #tblRoleMaster_wrapper .dataTables_paginate .paginate_button.previous,
+    #tblRoleMaster_wrapper .dataTables_paginate .paginate_button.next {
+        font-weight: 500 !important;
+    }
+
+    /* Info styling */
+    #tblRoleMaster_wrapper .dataTables_info {
+        margin-top: 1rem;
+        font-size: 14px;
+        color: #6b7280;
+        text-align: left;
+    }
+
+    /* Table wrapper to fit window */
+    .modern-table-container {
+        width: 100%;
+        overflow-x: auto;
+        margin-bottom: 0;
+        margin-top: 0;
+        padding-top: 0;
+        height: calc(100vh - 200px);
+    }
+
+    .modern-table {
+        width: 100% !important;
+        table-layout: auto;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    /* Remove top spacing from table wrapper and DataTable elements */
+    #tblRoleMaster_wrapper {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    #tblRoleMaster {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    /* Ensure pagination row is visible */
+    #tblRoleMaster_wrapper .row {
+        margin: 1rem 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    #tblRoleMaster_wrapper .row .col-md-5 {
+        flex: 0 0 auto;
+    }
+
+    #tblRoleMaster_wrapper .row .col-md-7 {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    /* Responsive table adjustments */
+    @@media (max-width: 768px) {
+        #tblRoleMaster_wrapper .row {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        #tblRoleMaster_wrapper .row .col-md-7 {
+            justify-content: center;
+        }
+
+        .modern-table-container {
+            font-size: 14px;
+        }
+    }
+
+    /* Column alignment and sizing - Role table has 3 columns */
+    #tblRoleMaster th:nth-child(2),
+    #tblRoleMaster td:nth-child(2) {
+        text-align: center !important;
+    }
+
+    #tblRoleMaster th:nth-child(3),
+    #tblRoleMaster td:nth-child(3) {
+        text-align: center !important;
+    }
+
+    /* Column width adjustments for 3 columns */
+    #tblRoleMaster th:nth-child(1),
+    #tblRoleMaster td:nth-child(1) {
+        width: 50%;
+        min-width: 150px;
+    }
+
+    #tblRoleMaster th:nth-child(2),
+    #tblRoleMaster td:nth-child(2) {
+        width: 25%;
+        min-width: 100px;
+    }
+
+    #tblRoleMaster th:nth-child(3),
+    #tblRoleMaster td:nth-child(3) {
+        width: 25%;
+        min-width: 100px;
+        text-align: center !important;
+    }
+
+    /* No text wrapping for all columns */
+    #tblRoleMaster th,
+    #tblRoleMaster td {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Center align action buttons */
+    #tblRoleMaster .modern-btn-group {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    /* Force center alignment for status badges */
+    #tblRoleMaster td:nth-child(2) .modern-badge {
+        display: inline-block;
+        margin: 0 auto;
+    }
+
+    /* Ensure status cell content is centered */
+    #tblRoleMaster td:nth-child(2) {
+        text-align: center !important;
+        vertical-align: middle !important;
+    }
+
+    /* Override any inherited alignment */
+    #tblRoleMaster th:nth-child(2) {
+        text-align: center !important;
+    }
+</style>
+
 <div class="modern-alert modern-alert-success" id="success-alert" style="display:none;">
     <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
@@ -30,8 +268,35 @@
 
 <div id="rolelist" style="@List">
     <div class="modern-card">
-        <div class="d-flex justify-content-end mb-3">
-            <a id="lnkCreateRole" class="modern-btn modern-btn-primary">
+        <!-- Header section with all controls in same horizontal line -->
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
+            <div class="d-flex align-items-center flex-wrap" style="gap: 3rem;">
+                <!-- Search input - moved to first position -->
+                <div class="dataTables_filter" id="tblRoleMaster_filter">
+                    <label class="d-flex align-items-center gap-2">
+                        <span>Search:</span>
+                        <input type="search" class="modern-search-input" placeholder="Type to search roles..." aria-controls="tblRoleMaster" style="width: 200px;" id="roleSearchInput">
+                    </label>
+                </div>
+                
+                <!-- Show entries dropdown - moved to second position -->
+                <div class="dataTables_length" id="tblRoleMaster_length">
+                    <label class="d-flex align-items-center gap-2">
+                        <span>Show</span>
+                        <select name="tblRoleMaster_length" aria-controls="tblRoleMaster" class="modern-form-input" style="width: auto; padding: 0.375rem 0.75rem;" id="roleLengthSelect">
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                        <span>entries</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Create button with only icon -->
+            <a id="lnkCreateRole" class="modern-btn modern-btn-primary" title="Create Role">
                 <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
                 </svg>
@@ -58,12 +323,12 @@
                             </td>
                             <td>
                                 <div class="modern-btn-group">
-                                    <a asp-page-handler="Edit" asp-route-roleId="@item.Id" class="modern-btn modern-btn-sm modern-btn-primary">
+                                    <a asp-page-handler="Edit" asp-route-roleId="@item.Id" class="modern-btn modern-btn-sm modern-btn-primary" title="Edit Role">
                                         <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
                                         </svg>
                                     </a>
-                                    <a asp-page-handler="DeleteRole" asp-route-roleId="@item.Id" class="modern-btn modern-btn-sm modern-btn-danger btn-role-delete">
+                                    <a asp-page-handler="DeleteRole" asp-route-roleId="@item.Id" class="modern-btn modern-btn-sm modern-btn-danger btn-role-delete" title="Delete Role">
                                         <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"></path>
                                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
@@ -158,6 +423,7 @@
         </form>
     </div>
 </div>
+
 
 @* Include Modern Alert System *@
 @await Html.PartialAsync("_ModernAlerts")

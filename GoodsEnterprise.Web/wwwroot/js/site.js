@@ -242,33 +242,174 @@ $(document).ready(function () {
  
 
     $('#tblRoleMaster').DataTable({
+        "dom": "t<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>", // Show table with pagination and info at bottom
         'columnDefs': [
             { 'targets': [2], 'orderable': false },
-            { 'searchable': false, "targets": [1, 2] }
+            { 'searchable': false, "targets": [1, 2] },
+            { 'className': 'text-center', 'targets': [1, 2] },
+            { 'width': '50%', 'targets': [0] },
+            { 'width': '25%', 'targets': [1] },
+            { 'width': '25%', 'targets': [2] }
         ],
         "order": [],
-        lengthMenu: [5, 10, 20, 50],
-        "pageLength": 5
+        lengthMenu: [5, 10, 20, 25, 50],
+        "pageLength": 10,
+        "responsive": true,
+        "scrollX": true,
+        "autoWidth": false,
+        "initComplete": function(settings, json) {
+            // Wait for DOM to be ready before connecting controls
+            setTimeout(function() {
+                var table = $('#tblRoleMaster').DataTable();
+
+                // Handle custom length select
+                $('#roleLengthSelect').on('change', function() {
+                    var newLength = parseInt($(this).val());
+                    table.page.len(newLength).draw();
+                });
+
+                // Handle custom search input
+                $('#roleSearchInput').on('keyup change', function() {
+                    table.search($(this).val()).draw();
+                });
+
+                // Update the custom controls when table changes
+                table.on('draw', function() {
+                    $('#roleLengthSelect').val(table.page.len());
+                    $('#roleSearchInput').val(table.search());
+                });
+
+                // Set initial values
+                $('#roleLengthSelect').val(table.page.len());
+                $('#roleSearchInput').val(table.search());
+            }, 100); // Small delay to ensure DOM is ready
+        },
+        "drawCallback": function(settings) {
+            // Fallback: Ensure controls work even if initComplete doesn't run
+            try {
+                var table = $('#tblRoleMaster').DataTable();
+                $('#roleLengthSelect').val(table.page.len());
+                $('#roleSearchInput').val(table.search());
+            } catch (e) {
+                console.log('DataTable not ready yet, will retry...');
+            }
+        }
     });
 
     $('#tblAdminMaster').DataTable({
+        "dom": "t<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>", // Show table with pagination and info at bottom
         'columnDefs': [
             { 'targets': [5], 'orderable': false },
-            { 'searchable': false, "targets": [1, 2, 3, 4, 5] }
+            { 'searchable': false, "targets": [1, 2, 3, 4, 5] },
+            { 'className': 'text-center', 'targets': [3, 4, 5] },
+            { 'width': '15%', 'targets': [0] },
+            { 'width': '15%', 'targets': [1] },
+            { 'width': '25%', 'targets': [2] },
+            { 'width': '15%', 'targets': [3] },
+            { 'width': '15%', 'targets': [4] },
+            { 'width': '15%', 'targets': [5] }
         ],
         "order": [],
-        lengthMenu: [5, 10, 20, 50],
-        "pageLength": 5
+        lengthMenu: [5, 10, 20, 25, 50],
+        "pageLength": 10,
+        "responsive": true,
+        "scrollX": true,
+        "autoWidth": false,
+        "initComplete": function(settings, json) {
+            // Wait for DOM to be ready before connecting controls
+            setTimeout(function() {
+                var table = $('#tblAdminMaster').DataTable();
+
+                // Handle custom length select
+                $('#adminLengthSelect').on('change', function() {
+                    var newLength = parseInt($(this).val());
+                    table.page.len(newLength).draw();
+                });
+
+                // Handle custom search input
+                $('#adminSearchInput').on('keyup change', function() {
+                    table.search($(this).val()).draw();
+                });
+
+                // Update the custom controls when table changes
+                table.on('draw', function() {
+                    $('#adminLengthSelect').val(table.page.len());
+                    $('#adminSearchInput').val(table.search());
+                });
+
+                // Set initial values
+                $('#adminLengthSelect').val(table.page.len());
+                $('#adminSearchInput').val(table.search());
+            }, 100); // Small delay to ensure DOM is ready
+        },
+        "drawCallback": function(settings) {
+            // Fallback: Ensure controls work even if initComplete doesn't run
+            try {
+                var table = $('#tblAdminMaster').DataTable();
+                $('#adminLengthSelect').val(table.page.len());
+                $('#adminSearchInput').val(table.search());
+            } catch (e) {
+                console.log('DataTable not ready yet, will retry...');
+            }
+        }
     });
 
     $('#tblCustomerMaster').DataTable({
+        "dom": "t<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>", // Show table with pagination and info at bottom
         'columnDefs': [
             { 'targets': [5], 'orderable': false },
-            { 'searchable': false, "targets": [1, 2, 3, 4, 5] }
+            { 'searchable': false, "targets": [1, 2, 3, 4, 5] },
+            { 'className': 'text-center', 'targets': [3, 4, 5] },
+            { 'width': '15%', 'targets': [0] },
+            { 'width': '15%', 'targets': [1] },
+            { 'width': '25%', 'targets': [2] },
+            { 'width': '15%', 'targets': [3] },
+            { 'width': '15%', 'targets': [4] },
+            { 'width': '15%', 'targets': [5] }
         ],
         "order": [],
-        lengthMenu: [5, 10, 20, 50],
-        "pageLength": 5
+        lengthMenu: [5, 10, 20, 25, 50],
+        "pageLength": 10,
+        "responsive": true,
+        "scrollX": true,
+        "autoWidth": false,
+        "initComplete": function(settings, json) {
+            // Wait for DOM to be ready before connecting controls
+            setTimeout(function() {
+                var table = $('#tblCustomerMaster').DataTable();
+
+                // Handle custom length select
+                $('#customerLengthSelect').on('change', function() {
+                    var newLength = parseInt($(this).val());
+                    table.page.len(newLength).draw();
+                });
+
+                // Handle custom search input
+                $('#customerSearchInput').on('keyup change', function() {
+                    table.search($(this).val()).draw();
+                });
+
+                // Update the custom controls when table changes
+                table.on('draw', function() {
+                    $('#customerLengthSelect').val(table.page.len());
+                    $('#customerSearchInput').val(table.search());
+                });
+
+                // Set initial values
+                $('#customerLengthSelect').val(table.page.len());
+                $('#customerSearchInput').val(table.search());
+            }, 100); // Small delay to ensure DOM is ready
+        },
+        "drawCallback": function(settings) {
+            // Fallback: Ensure controls work even if initComplete doesn't run
+            try {
+                var table = $('#tblCustomerMaster').DataTable();
+                $('#customerLengthSelect').val(table.page.len());
+                $('#customerSearchInput').val(table.search());
+            } catch (e) {
+                console.log('DataTable not ready yet, will retry...');
+            }
+        }
     });
 });
 //end
