@@ -62,23 +62,115 @@ $(document).ready(function () {
         }
     });
     $('#tblCategoryMaster').DataTable({
+        "dom": "t<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>", // Show table with pagination and info at bottom
         'columnDefs': [
             { 'targets': [3], 'orderable': false },
-            { 'searchable': true, "targets": [1, 2, 3] }
+            { 'searchable': false, "targets": [1, 2, 3] },
+            { 'className': 'text-center', 'targets': [2, 3] },
+            { 'width': '35%', 'targets': [0] },
+            { 'width': '50%', 'targets': [1] },
+            { 'width': '10%', 'targets': [2] },
+            { 'width': '5%', 'targets': [3] }
         ],
         "order": [],
         lengthMenu: [5, 10, 20, 50],
-        "pageLength": 5
+        "pageLength": 10,
+        "responsive": true,
+        "scrollX": true,
+        "autoWidth": false,
+        "initComplete": function(settings, json) {
+            // Wait for DOM to be ready before connecting controls
+            setTimeout(function() {
+                var table = $('#tblCategoryMaster').DataTable();
+
+                // Handle custom length select
+                $('#categoryLengthSelect').on('change', function() {
+                    var newLength = parseInt($(this).val());
+                    table.page.len(newLength).draw();
+                });
+
+                // Handle custom search input
+                $('#categorySearchInput').on('keyup change', function() {
+                    table.search($(this).val()).draw();
+                });
+
+                // Update the custom controls when table changes
+                table.on('draw', function() {
+                    $('#categoryLengthSelect').val(table.page.len());
+                    $('#categorySearchInput').val(table.search());
+                });
+
+                // Set initial values
+                $('#categoryLengthSelect').val(table.page.len());
+                $('#categorySearchInput').val(table.search());
+            }, 100); // Small delay to ensure DOM is ready
+        },
+        "drawCallback": function(settings) {
+            // Fallback: Ensure controls work even if initComplete doesn't run
+            try {
+                var table = $('#tblCategoryMaster').DataTable();
+                $('#categoryLengthSelect').val(table.page.len());
+                $('#categorySearchInput').val(table.search());
+            } catch (e) {
+                console.log('DataTable not ready yet, will retry...');
+            }
+        }
     });
 
     $('#tblSubCategoryMaster').DataTable({
+        "dom": "t<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>", // Show table with pagination and info at bottom
         'columnDefs': [
             { 'targets': [3], 'orderable': false },
-            { 'searchable': false, "targets": [1, 2, 3] }
+            { 'searchable': false, "targets": [1, 2, 3] },
+            { 'className': 'text-center', 'targets': [2, 3] },
+            { 'width': '35%', 'targets': [0] },
+            { 'width': '50%', 'targets': [1] },
+            { 'width': '10%', 'targets': [2] },
+            { 'width': '5%', 'targets': [3] }
         ],
         "order": [],
         lengthMenu: [5, 10, 20, 50],
-        "pageLength": 5
+        "pageLength": 10,
+        "responsive": true,
+        "scrollX": true,
+        "autoWidth": false,
+        "initComplete": function(settings, json) {
+            // Wait for DOM to be ready before connecting controls
+            setTimeout(function() {
+                var table = $('#tblSubCategoryMaster').DataTable();
+
+                // Handle custom length select
+                $('#subCategoryLengthSelect').on('change', function() {
+                    var newLength = parseInt($(this).val());
+                    table.page.len(newLength).draw();
+                });
+
+                // Handle custom search input
+                $('#subCategorySearchInput').on('keyup change', function() {
+                    table.search($(this).val()).draw();
+                });
+
+                // Update the custom controls when table changes
+                table.on('draw', function() {
+                    $('#subCategoryLengthSelect').val(table.page.len());
+                    $('#subCategorySearchInput').val(table.search());
+                });
+
+                // Set initial values
+                $('#subCategoryLengthSelect').val(table.page.len());
+                $('#subCategorySearchInput').val(table.search());
+            }, 100); // Small delay to ensure DOM is ready
+        },
+        "drawCallback": function(settings) {
+            // Fallback: Ensure controls work even if initComplete doesn't run
+            try {
+                var table = $('#tblSubCategoryMaster').DataTable();
+                $('#subCategoryLengthSelect').val(table.page.len());
+                $('#subCategorySearchInput').val(table.search());
+            } catch (e) {
+                console.log('DataTable not ready yet, will retry...');
+            }
+        }
     });
 
     //$('#tblProductMaster').DataTable({
@@ -91,13 +183,60 @@ $(document).ready(function () {
     //});
 
     $('#tblTaxMaster').DataTable({
+        "dom": "t<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>", // Show table with pagination and info at bottom
         'columnDefs': [
-            { 'targets': [3], 'orderable': false },
-            { 'searchable': false, "targets": [1, 2, 3] }
+            { 'targets': [4], 'orderable': false },
+            { 'searchable': false, "targets": [1, 2, 3, 4] },
+            { 'className': 'text-center', 'targets': [2, 3, 4] },
+            { 'width': '25%', 'targets': [0] },
+            { 'width': '35%', 'targets': [1] },
+            { 'width': '15%', 'targets': [2] },
+            { 'width': '15%', 'targets': [3] },
+            { 'width': '10%', 'targets': [4] }
         ],
         "order": [],
         lengthMenu: [5, 10, 20, 50],
-        "pageLength": 5
+        "pageLength": 10,
+        "responsive": true,
+        "scrollX": true,
+        "autoWidth": false,
+        "initComplete": function(settings, json) {
+            // Wait for DOM to be ready before connecting controls
+            setTimeout(function() {
+                var table = $('#tblTaxMaster').DataTable();
+
+                // Handle custom length select
+                $('#taxLengthSelect').on('change', function() {
+                    var newLength = parseInt($(this).val());
+                    table.page.len(newLength).draw();
+                });
+
+                // Handle custom search input
+                $('#taxSearchInput').on('keyup change', function() {
+                    table.search($(this).val()).draw();
+                });
+
+                // Update the custom controls when table changes
+                table.on('draw', function() {
+                    $('#taxLengthSelect').val(table.page.len());
+                    $('#taxSearchInput').val(table.search());
+                });
+
+                // Set initial values
+                $('#taxLengthSelect').val(table.page.len());
+                $('#taxSearchInput').val(table.search());
+            }, 100); // Small delay to ensure DOM is ready
+        },
+        "drawCallback": function(settings) {
+            // Fallback: Ensure controls work even if initComplete doesn't run
+            try {
+                var table = $('#tblTaxMaster').DataTable();
+                $('#taxLengthSelect').val(table.page.len());
+                $('#taxSearchInput').val(table.search());
+            } catch (e) {
+                console.log('DataTable not ready yet, will retry...');
+            }
+        }
     });
 
  

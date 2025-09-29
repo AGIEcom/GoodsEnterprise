@@ -73,7 +73,7 @@ a, a:hover, a:focus {
     height: 100vh;
     max-height: 100vh;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
 body {
@@ -376,49 +376,49 @@ a[data-toggle="collapse"] .dropdown-arrow,
 #content {
     margin-left: 280px;
     transition: all 0.3s ease;
-    padding: 0;
-    height: calc(100vh - 80px);
-    max-height: calc(100vh - 80px);
+    padding: 1rem;
+    min-height: calc(100vh - 80px);
     position: relative;
     overflow-x: hidden;
     overflow-y: auto;
     width: calc(100vw - 280px);
     max-width: calc(100vw - 280px);
+    top: 0;
+    display: block;
 }
 
 #content.sidebar-collapsed {
     margin-left: 0px;
     width: calc(100vw - 0px);
     max-width: calc(100vw - 0px);
-    height: calc(100vh - 80px);
-    max-height: calc(100vh - 80px);
-    padding-left: 25px;
+    min-height: calc(100vh - 80px);
+    padding: 1rem 1rem 1rem 25px;
 }
 
 /* Container adjustments */
 #content .container {
     width: 100%;
     max-width: none;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    padding: 0;
     margin: 0;
     box-sizing: border-box;
-    height: 100%;
+    height: auto;
     overflow: visible;
 }
 
 /* Collapsed sidebar container adjustments */
 #content.sidebar-collapsed .container {
-    padding-left: 0;
-    padding-right: 1.5rem;
+    padding: 0;
 }
 
 /* Modern card adjustments for proper alignment */
 .modern-card {
-    margin: 1rem 0;
+    margin: 0;
     width: 100%;
     box-sizing: border-box;
     max-width: 100%;
+    position: relative;
+    z-index: 1;
 }
 
 /* Table container adjustments */
@@ -437,12 +437,18 @@ a[data-toggle="collapse"] .dropdown-arrow,
 /* Fix for Bootstrap container overrides */
 #content .container-fluid,
 #content .container {
-    padding-left: 1.5rem !important;
-    padding-right: 1.5rem !important;
+    padding: 0 !important;
     max-width: none !important;
     width: 100% !important;
     height: auto !important;
     overflow: visible !important;
+    margin: 0 !important;
+}
+
+/* Ensure main content is visible */
+#content main {
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 /* Remove duplicate content styles - handled by #content */
@@ -834,18 +840,20 @@ a.article, a.article:hover {
 
 }
 
-/* Remove scrollbars and ensure content fits the page */
+/* Allow proper scrolling behavior */
 html, body {
-    overflow: hidden !important;
+    overflow-x: hidden !important; /* Only hide horizontal scrollbar */
+    overflow-y: auto !important; /* Allow vertical scrolling */
     height: 100vh !important;
     margin: 0 !important;
     padding: 0 !important;
 }
 
-/* Ensure main content area fits without scrolling */
+/* Ensure main content area allows scrolling when needed */
 #mainContent {
     height: 100vh !important;
-    overflow: hidden !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
 }
 
 /* Remove any footer spacing */
@@ -853,7 +861,7 @@ html, body {
     display: none !important;
 }
 
-/* Ensure sidebar and content fit properly */
+/* Ensure sidebar and content allow proper scrolling */
 #sidebar {
     height: 100vh !important;
     overflow-y: auto !important;
@@ -861,11 +869,12 @@ html, body {
 
 #content {
     height: 100vh !important;
-    overflow: hidden !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
 }
 
-/* Remove page-level scrolling */
+/* Allow container scrolling when needed */
 .container-fluid, .container {
-    height: 100% !important;
-    overflow: hidden !important;
+    height: auto !important;
+    overflow: visible !important;
 }

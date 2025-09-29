@@ -215,23 +215,22 @@ input[type="date"] {
         pointer-events: none;
     }
 
-/* Override sticky footer styles to remove scrollbars and footer
+/* Override sticky footer styles to allow proper scrolling
 -------------------------------------------------- */
 html {
-    position: fixed !important;
     height: 100vh !important;
-    overflow: hidden !important;
+    overflow-x: hidden !important; /* Only hide horizontal scrollbar */
+    overflow-y: auto !important; /* Allow vertical scrolling */
     margin: 0 !important;
     padding: 0 !important;
 }
 
 body {
     margin-bottom: 0 !important;
-    overflow: hidden !important;
+    overflow-x: hidden !important; /* Only hide horizontal scrollbar */
+    overflow-y: auto !important; /* Allow vertical scrolling */
     min-height: 100vh !important;
-    position: fixed !important;
     width: 100% !important;
-    height: 100vh !important;
 }
 
 /* Hide footer completely */

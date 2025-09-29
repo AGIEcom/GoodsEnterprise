@@ -178,10 +178,12 @@
     .modern-table-container {
         width: 100%;
         overflow-x: auto;
+        /* overflow-y: auto; */
         margin-bottom: 0;
         margin-top: 0;
         padding-top: 0;
-        height: calc(100vh - 200px);
+        max-height: calc(100vh - 200px);
+        height: auto;
     }
 
     .modern-table {
@@ -305,6 +307,93 @@
     #tblBrandMaster th:nth-child(3) {
         text-align: center !important;
     }
+
+    /* Ensure content is visible in viewport */
+    #brandlist {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    #divCreateUpdateBrand {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Ensure modern-card is visible */
+    #brandlist .modern-card,
+    #divCreateUpdateBrand .modern-card {
+        margin: 0 !important;
+        position: relative;
+        z-index: 2;
+        display: block !important;
+        visibility: visible !important;
+        background: white !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 6px !important;
+        padding: 1.5rem !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    /* Debug: Ensure page content is at top */
+    body {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+
+    /* Debug: Force content to be visible */
+    #content {
+        top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    /* Debug: Make sure container is at top */
+    .container-fluid {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+
+    /* Force content to be visible at the top of viewport */
+    main[role="main"] {
+        padding: 0 !important;
+        margin: 0 !important;
+        position: relative !important;
+        top: 0 !important;
+    }
+
+    /* Ensure Brand page content starts at top */
+    #brandlist,
+    #divCreateUpdateBrand {
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        transform: none !important;
+        width: 100% !important;
+        min-height: 200px !important;
+    }
+
+    /* Add visible border for debugging */
+   /*  #brandlist .modern-card {
+        border: 2px solid #007bff !important;
+        min-height: 300px !important;
+    } */
+
+   /*  #divCreateUpdateBrand .modern-card {
+        border: 2px solid #28a745 !important;
+        min-height: 300px !important;
+    } */
+
+    /* Ensure table is visible */
+    /* .modern-table-container {
+        border: 1px solid #dc3545 !important;
+        min-height: 200px !important;
+        background: #f8f9fa !important;
+    } */
 </style>
 
 <div class="modern-alert modern-alert-success" id="success-alert" style="display:none;">
