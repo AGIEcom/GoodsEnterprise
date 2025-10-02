@@ -63,7 +63,7 @@
         "name": "OuterEan",
         "displayName": "Outer EAN",
         "type": "string",
-        "required": false,
+        "required": true,
         "maxLength": 50,
         "description": "Outer EAN barcode"
       },
@@ -170,15 +170,15 @@
         "acceptedValues": [ "true", "false", "1", "0", "yes", "no", "active", "inactive" ],
         "description": "Product active status (Default: Active)"
       },
-      {
-        "name": "isTaxable",
-        "displayName": "Is Taxable",
-        "type": "boolean",
-        "required": false,
-        "defaultValue": true,
-        "acceptedValues": [ "true", "false", "1", "0", "yes", "no" ],
-        "description": "Whether product is taxable (Default: Yes)"
-      },
+      //{
+      //  "name": "isTaxable",
+      //  "displayName": "Is Taxable",
+      //  "type": "boolean",
+      //  "required": false,
+      //  "defaultValue": true,
+      //  "acceptedValues": [ "true", "false", "1", "0", "yes", "no" ],
+      //  "description": "Whether product is taxable (Default: Yes)"
+      //},
       {
         "name": "SupplierName",
         "displayName": "Supplier Name",
@@ -191,17 +191,104 @@
         "name": "ExpriyDate",
         "displayName": "Expiry Date",
         "type": "date",
-        "required": false,
+        "required": true,
         "format": "MM/DD/YYYY or YYYY-MM-DD",
         "description": "Product expiry date"
       },
+      //{
+      //  "name": "TaxslabName",
+      //  "displayName": "Tax Slab Name",
+      //  "type": "string",
+      //  "required": false,
+      //  "maxLength": 100,
+      //  "description": "Applicable tax slab"
+      //},
       {
-        "name": "TaxslabName",
-        "displayName": "Tax Slab Name",
+        "name": "CaseWidthMm",
+        "displayName": "Case Width Mm",
+        "type": "decimal",
+        "required": false,
+        "min": 0,
+        "precision": 2,
+        "description": "Case Width in Mm"
+      },
+      {
+        "name": "CaseDepthMm",
+        "displayName": "Case Depth Mm",
+        "type": "decimal",
+        "required": false,
+        "min": 0,
+        "precision": 2,
+        "description": "Case Depth in Mm"
+      },
+      {
+        "name": "CaseHeightMm",
+        "displayName": "Case Height Mm",
+        "type": "decimal",
+        "required": false,
+        "min": 0,
+        "precision": 2,
+        "description": "Case Height in Mm"
+      },
+      {
+        "name": "PalletWeightKg",
+        "displayName": "Pallet Weight Kg",
+        "type": "decimal",
+        "required": false,
+        "min": 0,
+        "precision": 2,
+        "description": "Pallet Weight in Kg"
+      },
+      {
+        "name": "PalletWidthM",
+        "displayName": "Pallet Width M",
+        "type": "decimal",
+        "required": false,
+        "min": 0,
+        "precision": 2,
+        "description": "Pallet Width in Meter"
+      },
+      {
+        "name": "PalletDepthM",
+        "displayName": "Pallet Depth M",
+        "type": "decimal",
+        "required": false,
+        "min": 0,
+        "precision": 2,
+        "description": "Pallet Depth in Meter"
+      },
+      {
+        "name": "PalletHeightM",
+        "displayName": "Pallet Height M",
+        "type": "decimal",
+        "required": false,
+        "min": 0,
+        "precision": 2,
+        "description": "Pallet Height in Meter"
+      },
+      {
+        "name": "Seebelow",
+        "displayName": "See below",
         "type": "string",
         "required": false,
-        "maxLength": 100,
-        "description": "Applicable tax slab"
+        "maxLength": 500,
+        "description": "Additional Product Description"
+      },
+      {
+        "name": "Seebelow1",
+        "displayName": "See below1",
+        "type": "string",
+        "required": false,
+        "maxLength": 500,
+        "description": "Additional Product Description"
+      },
+      {
+        "name": "ImageUrl",
+        "displayName": "Image Url",
+        "type": "string",
+        "required": false,
+        "maxLength": 200,
+        "description": "Image Path"
       }
     ],
     "importSettings": {
@@ -253,9 +340,19 @@
     "Net Weight": "NetCaseWeightKg",
     "Gross Weight": "GrossCaseWeightKg",
     "Active": "IsActive",
-    "Taxable": "isTaxable",
+    //"Taxable": "isTaxable",
     "Supplier": "SupplierName",
     "Expiry Date": "ExpriyDate",
-    "Tax Slab": "TaxslabName"
+    //"Tax Slab": "TaxslabName",
+    "Case Width Mm": "CaseWidthMm",
+    "Case Depth Mm": "CaseDepthMm",
+    "Case Height Mm": "CaseHeightMm",
+    "Pallet Weight Kg": "PalletWeightKg",
+    "Pallet Width M": "PalletWidthM",
+    "Pallet Depth M": "PalletDepthM",
+    "Pallet Height M": "PalletHeightM",
+    "See below": "Seebelow",
+    "See below1": "Seebelow1",
+    "Image Url": "ImageUrl"
   }
 }

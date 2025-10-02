@@ -1,16 +1,20 @@
-using GoodsEnterprise.Model.Models;
 using GoodsEnterprise.DataAccess.Interface;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+using GoodsEnterprise.Model.Models;
+using GoodsEnterprise.Web.Pages;
+using GoodsEnterprise.Web.Utilities;
 using Microsoft.AspNetCore.Hosting;
-using System.Collections.Concurrent;
-using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
-using System.Linq;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using static GoodsEnterprise.Web.Services.IProductValidationService;
 
 namespace GoodsEnterprise.Web.Services
 {
@@ -22,8 +26,13 @@ namespace GoodsEnterprise.Web.Services
         private readonly IExcelReaderService _excelReaderService;
         private readonly IProductValidationService _validationService;
         private readonly IGeneralRepository<Product> _productRepository;
+        private readonly IGeneralRepository<Brand> _brandRepository;
+        private readonly IGeneralRepository<Category> _categoryRepository;
+        private readonly IGeneralRepository<SubCategory> _subCategoryRepository;
+        private readonly IGeneralRepository<Supplier> _supplierRepository;
         private readonly ILogger<ProductImportService> _logger;
         private readonly IWebHostEnvironment _environment;
+        private readonly IConfiguration _configuration;
         private ProductImportConfig _config;
         
         // In-memory storage for import progress (in production, use Redis or database)
@@ -34,14 +43,24 @@ namespace GoodsEnterprise.Web.Services
             IExcelReaderService excelReaderService,
             IProductValidationService validationService,
             IGeneralRepository<Product> productRepository,
+            IGeneralRepository<Brand> brandRepository,
+            IGeneralRepository<Category> categoryRepository,
+            IGeneralRepository<SubCategory> subCategoryRepository,
+            IGeneralRepository<Supplier> supplierRepository,
             ILogger<ProductImportService> logger,
-            IWebHostEnvironment environment)
+            IWebHostEnvironment environment,
+            IConfiguration configuration)
         {
             _excelReaderService = excelReaderService;
             _validationService = validationService;
             _productRepository = productRepository;
+            _brandRepository = brandRepository;
+            _categoryRepository = categoryRepository;
+            _subCategoryRepository = subCategoryRepository;
+            _supplierRepository = supplierRepository;
             _logger = logger;
             _environment = environment;
+            _configuration = configuration;
             LoadConfiguration();
         }
 
@@ -135,7 +154,7 @@ namespace GoodsEnterprise.Web.Services
                 progress.CurrentOperation = "Validating data...";
 
                 // Step 2: Validate data if requested
-                BatchValidationResult<ProductImport> validationResult = null;
+                ProductBatchValidationResult<ProductImport> validationResult = null;
                 if (validateData)
                 {
                     validationResult = await _validationService.ValidateProductsAsync(excelResult.Data);
@@ -146,7 +165,7 @@ namespace GoodsEnterprise.Web.Services
                 else
                 {
                     // If not validating, assume all are valid
-                    validationResult = new BatchValidationResult<ProductImport>
+                    validationResult = new ProductBatchValidationResult<ProductImport>
                     {
                         ValidRecords = excelResult.Data,
                         ValidRecordCount = excelResult.Data.Count,
@@ -338,38 +357,130 @@ namespace GoodsEnterprise.Web.Services
                 var productImport = products[i];
                 
                 try
-                {
+                {                                    
+                    // Check and create Brand if it doesn't exist
+                    var existingBrands = await _brandRepository.GetAllAsync(filter: b => b.Name == productImport.BrandName);
+                    Brand brand = existingBrands.FirstOrDefault();
+                    
+                    if (brand == null && !string.IsNullOrEmpty(productImport.BrandName))
+                    {
+                        brand = new Brand
+                        {
+                            Name = productImport.BrandName,
+                            IsActive = true,
+                            CreatedDate = DateTime.Now,
+                            Createdby = userId,
+                            ModifiedDate = DateTime.Now,
+                            Modifiedby = userId,
+                            IsDelete = false
+                        };
+                        await _brandRepository.InsertAsync(brand);
+                        _logger.LogInformation("Created new brand: {BrandName} with ID: {BrandId}", brand.Name, brand.Id);
+                    }
+
+                    // Check and create Category if it doesn't exist
+                    var existingCategories = await _categoryRepository.GetAllAsync(filter: c => c.Name == productImport.CategoryName);
+                    Category category = existingCategories.FirstOrDefault();
+                    
+                    if (category == null && !string.IsNullOrEmpty(productImport.CategoryName))
+                    {
+                        category = new Category
+                        {
+                            Name = productImport.CategoryName,
+                            IsActive = true,
+                            CreatedDate = DateTime.Now,
+                            Createdby = userId,
+                            ModifiedDate = DateTime.Now,
+                            Modifiedby = userId,
+                            IsDelete = false
+                        };
+                        await _categoryRepository.InsertAsync(category);
+                        _logger.LogInformation("Created new category: {CategoryName} with ID: {CategoryId}", category.Name, category.Id);
+                    }
+
+                    // Check and create SubCategory if it doesn't exist
+                    var existingSubCategories = await _subCategoryRepository.GetAllAsync(filter: sc => sc.Name == productImport.SubCategoryName);
+                    SubCategory subCategory = existingSubCategories.FirstOrDefault();
+                    
+                    if (subCategory == null && !string.IsNullOrEmpty(productImport.SubCategoryName))
+                    {
+                        subCategory = new SubCategory
+                        {
+                            Name = productImport.SubCategoryName,
+                            //CategoryId = category?.Id ?? 0, // Link to category if it exists
+                            IsActive = true,
+                            CreatedDate = DateTime.Now,
+                            Createdby = userId,
+                            ModifiedDate = DateTime.Now,
+                            Modifiedby = userId,
+                            IsDelete = false
+                        };
+                        await _subCategoryRepository.InsertAsync(subCategory);
+                        _logger.LogInformation("Created new subcategory: {SubCategoryName} with ID: {SubCategoryId}", subCategory.Name, subCategory.Id);
+                    }
+
+                    // Check and create Supplier if it doesn't exist
+                    var existingSuppliers = await _supplierRepository.GetAllAsync(filter: s => s.Name == productImport.SupplierName);
+                    Supplier supplier = existingSuppliers.FirstOrDefault();
+                    
+                    if (supplier == null && !string.IsNullOrEmpty(productImport.SupplierName))
+                    {
+                        supplier = new Supplier
+                        {
+                            Name = productImport.SupplierName,
+                            IsActive = true,
+                            CreatedDate = DateTime.Now,
+                            Createdby = userId,
+                            ModifiedDate = DateTime.Now,
+                            Modifiedby = userId,
+                            IsDelete = false
+                        };
+                        await _supplierRepository.InsertAsync(supplier);
+                        _logger.LogInformation("Created new supplier: {SupplierName} with ID: {SupplierId}", supplier.Name, supplier.Id);
+                    }
+
+                    Tuple<string, string> tupleImagePath = await Common.UploadProductImportImage(productImport.Image, Constants.Product, _configuration, false, false, true);
+
                     // Convert ProductImport to Product entity
                     var product = new Product
                     {
                         Code = productImport.Code,
-                        ProductName = productImport.ProductName,
-                        //BrandName = productImport.BrandName,
-                        //CategoryName = productImport.CategoryName,
-                        //SubCategoryName = productImport.SubCategoryName,
-                        //Description = productImport.ProductDescription,
-                        //UnitPrice = productImport.UnitPrice,
-                        //CostPrice = productImport.CostPrice,
-                        //Weight = productImport.Weight,
-                        //Dimensions = productImport.Dimensions,
-                        //Color = productImport.Color,
-                        //Size = productImport.Size,
-                        //Material = productImport.Material,
-                        //Manufacturer = productImport.Manufacturer,
-                        //CountryOfOrigin = productImport.CountryOfOrigin,
-                        //Barcode = productImport.Barcode,
-                        //SKU = productImport.SKU,
-                        //StockQuantity = productImport.StockQuantity,
-                        //MinStockLevel = productImport.MinStockLevel,
-                        //MaxStockLevel = productImport.MaxStockLevel,
-                        //IsActive = productImport.IsActive ?? true,
-                        //Tags = productImport.Tags,
-                        //ImageUrl = productImport.ImageUrl,
+                        BrandId = brand?.Id ?? 0,
+                        CategoryId = category?.Id ?? 0,
+                        SubCategoryId = subCategory?.Id ?? 0,
+                        InnerEan = productImport.InnerEan,
+                        OuterEan = productImport.OuterEan,
+                        UnitSize = productImport.UnitSize,
+                        Upc = productImport.Upc,
+                        LayerQuantity = productImport.LayerQuantity,
+                        PalletQuantity = productImport.PalletQuantity,
+                        CasePrice = productImport.CasePrice,
+                        ShelfLifeInWeeks = productImport.ShelfLifeInWeeks,
+                        PackHeight = productImport.PackHeight,
+                        PackDepth = productImport.PackDepth,
+                        PackWidth = productImport.PackWidth,
+                        NetCaseWeightKg = productImport.NetCaseWeightKg,
+                        GrossCaseWeightKg = productImport.GrossCaseWeightKg,
+                        CaseWidthMm = productImport.CaseWidthMm,
+                        CaseHeightMm = productImport.CaseHeightMm,
+                        CaseDepthMm = productImport.CaseDepthMm,
+                        PalletWeightKg = productImport.PalletWeightKg,
+                        PalletWidthMeter = productImport.PalletWidthMeter,
+                        PalletHeightMeter = productImport.PalletHeightMeter,
+                        PalletDepthMeter = productImport.PalletDepthMeter,                       
+                        IsActive = productImport.IsActive,
                         CreatedDate = DateTime.Now,
                         Createdby = userId,
                         ModifiedDate = DateTime.Now,
                         Modifiedby = userId,
-                        IsDelete = false
+                        IsDelete = false,
+                        SupplierId = supplier?.Id ?? 0,
+                        ExpriyDate = productImport.ExpriyDate,
+                        ProductName = productImport.ProductName,
+                        ProductDescription = productImport.ProductDescription,
+                        Seebelow = productImport.Seebelow,
+                        Seebelow1 = productImport.Seebelow1,
+                        Image = tupleImagePath.Item1
                     };
 
                     // Save to database

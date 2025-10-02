@@ -193,7 +193,7 @@ body {
 /* Sidebar Menu */
 .sidebar-menu {
     padding: 1rem 0;
-    height: calc(100vh - 120px);
+    height: calc(105vh - 120px);
     background: #F8F9FB;
 }
 

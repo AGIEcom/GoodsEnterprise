@@ -138,7 +138,9 @@ namespace GoodsEnterprise.Model.Models
         public DateTime? ExpriyDate { get; set; }
         public int? TaxslabId { get; set; }
         public string TaxslabName { get; set; } // For lookup during import
-        
+        public string Seebelow { get; set; }
+        public string Seebelow1 { get; set; }
+
         // Import metadata
         public int RowNumber { get; set; }
         public bool HasErrors { get; set; }

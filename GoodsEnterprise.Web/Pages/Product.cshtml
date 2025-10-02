@@ -494,7 +494,7 @@
             <div class="modern-form-group">
                 <label for="excelFile" class="modern-form-label">Select Excel File *</label>
                 <div class="file-upload-container">
-                    <input type="file" id="productFileUpload" name="excelFile" accept=".xlsx,.xls" class="modern-form-input" required>
+                    <input type="file" id="supplierFileUpload" name="excelFile" accept=".xlsx,.xls" class="modern-form-input" required>
                     <small class="form-text text-muted">
                         Supported formats: .xlsx, .xls (Max size: 50MB)
                     </small>
@@ -1109,6 +1109,277 @@
 @* Include Modern Alert System *@
 @await Html.PartialAsync("_ModernAlerts")
 
+<!-- Excel Import Modal -->
+<div id="importModal" class="modal-backdrop" style="display: none;">
+    <div class="modern-card" style="max-width: 800px; max-height: 90vh; margin: 20px auto; position: relative; z-index: 1051; overflow-y: auto; overflow-x: hidden;">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="modern-card-title" style="margin: 0;">Import Products from Excel</h3>
+            <button type="button" class="btn-close" id="closeImportModal" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+        </div>
+
+        <form id="importForm" enctype="multipart/form-data">
+            <div class="modern-form-group">
+                <label for="excelFile" class="modern-form-label">Select Excel File *</label>
+                <div class="file-upload-container">
+                    <input type="file" id="supplierFileUpload" name="excelFile" accept=".xlsx,.xls" class="modern-form-input">
+                    <small class="form-text text-muted">
+                        Supported formats: .xlsx, .xls (Max size: 50MB)
+                    </small>
+                </div>
+                <div class="mt-2">
+                    <button type="button" id="downloadTemplate" class="modern-btn modern-btn-outline-primary modern-btn-sm">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                        Download Template
+                    </button>
+                </div>
+            </div>
+
+            <!-- Expected Excel Columns Accordion -->
+            <div class="modern-accordion">
+                <div class="accordion-item">
+                    <div class="accordion-header" id="expectedColumnsHeaderP">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#expectedColumnsCollapseP" aria-expanded="false" aria-controls="expectedColumnsCollapseP">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20" class="me-2">
+                                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                            Expected Excel Columns
+                        </button>
+                    </div>
+                    <div id="expectedColumnsCollapseP" class="accordion-collapse collapse show" aria-labelledby="expectedColumnsHeaderP">
+                        <div class="accordion-body">
+                            <div class="excel-columns-info" id="excel-columns-container">
+                                <!-- Column information will be loaded dynamically from JSON -->
+                                <div class="d-flex justify-content-center align-items-center" style="min-height: 100px;">
+                                    <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <span class="text-muted">Loading column configuration...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Import Preview Accordion -->
+            <div class="modern-accordion" id="importPreviewAccordion" style="display: none;">
+                <div class="accordion-item">
+                    <div class="accordion-header" id="importPreviewHeader">
+                        <button class="accordion-button collapsed" type="button" data-toggle="collapse" data-target="#importPreviewCollapse" aria-expanded="false" aria-controls="importPreviewCollapse">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20" class="me-2">
+                                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                            Import Preview
+                            <span class="badge bg-primary ms-2" id="previewRecordCount" style="display: none;">0 records</span>
+                        </button>
+                    </div>
+                    <div id="importPreviewCollapse" class="accordion-collapse collapse" aria-labelledby="importPreviewHeader">
+                        <div class="accordion-body">
+                            <div id="importPreviewResults">
+                                <!-- Preview results will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- File Warnings Accordion -->
+            <div class="modern-accordion" id="fileWarningsAccordion" style="display: none;">
+                <div class="accordion-item">
+                    <div class="accordion-header" id="fileWarningsHeader">
+                        <button class="accordion-button collapsed" type="button" data-toggle="collapse" data-target="#fileWarningsCollapse" aria-expanded="false" aria-controls="fileWarningsCollapse">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20" class="me-2">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                            File Warnings
+                            <span class="badge bg-warning ms-2" id="warningCount" style="display: none;">0 warnings</span>
+                        </button>
+                    </div>
+                    <div id="fileWarningsCollapse" class="accordion-collapse collapse" aria-labelledby="fileWarningsHeader">
+                        <div class="accordion-body">
+                            <div id="fileWarningsContent">
+                                <!-- File warnings will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Duplicate Records Preview Accordion -->
+            <div class="modern-accordion" id="duplicateRecordsAccordion" style="display: none;">
+                <div class="accordion-item">
+                    <div class="accordion-header" id="duplicateRecordsHeader">
+                        <button class="accordion-button collapsed" type="button" data-toggle="collapse" data-target="#duplicateRecordsCollapse" aria-expanded="false" aria-controls="duplicateRecordsCollapse">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20" class="me-2">
+                                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                            Duplicate Records Preview
+                            <span class="badge bg-warning ms-2" id="duplicateRecordCount" style="display: none;">0 found</span>
+                        </button>
+                    </div>
+                    <div id="duplicateRecordsCollapse" class="accordion-collapse collapse" aria-labelledby="duplicateRecordsHeader">
+                        <div class="accordion-body">
+                            <div id="duplicateRecordsContent">
+                                <!-- Duplicate records preview will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modern-form-group d-none">
+                <div class="modern-toggle-container">
+                    <input type="checkbox" id="validateData" class="modern-checkbox" checked>
+                    <label for="validateData" class="modern-toggle-label">
+                        <div class="toggle-switch">
+                            <div class="toggle-slider"></div>
+                            <span class="toggle-text-off">Skip Validation</span>
+                            <span class="toggle-text-on">Validate Data</span>
+                        </div>
+                    </label>
+                </div>
+                <small class="form-text text-muted">
+                    Validation will check for required fields and data formats
+                </small>
+            </div>
+
+            <!-- Loading Section -->
+            <div id="importProgress" style="display: none;">
+                <div class="modern-form-group">
+                    <label class="modern-form-label">Processing Import</label>
+                    <div class="loading-container">
+                        <div class="loading-spinner">
+                            <div class="spinner-ring"></div>
+                            <div class="spinner-ring"></div>
+                            <div class="spinner-ring"></div>
+                            <div class="spinner-ring"></div>
+                        </div>
+                        <div class="loading-text">
+                            <div id="loadingMessage">Importing your data...</div>
+                            <div id="recordsProcessed" class="loading-subtext">Please wait while we process your file</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Import Results Summary -->
+                <div id="importResultsSummary" class="import-results-summary" style="display: none;">
+                    <div class="results-cards">
+                        <div class="result-card success-card">
+                            <div class="result-icon">
+                                <svg width="24" height="24" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div class="result-content">
+                                <div class="result-number" id="successCount">0</div>
+                                <div class="result-label">Successful</div>
+                            </div>
+                        </div>
+
+                        <div class="result-card error-card">
+                            <div class="result-icon">
+                                <svg width="24" height="24" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div class="result-content">
+                                <div class="result-number" id="errorCount">0</div>
+                                <div class="result-label">Failed</div>
+                            </div>
+                        </div>
+
+                        <div class="result-card total-card">
+                            <div class="result-icon">
+                                <svg width="24" height="24" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div class="result-content">
+                                <div class="result-number" id="totalCount">0</div>
+                                <div class="result-label">Total Records</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Results Tabs -->
+                <div id="importResultsDetails" class="import-results-details" style="display: none;">
+                    <div class="results-tabs">
+                        <button type="button" class="tab-button active" data-tab="successful">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            Successful Records
+                        </button>
+                        <button type="button" class="tab-button" data-tab="failed">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                            Failed Records
+                        </button>
+                    </div>
+
+                    <div class="tab-content">
+                        <div id="successfulTab" class="tab-pane active">
+                            <div class="results-table-container">
+                                <table class="results-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Row #</th>
+                                            <th>Product Code</th>
+                                            <th>Product Name</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="successfulRecords">
+                                        <!-- Successful records will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="failedTab" class="tab-pane">
+                            <div class="results-table-container">
+                                <table class="results-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Row #</th>
+                                            <th>Product Code</th>
+                                            <th>Product Name</th>
+                                            <th>Error Message</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="failedRecords">
+                                        <!-- Failed records will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="importStatus" class="import-status"></div>
+            </div>
+
+            <div class="modern-form-actions d-flex justify-content-end gap-2">
+                <button type="button" id="cancelImport" class="modern-btn modern-btn-secondary">Cancel</button>
+                <button type="button" id="startImport" class="modern-btn modern-btn-primary">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    Start Import
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@* Include Modern Alert System *@
+@await Html.PartialAsync("_ModernAlerts")
+
 
 
 
@@ -1187,12 +1458,13 @@
 <script>
     // Initialize Product Import functionality using supplier import pattern
     document.addEventListener('DOMContentLoaded', function () {
+        
         // Initialize product import modal functionality
         const btnImportProducts = document.getElementById('btnImportProducts');
         const importModal = document.getElementById('importModal');
         const closeImportModal = document.getElementById('closeImportModal');
         const cancelImport = document.getElementById('cancelImport');
-
+        debugger;
         // Show import modal
         if (btnImportProducts) {
             btnImportProducts.addEventListener('click', function () {
