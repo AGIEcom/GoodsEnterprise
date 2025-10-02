@@ -385,7 +385,7 @@ namespace GoodsEnterprise.Web.Services
                 product.isTaxable = ParseBoolean(GetCellValueFromDataRow(dataRow, columnMapping, "isTaxable"), false);
 
                 // Date fields
-                product.ExpriyDate = ParseDate(GetCellValueFromDataRow(dataRow, columnMapping, "ExpriyDate"));
+                product.ExpiryDate = ParseDate(GetCellValueFromDataRow(dataRow, columnMapping, "ExpiryDate"));
 
                 // Validate required fields
                 if (string.IsNullOrEmpty(product.Code))
@@ -678,7 +678,7 @@ namespace GoodsEnterprise.Web.Services
                     "Code", "ProductName", "ProductDescription", "BrandName", "CategoryName", "SubCategoryName",
                     "InnerEan", "OuterEan", "UnitSize", "Upc", "LayerQuantity", "PalletQuantity", "CasePrice",
                     "ShelfLifeInWeeks", "PackHeight", "PackDepth", "PackWidth", "NetCaseWeightKg", "GrossCaseWeightKg",
-                    "IsActive", "isTaxable", "SupplierName", "ExpriyDate", "TaxslabName"
+                    "IsActive", "isTaxable", "SupplierName", "ExpiryDate", "TaxslabName"
                 },
                 "BASECOST" => new List<string>
                 {

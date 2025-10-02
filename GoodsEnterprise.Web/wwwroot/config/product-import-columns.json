@@ -170,15 +170,6 @@
         "acceptedValues": [ "true", "false", "1", "0", "yes", "no", "active", "inactive" ],
         "description": "Product active status (Default: Active)"
       },
-      //{
-      //  "name": "isTaxable",
-      //  "displayName": "Is Taxable",
-      //  "type": "boolean",
-      //  "required": false,
-      //  "defaultValue": true,
-      //  "acceptedValues": [ "true", "false", "1", "0", "yes", "no" ],
-      //  "description": "Whether product is taxable (Default: Yes)"
-      //},
       {
         "name": "SupplierName",
         "displayName": "Supplier Name",
@@ -188,21 +179,13 @@
         "description": "Primary supplier name"
       },
       {
-        "name": "ExpriyDate",
+        "name": "ExpiryDate",
         "displayName": "Expiry Date",
         "type": "date",
         "required": true,
         "format": "MM/DD/YYYY or YYYY-MM-DD",
         "description": "Product expiry date"
       },
-      //{
-      //  "name": "TaxslabName",
-      //  "displayName": "Tax Slab Name",
-      //  "type": "string",
-      //  "required": false,
-      //  "maxLength": 100,
-      //  "description": "Applicable tax slab"
-      //},
       {
         "name": "CaseWidthMm",
         "displayName": "Case Width Mm",
@@ -340,10 +323,8 @@
     "Net Weight": "NetCaseWeightKg",
     "Gross Weight": "GrossCaseWeightKg",
     "Active": "IsActive",
-    //"Taxable": "isTaxable",
     "Supplier": "SupplierName",
-    "Expiry Date": "ExpriyDate",
-    //"Tax Slab": "TaxslabName",
+    "Expiry Date": "ExpiryDate",
     "Case Width Mm": "CaseWidthMm",
     "Case Depth Mm": "CaseDepthMm",
     "Case Height Mm": "CaseHeightMm",

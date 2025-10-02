@@ -411,7 +411,7 @@ namespace GoodsEnterprise.Model.Models
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
-                entity.Property(e => e.ExpriyDate).HasColumnType("datetime");
+                entity.Property(e => e.ExpiryDate).HasColumnType("datetime");
 
                 entity.Property(e => e.GrossCaseWeightKg).HasColumnType("decimal(16, 2)");
 

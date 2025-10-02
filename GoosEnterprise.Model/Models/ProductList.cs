@@ -135,7 +135,7 @@ namespace GoodsEnterprise.Model.Models
         public bool isTaxable { get; set; } = false;
         public int? SupplierId { get; set; }
         public string SupplierName { get; set; } // For lookup during import
-        public DateTime? ExpriyDate { get; set; }
+        public DateTime? ExpiryDate { get; set; }
         public int? TaxslabId { get; set; }
         public string TaxslabName { get; set; } // For lookup during import
         public string Seebelow { get; set; }

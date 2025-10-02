@@ -40,7 +40,7 @@ namespace GoodsEnterprise.Model.Models
         public bool IsDelete { get; set; }
         public bool isTaxable { get; set; }
         public string Supplier { get; set; }
-        public DateTime? ExpriyDate { get; set; }
+        public DateTime? ExpiryDate { get; set; }
         public decimal? PromotionCost { get; set; }
         public DateTime? PromotionCostStartDate { get; set; }
         public DateTime? PromotionCostEndDate { get; set; }

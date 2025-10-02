@@ -44,7 +44,7 @@ namespace GoodsEnterprise.Web.Maaper
         public bool IsActive { get; set; }
         public bool IsDelete { get; set; }
         public int? SupplierId { get; set; }
-        public DateTime? ExpriyDate { get; set; }
+        public DateTime? ExpiryDate { get; set; }
         public MapObjects()
         {
             CreateMap<DataRow, Product>()              

@@ -87,7 +87,7 @@ namespace GoodsEnterprise.Web.Pages
                                                             Modifiedby = pd.Modifiedby,
                                                             IsActive = pd.IsActive,
                                                             IsDelete = pd.IsDelete,
-                                                            ExpriyDate = pd.ExpriyDate,
+                                                            ExpiryDate = pd.ExpiryDate,
                                                             Seebelow = pd.Seebelow,
                                                             Seebelow1 = pd.Seebelow1
                                                           }).ToList();

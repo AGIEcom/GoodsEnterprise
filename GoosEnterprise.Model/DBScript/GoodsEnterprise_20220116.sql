@@ -369,7 +369,7 @@ CREATE TABLE [dbo].[Product](
 	[IsActive] [bit] NOT NULL,
 	[IsDelete] [bit] NOT NULL,
 	[SupplierId] [int] NULL,
-	[ExpriyDate] [datetime] NULL,
+	[ExpiryDate] [datetime] NULL,
 	[ProductName] [varchar](250) NULL,
 	[ProductDescription] [varchar](500) NULL,
 	[TaxslabID] [int] NULL,

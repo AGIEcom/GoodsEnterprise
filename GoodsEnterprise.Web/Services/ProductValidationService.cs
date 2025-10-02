@@ -284,9 +284,9 @@ namespace GoodsEnterprise.Web.Services
         //            result.IsValid = false;
         //        }
 
-        //        if (string.IsNullOrWhiteSpace(product.ExpriyDate))
+        //        if (string.IsNullOrWhiteSpace(product.ExpiryDate))
         //        {
-        //            result.Errors.Add("ExpriyDate is required");
+        //            result.Errors.Add("ExpiryDate is required");
         //            result.IsValid = false;
         //        }
 
@@ -454,7 +454,7 @@ namespace GoodsEnterprise.Web.Services
                     // Add validation results to import object
                     product.ValidationErrors.AddRange(validationResult.Errors);
                     product.ValidationWarnings.AddRange(validationResult.Warnings);
-                    product.HasErrors = validationResult.Errors.Any();
+                    product.HasErrors = validationResult.Errors.Any() == false ? product.HasErrors: validationResult.Errors.Any();
 
                     if (validationResult.IsValid && !product.HasErrors)
                     {
@@ -488,10 +488,10 @@ namespace GoodsEnterprise.Web.Services
         {
             var productIdentifier = product.OuterEan;
 
-            if (string.IsNullOrEmpty(productIdentifier) || !product.ExpriyDate.HasValue || string.IsNullOrEmpty(product.Code))
+            if (string.IsNullOrEmpty(productIdentifier) || !product.ExpiryDate.HasValue || string.IsNullOrEmpty(product.Code))
                 return;
 
-            var key = $"{productIdentifier.ToLower()}_{product.Code}";
+            var key = $"{product.Code}({productIdentifier.ToLower()})";
             if (!batchDuplicates.ContainsKey(key))
             {
                 batchDuplicates[key] = new List<int>();
@@ -507,7 +507,7 @@ namespace GoodsEnterprise.Web.Services
                     result.Duplicates.Add(new DuplicateInfo
                     {
                         RowNumber = rowNumber,
-                        Field = "Product + DateRange",
+                        Field = "Product + OuterEAN",
                         Value = kvp.Key,
                         DuplicateType = "Batch",
                         ConflictingRows = kvp.Value.Where(r => r != rowNumber).ToList()
@@ -520,7 +520,7 @@ namespace GoodsEnterprise.Web.Services
         {
             var productIdentifier = product.OuterEan;
 
-            if (string.IsNullOrEmpty(productIdentifier) || !product.ExpriyDate.HasValue || string.IsNullOrEmpty(product.Code))
+            if (string.IsNullOrEmpty(productIdentifier) || !product.ExpiryDate.HasValue || string.IsNullOrEmpty(product.Code))
                 return;
 
             var existingProducts = await _productRepository.GetAllAsync(filter: pc =>
@@ -533,7 +533,7 @@ namespace GoodsEnterprise.Web.Services
                 {
                     RowNumber = product.RowNumber,
                     Field = "Product + OuterEAN",
-                    Value = $"{productIdentifier} ({product.Code})",
+                    Value = $"{product.Code} ({productIdentifier})",
                     DuplicateType = "Database",
                     ExistingId = existingProducts.FirstOrDefault()?.Id
                 });
@@ -566,9 +566,9 @@ namespace GoodsEnterprise.Web.Services
                     result.Errors.Add("OuterEan is required");
                     result.IsValid = false;
                 }
-                if (!product.ExpriyDate.HasValue)                
+                if (!product.ExpiryDate.HasValue)                
                 {
-                    result.Errors.Add("ExpriyDate is required");
+                    result.Errors.Add("ExpiryDate is required");
                     result.IsValid = false;
                 }
 

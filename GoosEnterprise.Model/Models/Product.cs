@@ -51,7 +51,7 @@ namespace GoodsEnterprise.Model.Models
         public bool IsDelete { get; set; }
         public bool isTaxable { get; set; }
         public int? SupplierId { get; set; }
-        public DateTime? ExpriyDate { get; set; }
+        public DateTime? ExpiryDate { get; set; }
         public string ProductName { get; set; }
         public string ProductDescription { get; set; }
         public string Seebelow { get; set; }

@@ -475,7 +475,7 @@ namespace GoodsEnterprise.Web.Services
                         Modifiedby = userId,
                         IsDelete = false,
                         SupplierId = supplier?.Id ?? 0,
-                        ExpriyDate = productImport.ExpriyDate,
+                        ExpiryDate = productImport.ExpiryDate,
                         ProductName = productImport.ProductName,
                         ProductDescription = productImport.ProductDescription,
                         Seebelow = productImport.Seebelow,
