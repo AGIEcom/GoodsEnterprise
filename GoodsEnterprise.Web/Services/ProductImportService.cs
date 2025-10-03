@@ -439,7 +439,7 @@ namespace GoodsEnterprise.Web.Services
                         _logger.LogInformation("Created new supplier: {SupplierName} with ID: {SupplierId}", supplier.Name, supplier.Id);
                     }
 
-                    Tuple<string, string> tupleImagePath = await Common.UploadProductImportImage(productImport.Image, Constants.Product, _configuration, false, false, true);
+                    Tuple<string, string> tupleImagePath = await Common.UploadProductImportImage(productImport.Image, Constants.Product, _configuration, true, false, false);
 
                     // Convert ProductImport to Product entity
                     var product = new Product

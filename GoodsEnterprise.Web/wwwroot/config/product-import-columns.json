@@ -266,8 +266,8 @@
         "description": "Additional Product Description"
       },
       {
-        "name": "ImageUrl",
-        "displayName": "Image Url",
+        "name": "Image",
+        "displayName": "Image",
         "type": "string",
         "required": false,
         "maxLength": 200,
@@ -334,6 +334,6 @@
     "Pallet Height M": "PalletHeightM",
     "See below": "Seebelow",
     "See below1": "Seebelow1",
-    "Image Url": "ImageUrl"
+    "Image": "Image"
   }
 }

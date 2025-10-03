@@ -80,7 +80,7 @@
         margin: 0 0 1rem 0 !important; /* Remove padding, but keep a bottom margin for spacing */
     }
 
-    #tblSupplierMaster_wrapper.dataTables_wrapper {
+    #tblBaseCost_wrapper.dataTables_wrapper {
         padding: 0 !important;
     }
 
@@ -135,7 +135,7 @@
         }
 
     /* Make sure table doesn't exceed container */
-    #tblSupplierMaster_wrapper .dataTables_scrollBody {
+    #tblBaseCost_wrapper .dataTables_scrollBody {
         overflow-x: auto !important;
     }
 
@@ -233,14 +233,14 @@
         }
 
     /* Custom Pagination Styling */
-    #tblSupplierMaster_wrapper .dataTables_paginate {
+    #tblBaseCost_wrapper .dataTables_paginate {
         margin-top: 1rem !important;
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
     }
 
-        #tblSupplierMaster_wrapper .dataTables_paginate .paginate_button {
+        #tblBaseCost_wrapper .dataTables_paginate .paginate_button {
             background: #fff !important;
             border: 1px solid #d1d5db !important;
             border-radius: 6px !important;
@@ -258,7 +258,7 @@
             height: 36px !important;
         }
 
-            #tblSupplierMaster_wrapper .dataTables_paginate .paginate_button:hover {
+            #tblBaseCost_wrapper .dataTables_paginate .paginate_button:hover {
                 background: #f3f4f6 !important;
                 border-color: #9ca3af !important;
                 color: #111827 !important;
@@ -266,8 +266,8 @@
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
             }
 
-            #tblSupplierMaster_wrapper .dataTables_paginate .paginate_button.current,
-            #tblSupplierMaster_wrapper .dataTables_paginate .paginate_button.current:hover {
+            #tblBaseCost_wrapper .dataTables_paginate .paginate_button.current,
+            #tblBaseCost_wrapper .dataTables_paginate .paginate_button.current:hover {
                 background: #3b82f6 !important;
                 border-color: #3b82f6 !important;
                 color: #fff !important;
@@ -275,8 +275,8 @@
                 box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
             }
 
-            #tblSupplierMaster_wrapper .dataTables_paginate .paginate_button.disabled,
-            #tblSupplierMaster_wrapper .dataTables_paginate .paginate_button.disabled:hover {
+            #tblBaseCost_wrapper .dataTables_paginate .paginate_button.disabled,
+            #tblBaseCost_wrapper .dataTables_paginate .paginate_button.disabled:hover {
                 background: #f9fafb !important;
                 border-color: #e5e7eb !important;
                 color: #9ca3af !important;
@@ -284,13 +284,13 @@
                 opacity: 0.6 !important;
             }
 
-            #tblSupplierMaster_wrapper .dataTables_paginate .paginate_button.previous,
-            #tblSupplierMaster_wrapper .dataTables_paginate .paginate_button.next {
+            #tblBaseCost_wrapper .dataTables_paginate .paginate_button.previous,
+            #tblBaseCost_wrapper .dataTables_paginate .paginate_button.next {
                 font-weight: 500 !important;
             }
 
     /* Pagination info text */
-    #tblSupplierMaster_wrapper .dataTables_info {
+    #tblBaseCost_wrapper .dataTables_info {
         color: #6b7280 !important;
         font-size: 14px !important;
         margin-top: 1rem !important;
@@ -315,28 +315,46 @@
 <div id="productlist" style="@List">
     <div class="modern-card">
         <div class="modern-datatable-container">
-            <!-- Advanced Search & Filter Controls -->
             <div class="datatable-header-controls">
                 <div class="d-flex justify-content-between align-items-center w-100 gap-3">
                     <div class="d-flex align-items-center flex-grow-1" style="gap: 20px;">
                         <div class="filter-group">
                             <div class="d-flex align-items-center gap-2">
-                                <label for="searchByDropdownBaseCost" class="modern-form-label" style="font-size: 0.85rem; margin-bottom: 0; white-space: nowrap;">Search By:</label>
-                                <select id="searchByDropdownBaseCost" class="modern-select" style="width: 140px;">
-                                    <option value="All">All Fields</option>
-                                    <option value="ProductName">Product Name</option>
-                                    <option value="SupplierName">Supplier Name</option>
+                                <!-- Search Filter Dropdown -->
+                                <label for="searchByDropdownBaseCost" class="filter-label">
+                                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
+                                    </svg>
+                                    Filter By:
+                                </label>
+                                <select id="searchByDropdownBaseCost" class="modern-select-enhanced">
+                                    <option value="All">🔍 All Fields</option>
+                                    <option value="ProductName">📦 Product Name</option>
+                                    <option value="SupplierName">🏢 Supplier Name</option>
                                 </select>
                             </div>
                         </div>
                         <div class="filter-group flex-grow-1">
                             <div class="d-flex align-items-center gap-2">
-                                <label class="modern-form-label" style="font-size: 0.85rem; margin-bottom: 0; white-space: nowrap;">Search:</label>
-                                <input type="text" id="customSearchInputBaseCost" class="modern-form-input" style="width: 200px;" placeholder="Search...">
+                                <div class="search-input-group">
+                                    <input type="text" id="customSearchInputBaseCost" class="modern-search-input" placeholder="🔍 Search...">
+                                    <button type="button" class="search-clear-btn" id="clearBaseCostSearch" title="Clear search">
+                                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="table-actions">
+                                    <button type="button" class="action-btn" id="refreshBaseCostTable" title="Refresh table">
+                                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
+                                            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div id="base-cost-length-menu-placeholder"></div>
                             </div>
-
                         </div>
-                        <div id="base-cost-length-menu-placeholder"></div>
                     </div>
                     <div class="d-flex align-items-center" style="gap: 20px;">
                         <div class="d-flex gap-2">
@@ -344,33 +362,31 @@
                                 <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                                 </svg>
-
                             </button>
                         </div>
                         <div>
-                            <a asp-page-handler="Create" id="lnkCreateProduct" class="modern-btn modern-btn-primary">
+                            <a asp-page-handler="Create" id="lnkCreateBaseCost" class="modern-btn modern-btn-primary">
                                 <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
                                 </svg>
-
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
-            <table class="table table-bordered table-hover display" style="width:100%" id="tblBaseCost">
-                <thead class="thead-dark">
+            <table class="modern-table" id="tblBaseCost">
+                <thead>
                     <tr>
-                        <th scope="col">SupplierName</th>
-                        <th scope="col">ProductName</th>
-                        <th scope="col">BaseCost</th>
-                        <th scope="col">StartDate</th>
-                        <th scope="col">EndDate</th>
+                        <th scope="col">Supplier Name</th>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Base Cost</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">End Date</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Action</th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
-
+                <tbody></tbody>
             </table>
 
         </div>

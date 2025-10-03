@@ -49,7 +49,7 @@ namespace GoodsEnterprise.Web.Customer.Pages
                     if (existingLogin.Password.Decrypt(Constants.EncryptDecryptSecurity) == objCustomer.Password)
                     {
                         HttpContext.Session.SetString(Constants.LoginSession, JsonConvert.SerializeObject(existingLogin));
-                        return RedirectToPage("UploadDownload");
+                        return RedirectToPage("Product");
                     }
                     else
                     {
@@ -83,7 +83,7 @@ namespace GoodsEnterprise.Web.Customer.Pages
                     if (existingLogin.Password.Decrypt(Constants.EncryptDecryptSecurity) == objCustomer.Password)
                     {
                         HttpContext.Session.SetString(Constants.LoginSession, JsonConvert.SerializeObject(existingLogin));
-                        return RedirectToPage("UploadDownload");
+                        return RedirectToPage("Product");
                     }
                     else
                     {

@@ -90,23 +90,60 @@ $(document).ready(function () {
         }
     });
     $('#clearSupplierSearch').on('click', function () {
-        $('#customSearchInputSupplier').val("");        
+        $('#customSearchInputSupplier').val("");
         const table = $('#tblSupplierMaster').DataTable();
         if (table) {
             table.ajax.reload(null, false); // false = don't reset paging
         }
     });
-    
 
-    // PromotionCost search dropdown removed - using custom search instead
+    // BaseCost search functionality
+    $('#customSearchInputBaseCost').on('keyup', function () {
+        if (this.value.length >= 3) {
+            const table = $('#tblBaseCost').DataTable();
+            if (table) {
+                table.ajax.reload(null, false); // false = don't reset paging
+            }
+        }
+    });
+    $('#refreshBaseCostTable').on('click', function () {
+        $('#customSearchInputBaseCost').val("");
+        $('#searchByDropdownBaseCost').val("All");
+        const table = $('#tblBaseCost').DataTable();
+        if (table) {
+            table.ajax.reload(null, false);
+        }
+    });
+    $('#clearBaseCostSearch').on('click', function () {
+        $('#customSearchInputBaseCost').val("");
+        const table = $('#tblBaseCost').DataTable();
+        if (table) {
+            table.ajax.reload(null, false); // false = don't reset paging
+        }
+    });
 
-    // Reload PromotionCost table when custom search input changes
-    $('#customSearchInput').on('keyup', function () {
-        if (this.value.length >= 5) {
+    // PromotionCost search functionality
+    $('#customSearchInputPromotionCost').on('keyup', function () {
+        if (this.value.length >= 3) {
             const table = $('#tblPromotionCost').DataTable();
             if (table) {
                 table.ajax.reload(null, false); // false = don't reset paging
             }
+        }
+    });
+    $('#refreshPromotionCostTable').on('click', function () {
+        $('#customSearchInputPromotionCost').val("");
+        $('#searchByDropdownPromotionCost').val("All");
+        const table = $('#tblPromotionCost').DataTable();
+        if (table) {
+            table.ajax.reload(null, false);
+        }
+    });
+    $('#clearPromotionCostSearch').on('click', function () {
+        $('#customSearchInputPromotionCost').val("");
+        const table = $('#tblPromotionCost').DataTable();
+        if (table) {
+            table.ajax.reload(null, false); // false = don't reset paging
         }
     });
 
@@ -154,11 +191,11 @@ $(document).ready(function () {
             processing: true,
             serverSide: true,
             responsive: false, // Disable responsive to prevent collapse
-            autoWidth: false,
+            autoWidth: true, // Enable automatic column width calculation
             scrollX: true,
             scrollCollapse: false,
             lengthMenu: [5, 10, 20, 50],
-            pageLength: 5,
+            pageLength: 10,
             searching: false, // Disable default search to use our custom search
             order: [], // No default client-side ordering, let server handle default sort
             deferRender: true,
@@ -248,18 +285,20 @@ $(document).ready(function () {
                     name: "Id",
                     render: function (data, type, row) {
                         if (type === 'display') {
-                            return '<a class="modern-btn modern-btn-primary modern-btn-sm" href="/all-product?productId=' + row.id + '&amp;handler=Edit" title="Edit Product">' +
-                                '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                            return '<div class="action-buttons d-flex gap-1">' +
+                                '<a class="modern-btn modern-btn-primary modern-btn-xs" href="/all-product?productId=' + row.id + '&amp;handler=Edit" title="Edit Product">' +
+                                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
                                 '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>' +
                                 '<path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>' +
-                                '</svg></a> ' +
-                                '<a href="/all-product?productId=' + row.id + '&amp;handler=DeleteProduct" class="modern-btn modern-btn-sm modern-btn-danger btn-product-delete" onclick="return deleteConfirm(event, \'Product\', this.href)" title="Delete Product">' +
-                                '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                                '</svg></a>' +
+                                '<a href="/all-product?productId=' + row.id + '&amp;handler=DeleteProduct" class="modern-btn modern-btn-xs modern-btn-danger btn-product-delete" onclick="return deleteConfirm(event, \'Product\', this.href)" title="Delete Product">' +
+                                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
                                 '<polyline points="3,6 5,6 21,6"></polyline>' +
                                 '<path d="m19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"></path>' +
                                 '<line x1="10" y1="11" x2="10" y2="17"></line>' +
                                 '<line x1="14" y1="11" x2="14" y2="17"></line>' +
-                                '</svg></a>';
+                                '</svg></a>' +
+                                '</div>';
                         }
                         return data;
                     }
@@ -322,7 +361,7 @@ $(document).ready(function () {
             scrollX: true,
             scrollCollapse: false,
             lengthMenu: [5, 10, 20, 50],
-            pageLength: 5,
+            pageLength: 10,
             order: [], // No default client-side ordering, let server handle default sort
             deferRender: true,
             searching: false, // Disable default search to use our custom search
@@ -344,7 +383,7 @@ $(document).ready(function () {
                 data: function (data) {
                     // Add SearchBy parameter and custom search text for PromotionCost
                     var searchBy = $('#searchByDropdownPromotionCost').val() || 'All';
-                    var customSearchText = $('#customSearchInput').val() || '';
+                    var customSearchText = $('#customSearchInputPromotionCost').val() || '';
                     data.additionalValues = [searchBy];
                     data.search = { value: customSearchText };
                     return JSON.stringify(data);

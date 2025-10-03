@@ -57,7 +57,7 @@ namespace GoodsEnterprise.Web.Pages
                 var sessionUser = HttpContext.Session.GetString(Constants.LoginSession);
                 if (!string.IsNullOrEmpty(sessionUser))
                 {
-                    return RedirectToPage("UploadDownload");
+                    return RedirectToPage("Product");
                 }
 
                 // Check for remember me cookie
@@ -75,7 +75,7 @@ namespace GoodsEnterprise.Web.Pages
                         // Refresh the remember me token and extend expiry
                         await RefreshRememberMeToken(admin);
                         
-                        return RedirectToPage("UploadDownload");
+                        return RedirectToPage("Product");
                     }
                     else
                     {
@@ -133,7 +133,7 @@ namespace GoodsEnterprise.Web.Pages
                             await ClearRememberMeToken(existingAdmin);
                         }
                         
-                        return RedirectToPage("UploadDownload");
+                        return RedirectToPage("Product");
                     }
                     else
                     {

@@ -72,7 +72,7 @@ namespace GoodsEnterprise.Web.Maaper
             .ForMember(d => d.PalletDepthMeter, o => o.MapFrom(s => Convert.ToDecimal(string.IsNullOrEmpty(Convert.ToString(s["Pallet Depth (m)"])) ? "0" : s["Pallet Depth (m)"])))
             .ForMember(d => d.PalletHeightMeter, o => o.MapFrom(s => Convert.ToDecimal(string.IsNullOrEmpty(Convert.ToString(s["Pallet Height (m)"])) ? "0" : s["Pallet Height (m)"])))
             .ForMember(d => d.CreatedDate, o => o.MapFrom(s => DateTime.UtcNow))
-            .ForMember(d => d.ExpiryDate, o => o.MapFrom(s => string.IsNullOrEmpty(Convert.ToString(s["Expiry Date"])) ? (DateTime?)null : DateTime.Parse(Convert.ToString(s["Expriy Date"]))))
+            .ForMember(d => d.ExpiryDate, o => o.MapFrom(s => string.IsNullOrEmpty(Convert.ToString(s["Expiry Date"])) ? (DateTime?)null : DateTime.Parse(Convert.ToString(s["Expiry Date"]))))
             //.ForMember(d => d.Seebelow, o => o.MapFrom(s => Convert.ToString(string.IsNullOrEmpty(Convert.ToString(s["See below"])) ? "" : s["See below"])))
             .ForMember(d => d.Seebelow, o => o.MapFrom(s => Convert.ToString(s["See below"])))
             .ForMember(d => d.Seebelow1, o => o.MapFrom(s => Convert.ToString(string.IsNullOrEmpty(Convert.ToString(s["See below1"])) ? "" : s["See below1"])))

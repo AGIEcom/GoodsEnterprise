@@ -1414,7 +1414,7 @@
             // If no direct match found, try pattern matching
             if (!matchFound) {
                 // Special handling for UploadDownload page (default after login)
-                if (url.toLowerCase() === 'import' || url.toLowerCase() === '') {
+                if (url.toLowerCase() === 'product' || url.toLowerCase() === '') {
                     const importMenu = Array.from(menuLinks).find(link => {
                         const menuText = link.querySelector('.menu-text');
                         return menuText && menuText.textContent.trim() === 'Import';

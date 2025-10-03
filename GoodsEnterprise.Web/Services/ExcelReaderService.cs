@@ -1,18 +1,19 @@
-using GoodsEnterprise.Model.Models;
-using Microsoft.AspNetCore.Http;
 using ExcelDataReader;
+using GoodsEnterprise.Model.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using NPOI.SS.Formula.Functions;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
-using System.Text;
-using System.Text.Json;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Hosting;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.IO;
-using System;
 using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace GoodsEnterprise.Web.Services
 {
@@ -345,6 +346,7 @@ namespace GoodsEnterprise.Web.Services
 
             try
             {
+
                 // Required fields
                 product.Code = GetCellValueFromDataRow(dataRow, columnMapping, "Code")?.Trim();
                 product.ProductName = GetCellValueFromDataRow(dataRow, columnMapping, "ProductName")?.Trim();
@@ -358,7 +360,11 @@ namespace GoodsEnterprise.Web.Services
                 product.OuterEan = GetCellValueFromDataRow(dataRow, columnMapping, "OuterEan")?.Trim();
                 product.UnitSize = GetCellValueFromDataRow(dataRow, columnMapping, "UnitSize")?.Trim();
                 product.SupplierName = GetCellValueFromDataRow(dataRow, columnMapping, "SupplierName")?.Trim();
-                product.TaxslabName = GetCellValueFromDataRow(dataRow, columnMapping, "TaxslabName")?.Trim();
+                //product.TaxslabName = GetCellValueFromDataRow(dataRow, columnMapping, "TaxslabName")?.Trim();
+                product.Seebelow = GetCellValueFromDataRow(dataRow, columnMapping, "Seebelow")?.Trim();
+                product.Seebelow1 = GetCellValueFromDataRow(dataRow, columnMapping, "Seebelow1")?.Trim();
+                product.Image = GetCellValueFromDataRow(dataRow, columnMapping, "Image")?.Trim();
+
 
                 // Numeric fields
                 if (int.TryParse(GetCellValueFromDataRow(dataRow, columnMapping, "Upc"), out int upc))
@@ -379,10 +385,30 @@ namespace GoodsEnterprise.Web.Services
                     product.PackDepth = packDepth;
                 if (decimal.TryParse(GetCellValueFromDataRow(dataRow, columnMapping, "PackWidth"), out decimal packWidth))
                     product.PackWidth = packWidth;
+                if (decimal.TryParse(GetCellValueFromDataRow(dataRow, columnMapping, "NetCaseWeightKg"), out decimal netCaseWeightKg))
+                    product.NetCaseWeightKg = netCaseWeightKg;
+                if (decimal.TryParse(GetCellValueFromDataRow(dataRow, columnMapping, "GrossCaseWeightKg"), out decimal grossCaseWeightKg))
+                    product.GrossCaseWeightKg = grossCaseWeightKg;
+                if (decimal.TryParse(GetCellValueFromDataRow(dataRow, columnMapping, "CaseWidthMm"), out decimal caseWidthMm))
+                    product.CaseWidthMm = caseWidthMm;
+                if (decimal.TryParse(GetCellValueFromDataRow(dataRow, columnMapping, "CaseDepthMm"), out decimal caseDepthMm))
+                    product.CaseDepthMm = caseDepthMm;
+                if (decimal.TryParse(GetCellValueFromDataRow(dataRow, columnMapping, "CaseHeightMm"), out decimal caseHeightMm))
+                    product.CaseHeightMm = caseHeightMm;
+                if (decimal.TryParse(GetCellValueFromDataRow(dataRow, columnMapping, "PalletWeightKg"), out decimal palletWeightKg))
+                    product.PalletWeightKg = palletWeightKg;
+                if (decimal.TryParse(GetCellValueFromDataRow(dataRow, columnMapping, "PalletWidthM"), out decimal palletWidthM))
+                    product.PalletWidthMeter = palletWidthM;
+                if (decimal.TryParse(GetCellValueFromDataRow(dataRow, columnMapping, "PalletDepthM"), out decimal palletDepthM))
+                    product.PalletDepthMeter = palletDepthM;
+                if (decimal.TryParse(GetCellValueFromDataRow(dataRow, columnMapping, "PalletHeightM"), out decimal palletHeightM))
+                    product.PalletHeightMeter = palletHeightM;
+
+
 
                 // Boolean fields
                 product.IsActive = ParseBoolean(GetCellValueFromDataRow(dataRow, columnMapping, "IsActive"), true);
-                product.isTaxable = ParseBoolean(GetCellValueFromDataRow(dataRow, columnMapping, "isTaxable"), false);
+                //product.isTaxable = ParseBoolean(GetCellValueFromDataRow(dataRow, columnMapping, "isTaxable"), false);
 
                 // Date fields
                 product.ExpiryDate = ParseDate(GetCellValueFromDataRow(dataRow, columnMapping, "ExpiryDate"));
@@ -392,6 +418,11 @@ namespace GoodsEnterprise.Web.Services
                     errors.Add("Product Code is required");
                 if (string.IsNullOrEmpty(product.ProductName))
                     errors.Add("Product Name is required");
+                if (string.IsNullOrEmpty(product.OuterEan))
+                    errors.Add("Product OuterEan is required");
+                if (!product.ExpiryDate.HasValue)
+                    errors.Add("Product ExpiryDate is required");
+
             }
             catch (Exception ex)
             {
