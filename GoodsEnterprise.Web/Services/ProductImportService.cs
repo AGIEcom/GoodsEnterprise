@@ -1,9 +1,11 @@
 using GoodsEnterprise.DataAccess.Interface;
+using GoodsEnterprise.Model;
 using GoodsEnterprise.Model.Models;
 using GoodsEnterprise.Web.Pages;
 using GoodsEnterprise.Web.Utilities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -33,6 +35,7 @@ namespace GoodsEnterprise.Web.Services
         private readonly ILogger<ProductImportService> _logger;
         private readonly IWebHostEnvironment _environment;
         private readonly IConfiguration _configuration;
+        private readonly GoodsEnterpriseContext _context;
         private ProductImportConfig _config;
         
         // In-memory storage for import progress (in production, use Redis or database)
@@ -49,7 +52,8 @@ namespace GoodsEnterprise.Web.Services
             IGeneralRepository<Supplier> supplierRepository,
             ILogger<ProductImportService> logger,
             IWebHostEnvironment environment,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            GoodsEnterpriseContext context)
         {
             _excelReaderService = excelReaderService;
             _validationService = validationService;
@@ -61,6 +65,7 @@ namespace GoodsEnterprise.Web.Services
             _logger = logger;
             _environment = environment;
             _configuration = configuration;
+            _context = context;
             LoadConfiguration();
         }
 
@@ -341,7 +346,7 @@ namespace GoodsEnterprise.Web.Services
             return false;
         }
 
-        private async Task<(int SuccessCount, int FailCount, List<ProductImport> SuccessfulProducts, List<ProductImport> FailedProducts)> 
+        private async Task<(int SuccessCount, int FailCount, List<ProductImport> SuccessfulProducts, List<ProductImport> FailedProducts)>
             ImportValidProductsAsync(List<ProductImport> products, int? userId, ImportProgress progress, CancellationToken cancellationToken)
         {
             int successCount = 0;
@@ -355,13 +360,16 @@ namespace GoodsEnterprise.Web.Services
                     break;
 
                 var productImport = products[i];
-                
+
+                // Start database transaction for each individual product import
+                using var transaction = await _context.Database.BeginTransactionAsync();
+
                 try
-                {                                    
+                {
                     // Check and create Brand if it doesn't exist
                     var existingBrands = await _brandRepository.GetAllAsync(filter: b => b.Name == productImport.BrandName);
                     Brand brand = existingBrands.FirstOrDefault();
-                    
+
                     if (brand == null && !string.IsNullOrEmpty(productImport.BrandName))
                     {
                         brand = new Brand
@@ -381,7 +389,7 @@ namespace GoodsEnterprise.Web.Services
                     // Check and create Category if it doesn't exist
                     var existingCategories = await _categoryRepository.GetAllAsync(filter: c => c.Name == productImport.CategoryName);
                     Category category = existingCategories.FirstOrDefault();
-                    
+
                     if (category == null && !string.IsNullOrEmpty(productImport.CategoryName))
                     {
                         category = new Category
@@ -401,7 +409,7 @@ namespace GoodsEnterprise.Web.Services
                     // Check and create SubCategory if it doesn't exist
                     var existingSubCategories = await _subCategoryRepository.GetAllAsync(filter: sc => sc.Name == productImport.SubCategoryName);
                     SubCategory subCategory = existingSubCategories.FirstOrDefault();
-                    
+
                     if (subCategory == null && !string.IsNullOrEmpty(productImport.SubCategoryName))
                     {
                         subCategory = new SubCategory
@@ -422,7 +430,7 @@ namespace GoodsEnterprise.Web.Services
                     // Check and create Supplier if it doesn't exist
                     var existingSuppliers = await _supplierRepository.GetAllAsync(filter: s => s.Name == productImport.SupplierName);
                     Supplier supplier = existingSuppliers.FirstOrDefault();
-                    
+
                     if (supplier == null && !string.IsNullOrEmpty(productImport.SupplierName))
                     {
                         supplier = new Supplier
@@ -467,7 +475,7 @@ namespace GoodsEnterprise.Web.Services
                         PalletWeightKg = productImport.PalletWeightKg,
                         PalletWidthMeter = productImport.PalletWidthMeter,
                         PalletHeightMeter = productImport.PalletHeightMeter,
-                        PalletDepthMeter = productImport.PalletDepthMeter,                       
+                        PalletDepthMeter = productImport.PalletDepthMeter,
                         IsActive = productImport.IsActive,
                         CreatedDate = DateTime.Now,
                         Createdby = userId,
@@ -485,7 +493,10 @@ namespace GoodsEnterprise.Web.Services
 
                     // Save to database
                     await _productRepository.InsertAsync(product);
-                    
+
+                    // If we reach here, all operations for this product were successful
+                    await transaction.CommitAsync();
+
                     productImport.Id = product.Id;
                     successfulProducts.Add(productImport);
                     successCount++;
@@ -494,12 +505,14 @@ namespace GoodsEnterprise.Web.Services
                 }
                 catch (Exception ex)
                 {
+                    // Rollback this product's transaction - only this product's changes are lost
+                    await transaction.RollbackAsync();
                     productImport.ValidationErrors.Add($"Database error: {ex.Message}");
                     productImport.HasErrors = true;
                     failedProducts.Add(productImport);
                     failCount++;
 
-                    _logger.LogError(ex, "Failed to import product: {Code}", productImport.Code);
+                    _logger.LogError(ex, "Failed to import product: {Code}, rolled back this product's transaction", productImport.Code);
                 }
 
                 // Update progress

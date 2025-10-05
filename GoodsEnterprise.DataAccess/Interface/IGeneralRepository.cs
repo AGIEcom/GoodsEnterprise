@@ -1,5 +1,6 @@
-﻿using GoodsEnterprise.Model.Models;
+using GoodsEnterprise.Model.Models;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -20,5 +21,10 @@ namespace GoodsEnterprise.DataAccess.Interface
         Task<bool> PhysicalDeleteAsync(T entity);
         Task<bool> LogicalDeleteAsync(T entity);
         Task<bool> PostValueUsingUDTT(DataTable datatable, CommenParameters commenParameters);
+
+        // Transaction support
+        Task<IDbContextTransaction> BeginTransactionAsync();
+        Task CommitTransactionAsync(IDbContextTransaction transaction);
+        Task RollbackTransactionAsync(IDbContextTransaction transaction);
     }
 }

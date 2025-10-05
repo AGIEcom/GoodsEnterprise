@@ -99,31 +99,29 @@
                 width: 14px !important;
                 height: 14px !important;
             }
-
     /* Table column width adjustments - removed fixed widths to allow auto-adjustment */
     #tblPromotionCost {
         width: 100%;
     }
 
         /* Specific column width controls */
-        #tblPromotionCost th:nth-child(2), /* SKU Code - reduced to half */
+        #tblPromotionCost th:nth-child(2), /* Product Name - increased */
         #tblPromotionCost td:nth-child(2) {
-            width: 8% !important; /* Reduced to half */
-        }
-
-        #tblPromotionCost th:nth-child(4), /* Description - increased */
-        #tblPromotionCost td:nth-child(4) {
             width: 40% !important; /* Increased for more space */
         }
 
-        /* Removed fixed column widths to allow DataTable auto-sizing */
-        /* #tblPromotionCost th:nth-child(1), #tblPromotionCost td:nth-child(1) { width: 20% !important; } */
-        /* #tblPromotionCost th:nth-child(3), #tblPromotionCost td:nth-child(3) { width: 18% !important; } */
-        /* #tblPromotionCost th:nth-child(5), #tblPromotionCost td:nth-child(5) { width: 10% !important; } */
-        /* #tblPromotionCost th:nth-child(6), #tblPromotionCost td:nth-child(6) { width: 5% !important; } */
-
-        /* Ensure description text shows in one line */
+        #tblPromotionCost th:nth-child(4), /* Start Date - reduced */
         #tblPromotionCost td:nth-child(4) {
+            width: 8% !important; /* Reduced to half */
+        }
+
+        /* Prevent header text wrapping */
+        #tblPromotionCost th:nth-child(5) {
+            white-space: nowrap !important;
+        }
+
+        /* Ensure Product Name text shows in one line */
+        #tblPromotionCost td:nth-child(2) {
             white-space: nowrap !important;
             overflow: hidden !important;
             text-overflow: ellipsis !important;

@@ -110,24 +110,28 @@
     }
 
         /* Specific column width controls */
-        #tblBaseCost th:nth-child(2), /* SKU Code - reduced to half */
+        #tblBaseCost th:nth-child(2), /* Product Name - increased */
         #tblBaseCost td:nth-child(2) {
-            width: 8% !important; /* Reduced to half */
-        }
-
-        #tblBaseCost th:nth-child(4), /* Description - increased */
-        #tblBaseCost td:nth-child(4) {
             width: 40% !important; /* Increased for more space */
         }
 
-        /* Removed fixed column widths to allow DataTable auto-sizing */
-        /* #tblBaseCost th:nth-child(1), #tblBaseCost td:nth-child(1) { width: 20% !important; } */
-        /* #tblBaseCost th:nth-child(3), #tblBaseCost td:nth-child(3) { width: 18% !important; } */
-        /* #tblBaseCost th:nth-child(5), #tblBaseCost td:nth-child(5) { width: 10% !important; } */
-        /* #tblBaseCost th:nth-child(6), #tblBaseCost td:nth-child(6) { width: 5% !important; } */
-
-        /* Ensure description text shows in one line */
+        #tblBaseCost th:nth-child(4), /* Start Date - reduced */
         #tblBaseCost td:nth-child(4) {
+            width: 8% !important; /* Reduced to half */
+        }
+
+        #tblBaseCost th:nth-child(5), /* End Date - same as Start Date */
+        #tblBaseCost td:nth-child(5) {
+            width: 8% !important; /* Same as Start Date */
+        }
+
+        /* Prevent header text wrapping */
+        #tblBaseCost th:nth-child(5) {
+            white-space: nowrap !important;
+        }
+
+        /* Ensure Product Name text shows in one line */
+        #tblBaseCost td:nth-child(2) {
             white-space: nowrap !important;
             overflow: hidden !important;
             text-overflow: ellipsis !important;

@@ -452,6 +452,9 @@ namespace GoodsEnterprise.Web.Services
                     // Track batch duplicates
                     TrackBatchDuplicates(product, batchDuplicates, product.RowNumber);
 
+                    //Check duplicates in Batch
+                    //ProcessBatchDuplicates(product, batchDuplicates, result);
+
                     // Add validation results to import object
                     product.ValidationErrors.AddRange(validationResult.Errors);
                     product.ValidationWarnings.AddRange(validationResult.Warnings);
@@ -471,6 +474,9 @@ namespace GoodsEnterprise.Web.Services
 
                 // Process batch duplicates
                 ProcessBatchDuplicates(batchDuplicates, result);
+
+                // Re-evaluate product lists after marking batch duplicates as errors
+                ReEvaluateProductLists(result);
 
                 _logger.LogInformation("Product validation completed. Valid: {Valid}, Invalid: {Invalid}, Duplicates: {Duplicates}",
                     result.ValidRecordCount, result.InvalidRecordCount, result.Duplicates.Count);
@@ -513,8 +519,46 @@ namespace GoodsEnterprise.Web.Services
                         DuplicateType = "Batch",
                         ConflictingRows = kvp.Value.Where(r => r != rowNumber).ToList()
                     });
+
+                    // Mark this product as having validation errors to exclude from ValidRecords
+                    var product = result.TotalRecords > 0 ? FindProductByRowNumber(result, rowNumber) : null;
+                    if (product != null)
+                    {
+                        product.ValidationErrors.Add($"Duplicate product found in batch: '{kvp.Key}' appears {kvp.Value.Count} times (rows: {string.Join(", ", kvp.Value)})");
+                        product.HasErrors = true;
+                    }
                 }
             }
+        }
+
+        private void ReEvaluateProductLists(ProductBatchValidationResult<ProductImport> result)
+        {
+            // Move products that were marked as having errors (due to batch duplicates) from ValidRecords to InvalidRecords
+            var productsToMove = result.ValidRecords.Where(p => p.HasErrors).ToList();
+
+            foreach (var product in productsToMove)
+            {
+                result.ValidRecords.Remove(product);
+                result.ValidRecordCount--;
+
+                // Only add to InvalidRecords if not already there
+                if (!result.InvalidRecords.Contains(product))
+                {
+                    result.InvalidRecords.Add(product);
+                    result.InvalidRecordCount++;
+                }
+            }
+        }
+
+        private ProductImport FindProductByRowNumber(ProductBatchValidationResult<ProductImport> result, int rowNumber)
+        {
+            // Search in ValidRecords first, then InvalidRecords
+            var product = result.ValidRecords.FirstOrDefault(p => p.RowNumber == rowNumber);
+            if (product == null)
+            {
+                product = result.InvalidRecords.FirstOrDefault(p => p.RowNumber == rowNumber);
+            }
+            return product;
         }
 
         private async Task CheckDatabaseDuplicates(ProductImport product, ProductBatchValidationResult<ProductImport> result)

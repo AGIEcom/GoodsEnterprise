@@ -4,6 +4,7 @@ using GoodsEnterprise.Model.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -240,6 +241,35 @@ namespace GoodsEnterprise.DataAccess.Implementation
                 
                 throw; // Re-throw to let the calling code handle it
             }
+        }
+
+        /// <summary>
+        /// BeginTransactionAsync - Start a database transaction
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await context.Database.BeginTransactionAsync();
+        }
+
+        /// <summary>
+        /// CommitTransactionAsync - Commit a database transaction
+        /// </summary>
+        /// <param name="transaction"></param>
+        /// <returns></returns>
+        public async Task CommitTransactionAsync(IDbContextTransaction transaction)
+        {
+            await transaction.CommitAsync();
+        }
+
+        /// <summary>
+        /// RollbackTransactionAsync - Rollback a database transaction
+        /// </summary>
+        /// <param name="transaction"></param>
+        /// <returns></returns>
+        public async Task RollbackTransactionAsync(IDbContextTransaction transaction)
+        {
+            await transaction.RollbackAsync();
         }
     }
 }
