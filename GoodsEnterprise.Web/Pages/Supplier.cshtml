@@ -276,34 +276,39 @@
             <div class="datatable-header-controls">
                 <div class="d-flex justify-content-between align-items-center w-100 gap-3">
                     <div class="d-flex align-items-center flex-grow-1" style="gap: 20px;">
-                        <!-- Search Filter Dropdown -->
                         <div class="filter-group">
-                            <label for="searchByDropdownSupplier" class="filter-label">Filter By:</label>
-                            <select id="searchByDropdownSupplier" class="modern-select-enhanced">
-                                <option value="All">🔍 All Fields</option>
-                                <option value="SupplierName">🏢 Supplier Name</option>
-                                <option value="Email">📧 Email</option>
-                                <option value="SKUCode">🔢 SKU Code</option>
-                                <option value="Description">📝 Description</option>
-                            </select>
+                            <div class="d-flex align-items-center gap-2">
+                                <!-- Search Filter Dropdown -->
+                                <label for="searchByDropdownSupplier" class="filter-label">Filter By:</label>
+                                <select id="searchByDropdownSupplier" class="modern-select-enhanced">
+                                    <option value="All">🔍 All Fields</option>
+                                    <option value="SupplierName">🏢 Supplier Name</option>
+                                    <option value="Email">📧 Email</option>
+                                    <option value="SKUCode">🔢 SKU Code</option>
+                                    <option value="Description">📝 Description</option>
+                                </select>
+                            </div>
                         </div>
 
                         <!-- Custom Search Input -->
                         <div class="filter-group flex-grow-1">
-                            <label for="customSearchInputSupplier" class="filter-label">Search:</label>
-                            <div class="input-group">
-                                <input type="text" id="customSearchInputSupplier" class="modern-search-input" placeholder="search..." />
-                                <button id="refreshSupplierTable" class="modern-btn modern-btn-secondary modern-btn-sm" title="Refresh">
-                                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
-                                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
-                                    </svg>
-                                </button>
-                                <button id="clearSupplierSearch" class="modern-btn modern-btn-outline-secondary modern-btn-sm" title="Clear">
-                                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
-                                    </svg>
-                                </button>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="search-input-group">
+                                    <input type="text" id="customSearchInputSupplier" class="modern-search-input" placeholder="🔍 Search...">
+                                    <button type="button" class="search-clear-btn" id="clearSupplierSearch" title="Clear search">
+                                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="table-actions">
+                                    <button type="button" class="action-btn" id="refreshSupplierTable" title="Refresh table">
+                                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
+                                            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
+                                        </svg>
+                                    </button>
+                                </div>
                                 <div id="supplier-length-menu-placeholder"></div>
                             </div>
                         </div>

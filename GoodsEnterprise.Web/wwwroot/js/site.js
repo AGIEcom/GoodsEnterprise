@@ -34,9 +34,10 @@ $(document).ready(function () {
                     table.page.len(newLength).draw();
                 });
 
-                // Handle custom search input
-                $('#brandSearchInput').on('keyup change', function() {
-                    table.search($(this).val()).draw();
+                // Handle custom search clear button
+                $('#clearBrandSearch').on('click', function() {
+                    $('#brandSearchInput').val('');
+                    table.search('').draw();
                 });
 
                 // Update the custom controls when table changes
@@ -89,9 +90,10 @@ $(document).ready(function () {
                     table.page.len(newLength).draw();
                 });
 
-                // Handle custom search input
-                $('#categorySearchInput').on('keyup change', function() {
-                    table.search($(this).val()).draw();
+                // Handle custom search clear button
+                $('#clearCategorySearch').on('click', function() {
+                    $('#categorySearchInput').val('');
+                    table.search('').draw();
                 });
 
                 // Update the custom controls when table changes
@@ -145,9 +147,10 @@ $(document).ready(function () {
                     table.page.len(newLength).draw();
                 });
 
-                // Handle custom search input
-                $('#subCategorySearchInput').on('keyup change', function() {
-                    table.search($(this).val()).draw();
+                // Handle custom search clear button
+                $('#clearSubCategorySearch').on('click', function() {
+                    $('#subCategorySearchInput').val('');
+                    table.search('').draw();
                 });
 
                 // Update the custom controls when table changes
@@ -211,9 +214,10 @@ $(document).ready(function () {
                     table.page.len(newLength).draw();
                 });
 
-                // Handle custom search input
-                $('#taxSearchInput').on('keyup change', function() {
-                    table.search($(this).val()).draw();
+                // Handle custom search clear button
+                $('#clearTaxSearch').on('click', function() {
+                    $('#taxSearchInput').val('');
+                    table.search('').draw();
                 });
 
                 // Update the custom controls when table changes
@@ -268,9 +272,10 @@ $(document).ready(function () {
                     table.page.len(newLength).draw();
                 });
 
-                // Handle custom search input
-                $('#roleSearchInput').on('keyup change', function() {
-                    table.search($(this).val()).draw();
+                // Handle custom search clear button
+                $('#clearRoleSearch').on('click', function() {
+                    $('#roleSearchInput').val('');
+                    table.search('').draw();
                 });
 
                 // Update the custom controls when table changes
@@ -326,9 +331,10 @@ $(document).ready(function () {
                     table.page.len(newLength).draw();
                 });
 
-                // Handle custom search input
-                $('#adminSearchInput').on('keyup change', function() {
-                    table.search($(this).val()).draw();
+                // Handle custom search clear button
+                $('#clearAdminSearch').on('click', function() {
+                    $('#adminSearchInput').val('');
+                    table.search('').draw();
                 });
 
                 // Update the custom controls when table changes
@@ -384,9 +390,10 @@ $(document).ready(function () {
                     table.page.len(newLength).draw();
                 });
 
-                // Handle custom search input
-                $('#customerSearchInput').on('keyup change', function() {
-                    table.search($(this).val()).draw();
+                // Handle custom search clear button
+                $('#clearCustomerSearch').on('click', function() {
+                    $('#customerSearchInput').val('');
+                    table.search('').draw();
                 });
 
                 // Update the custom controls when table changes

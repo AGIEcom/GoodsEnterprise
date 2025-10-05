@@ -64,6 +64,14 @@ $(document).ready(function () {
             table.ajax.reload(null, false); // false = don't reset paging
         }
     });
+    $('#refreshSupplierTable').on('click', function () {
+        $('#customSearchInputSupplier').val("");
+        $('#searchByDropdown').val("All");
+        const table = $('#tblSupplierMaster').DataTable();
+        if (table) {
+            table.ajax.reload(null, false); // false = don't reset paging
+        }
+    });
     $('#clearProductSearch').on('click', function () {
         $('#customSearchInputProduct').val("");
         const table = $('#tblProductMaster').DataTable();
