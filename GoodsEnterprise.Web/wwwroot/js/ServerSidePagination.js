@@ -577,7 +577,7 @@ $(document).ready(function () {
                 },
                 {
                     data: function (row) {
-                        var id = row.BaseCostId || row.baseCostId || '';
+                        var id = row.BaseCostId || row.baseCostId || row.baseCostID || '';
                         return '<a class="modern-btn modern-btn-primary modern-btn-sm" href="/all-base-cost?BaseCostId=' + id + '&amp;handler=Edit" title="Edit Base Cost">' +
                             '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
                             '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>' +

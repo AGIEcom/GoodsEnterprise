@@ -855,10 +855,11 @@ html, body {
     overflow-y: auto !important;
 }
 
-/* Remove any footer spacing */
+/* Remove any footer spacing 
 #footer {
     display: none !important;
 }
+    */
 
 /* Ensure sidebar and content allow proper scrolling */
 #sidebar {

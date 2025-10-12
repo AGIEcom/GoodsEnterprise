@@ -83,7 +83,8 @@ namespace GoodsEnterprise.Web.Pages
                 {
                     objSupplier = new Supplier();
                 }
-                objSupplier.IsActive = true; 
+                objSupplier.IsActive = true;
+                objSupplier.IsPreferred = false;
                 ViewData["PageType"] = "Edit";
             }
             catch (Exception ex)
@@ -130,6 +131,7 @@ namespace GoodsEnterprise.Web.Pages
             {
                 objSupplier = new Supplier();
                 objSupplier.IsActive = false;
+                objSupplier.IsPreferred = false;
                 ViewData["PageType"] = "Edit";
             }
             catch (Exception ex)

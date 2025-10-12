@@ -73,7 +73,10 @@ namespace GoodsEnterprise.Web.Services
         public string Field { get; set; }
         public string Value { get; set; }
         public string DuplicateType { get; set; } // "Database", "Batch", "Both"
+        public string Type { get; set; } // Alias for DuplicateType for compatibility
         public List<int> ConflictingRows { get; set; } = new List<int>();
+        public List<int> RowNumbers { get; set; } = new List<int>(); // For multiple row tracking
+        public int Count { get; set; } // Number of duplicates found
         public int? ExistingId { get; set; }
     }
 

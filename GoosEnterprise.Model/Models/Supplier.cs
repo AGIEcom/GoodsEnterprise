@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 #nullable disable
@@ -31,7 +31,7 @@ namespace GoodsEnterprise.Model.Models
         public bool IsActive { get; set; }
         public bool IsDelete { get; set; }
 
-        public bool? IsPreferred { get; set; }
+        public bool IsPreferred { get; set; }
         public int? LeadTimeDays { get; set; }
         public string MoqCase { get; set; }
         public decimal? LastCost { get; set; }

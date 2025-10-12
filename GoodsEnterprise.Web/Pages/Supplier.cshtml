@@ -349,7 +349,7 @@
 
 
 <div id="divCreateUpdateSupplier" style="@Edit">
-    <div class="modern-card">
+    <div class="modern-card" style="min-height: 600px; max-height: 600px !important; overflow: scroll !important;">
         <form method="post" enctype="multipart/form-data" asp-page-handler="Submit">
             @if (Convert.ToInt32(ViewData["PagePrimaryID"]) > 0)
             {
@@ -369,8 +369,98 @@
                 </div>
                 <div class="col-md-6">
                     <div class="modern-form-group">
+                        <label for="txtSkuCode" class="modern-form-label">SKU Code</label>
+                        <input asp-for="objSupplier.Skucode" type="text" class="modern-form-input" id="txtSkuCode">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtFirstName" class="modern-form-label">First Name</label>
+                        <input asp-for="objSupplier.FirstName" type="text" class="modern-form-input" id="txtFirstName">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtLastName" class="modern-form-label">Last Name</label>
+                        <input asp-for="objSupplier.LastName" type="text" class="modern-form-input" id="txtLastName">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtAddress1" class="modern-form-label">Address 1</label>
+                        <input asp-for="objSupplier.Address1" type="text" class="modern-form-input" id="txtAddress1">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtAddress2" class="modern-form-label">Address 2</label>
+                        <input asp-for="objSupplier.Address2" type="text" class="modern-form-input" id="txtAddress2">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtPhone" class="modern-form-label">Phone</label>
+                        <input asp-for="objSupplier.Phone" type="tel" class="modern-form-input" id="txtPhone">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="modern-form-group">
                         <label for="txtEmail" class="modern-form-label">Email *</label>
                         <input asp-for="objSupplier.Email" type="email" class="modern-form-input" id="txtEmail" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtLeadTimeDays" class="modern-form-label">Lead Time (Days)</label>
+                        <input asp-for="objSupplier.LeadTimeDays" type="number" min="0" class="modern-form-input" id="txtLeadTimeDays">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtMoqCase" class="modern-form-label">MOQ Case</label>
+                        <input asp-for="objSupplier.MoqCase" type="text" class="modern-form-input" id="txtMoqCase">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtLastCost" class="modern-form-label">Last Cost</label>
+                        <input asp-for="objSupplier.LastCost" type="text" inputmode="decimal" oninput="validatePositiveDecimal(this)" class="modern-form-input" id="txtLastCost" placeholder="0.00">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtIncoterm" class="modern-form-label">Incoterm</label>
+                        <input asp-for="objSupplier.Incoterm" type="text" class="modern-form-input" id="txtIncoterm">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtValidFrom" class="modern-form-label">Valid From</label>
+                        <input asp-for="objSupplier.ValidFrom" type="date" class="modern-form-input" id="txtValidFrom">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtValidTo" class="modern-form-label">Valid To</label>
+                        <input asp-for="objSupplier.ValidTo" type="date" class="modern-form-input" id="txtValidTo">
                     </div>
                 </div>
             </div>
@@ -382,6 +472,24 @@
                         <textarea asp-for="objSupplier.Description" class="modern-form-input" id="txtDescription" rows="3"></textarea>
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Preferred Supplier</label>
+                        <div class="modern-toggle-container">
+                            <input asp-for="objSupplier.IsPreferred" type="checkbox" id="txtIsPreferred" class="modern-checkbox">
+                            <label for="txtIsPreferred" class="modern-toggle-label">
+                                <div class="toggle-switch">
+                                    <div class="toggle-slider"></div>
+                                    <span class="toggle-text-off">No</span>
+                                    <span class="toggle-text-on">Yes</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
                 <div class="col-md-4">
                     <div class="modern-form-group">
                         <label class="modern-form-label">Status</label>

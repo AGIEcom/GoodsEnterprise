@@ -79,7 +79,7 @@ namespace GoodsEnterprise.Model.Models
         public string Address2 { get; set; }
         public string Description { get; set; }
         public bool IsActive { get; set; } = true;
-        public bool? IsPreferred { get; set; } = false;
+        public bool IsPreferred { get; set; } = false;
         public int? LeadTimeDays { get; set; }
         public string MoqCase { get; set; }
         public decimal? LastCost { get; set; }

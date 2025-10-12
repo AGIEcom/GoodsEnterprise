@@ -746,7 +746,18 @@
                             </div>
                         </div>
                     </div> *@
-
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="col-12">
+                        <div class="modern-form-group">
+                            <label for="txtRemark" class="modern-form-label">Remark</label>
+                            <textarea asp-for="objBaseCost.Remark" class="modern-form-input" id="txtRemark"
+                                      placeholder="Enter remarks or comments..." rows="3"></textarea>
+                            <span asp-validation-for="objBaseCost.Remark" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-md-4">
                     <div class="modern-form-group">
                         <label class="modern-form-label">Status</label>
@@ -763,9 +774,9 @@
                     </div>
                 </div>
 
-            </div>
 
-            <div class="row mt-4">
+            </div>
+            <div class="row">
                 <div class="col-12">
                     <div class="modern-form-actions">
                         <button type="submit" class="modern-btn modern-btn-primary product-submit">
@@ -889,7 +900,7 @@
         const btnImportBaseCosts = document.getElementById('btnImportBaseCosts');
         const importModal = document.getElementById('importModal');
         const closeImportModal = document.getElementById('closeImportModal');
-        const cancelImport = document.getElementById('cancelImport'); 
+        const cancelImport = document.getElementById('cancelImport');
         // Show import modal
         if (btnImportBaseCosts) {
             btnImportBaseCosts.addEventListener('click', function () {

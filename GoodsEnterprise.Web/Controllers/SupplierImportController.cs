@@ -1,9 +1,15 @@
+using GoodsEnterprise.Model.Models;
 using GoodsEnterprise.Web.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NPOI.HSSF.Util;
+using NPOI.SS.UserModel;
+using NPOI.SS.Util;
+using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -95,6 +101,10 @@ namespace GoodsEnterprise.Web.Controllers
                     file.FileName, file.Length, userId);
 
                 var result = await _importService.ImportSuppliersAsync(file, validateData, userId);
+
+                // Store import results in session for download functionality
+                var importResultJson = JsonSerializer.Serialize(result);
+                HttpContext.Session.SetString($"ImportResult_{result.ImportId}", importResultJson);
 
                 var response = new
                 {
@@ -277,13 +287,37 @@ namespace GoodsEnterprise.Web.Controllers
         {
             try
             {
-                // This would generate an Excel file with the import results
-                // For now, return a placeholder response
-                return Ok(new
+                _logger.LogInformation("Download import results request for ImportId: {ImportId}", importId);
+
+                // Get import results from session or cache
+                var importResultJson = HttpContext.Session.GetString($"ImportResult_{importId}");
+                
+                if (string.IsNullOrEmpty(importResultJson))
                 {
-                    success = false,
-                    message = "Download functionality not yet implemented."
-                });
+                    return NotFound(new { 
+                        success = false,
+                        error = "Import results not found. The session may have expired." 
+                    });
+                }
+
+                var importResult = JsonSerializer.Deserialize<SupplierImportResult>(importResultJson);
+                
+                if (importResult == null)
+                {
+                    return NotFound(new { 
+                        success = false,
+                        error = "Unable to retrieve import results." 
+                    });
+                }
+
+                // Generate Excel file
+                var excelBytes = GenerateImportResultsExcel(importResult, includeSuccessful, includeFailed);
+                
+                var fileName = $"Supplier_Import_Results_{importId}_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                
+                return File(excelBytes, 
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+                    fileName);
             }
             catch (Exception ex)
             {
@@ -292,6 +326,283 @@ namespace GoodsEnterprise.Web.Controllers
                     error = "An error occurred while generating the download.", 
                     details = ex.Message 
                 });
+            }
+        }
+
+        /// <summary>
+        /// Generate Excel file with import results
+        /// </summary>
+        private byte[] GenerateImportResultsExcel(
+            SupplierImportResult importResult, 
+            bool includeSuccessful, 
+            bool includeFailed)
+        {
+            using (var workbook = new NPOI.XSSF.UserModel.XSSFWorkbook())
+            {
+                // Create Summary Sheet
+                var summarySheet = workbook.CreateSheet("Summary");
+                CreateSummarySheet(summarySheet, importResult);
+
+                // Create Failed Records Sheet
+                if (includeFailed && importResult.FailedSuppliers.Any())
+                {
+                    var failedSheet = workbook.CreateSheet("Failed Records");
+                    CreateFailedRecordsSheet(failedSheet, importResult.FailedSuppliers);
+                }
+
+                // Create Successful Records Sheet
+                if (includeSuccessful && importResult.SuccessfulSuppliers.Any())
+                {
+                    var successSheet = workbook.CreateSheet("Successful Records");
+                    CreateSuccessfulRecordsSheet(successSheet, importResult.SuccessfulSuppliers);
+                }
+
+                // Create Duplicates Sheet
+                if (importResult.Duplicates.Any())
+                {
+                    var duplicatesSheet = workbook.CreateSheet("Duplicates");
+                    CreateDuplicatesSheet(duplicatesSheet, importResult.Duplicates);
+                }
+
+                // Write to memory stream
+                using (var ms = new System.IO.MemoryStream())
+                {
+                    workbook.Write(ms);
+                    return ms.ToArray();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Create summary sheet with import statistics
+        /// </summary>
+        private void CreateSummarySheet(NPOI.SS.UserModel.ISheet sheet, SupplierImportResult result)
+        {
+            var headerStyle = sheet.Workbook.CreateCellStyle();
+            var headerFont = sheet.Workbook.CreateFont();
+            headerFont.IsBold = true;
+            headerFont.FontHeightInPoints = 12;
+            headerStyle.SetFont(headerFont);
+
+            int rowIndex = 0;
+
+            // Title
+            var titleRow = sheet.CreateRow(rowIndex++);
+            var titleCell = titleRow.CreateCell(0);
+            titleCell.SetCellValue("Supplier Import Results Summary");
+            titleCell.CellStyle = headerStyle;
+            sheet.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(0, 0, 0, 1));
+
+            rowIndex++; // Empty row
+
+            // Import Details
+            CreateSummaryRow(sheet, rowIndex++, "Import ID:", result.ImportId);
+            CreateSummaryRow(sheet, rowIndex++, "Status:", result.Status);
+            CreateSummaryRow(sheet, rowIndex++, "Start Time:", result.StartTime.ToString("yyyy-MM-dd HH:mm:ss"));
+            if (result.EndTime.HasValue)
+            {
+                CreateSummaryRow(sheet, rowIndex++, "End Time:", result.EndTime.Value.ToString("yyyy-MM-dd HH:mm:ss"));
+                CreateSummaryRow(sheet, rowIndex++, "Duration:", $"{result.Duration?.TotalSeconds:F2} seconds");
+            }
+
+            rowIndex++; // Empty row
+
+            // Statistics
+            CreateSummaryRow(sheet, rowIndex++, "Total Records:", result.TotalRecords.ToString());
+            CreateSummaryRow(sheet, rowIndex++, "Successful Imports:", result.SuccessfulImports.ToString());
+            CreateSummaryRow(sheet, rowIndex++, "Failed Imports:", result.FailedImports.ToString());
+            CreateSummaryRow(sheet, rowIndex++, "Skipped Records:", result.SkippedRecords.ToString());
+            CreateSummaryRow(sheet, rowIndex++, "Duplicates Found:", result.Duplicates.Count.ToString());
+
+            rowIndex++; // Empty row
+
+            // Global Errors
+            if (result.GlobalErrors.Any())
+            {
+                var errorHeaderRow = sheet.CreateRow(rowIndex++);
+                var errorHeaderCell = errorHeaderRow.CreateCell(0);
+                errorHeaderCell.SetCellValue("Global Errors:");
+                errorHeaderCell.CellStyle = headerStyle;
+
+                foreach (var error in result.GlobalErrors)
+                {
+                    var errorRow = sheet.CreateRow(rowIndex++);
+                    errorRow.CreateCell(0).SetCellValue("• " + error);
+                }
+                rowIndex++; // Empty row
+            }
+
+            // Global Warnings
+            if (result.GlobalWarnings.Any())
+            {
+                var warningHeaderRow = sheet.CreateRow(rowIndex++);
+                var warningHeaderCell = warningHeaderRow.CreateCell(0);
+                warningHeaderCell.SetCellValue("Global Warnings:");
+                warningHeaderCell.CellStyle = headerStyle;
+
+                foreach (var warning in result.GlobalWarnings)
+                {
+                    var warningRow = sheet.CreateRow(rowIndex++);
+                    warningRow.CreateCell(0).SetCellValue("• " + warning);
+                }
+            }
+
+            // Auto-size columns
+            sheet.AutoSizeColumn(0);
+            sheet.AutoSizeColumn(1);
+        }
+
+        /// <summary>
+        /// Create a summary row with label and value
+        /// </summary>
+        private void CreateSummaryRow(NPOI.SS.UserModel.ISheet sheet, int rowIndex, string label, string value)
+        {
+            var row = sheet.CreateRow(rowIndex);
+            var labelCell = row.CreateCell(0);
+            labelCell.SetCellValue(label);
+            
+            var labelStyle = sheet.Workbook.CreateCellStyle();
+            var labelFont = sheet.Workbook.CreateFont();
+            labelFont.IsBold = true;
+            labelStyle.SetFont(labelFont);
+            labelCell.CellStyle = labelStyle;
+
+            var valueCell = row.CreateCell(1);
+            valueCell.SetCellValue(value);
+        }
+
+        /// <summary>
+        /// Create failed records sheet
+        /// </summary>
+        private void CreateFailedRecordsSheet(NPOI.SS.UserModel.ISheet sheet, List<SupplierImport> failedRecords)
+        {
+            var headerStyle = sheet.Workbook.CreateCellStyle();
+            var headerFont = sheet.Workbook.CreateFont();
+            headerFont.IsBold = true;
+            headerFont.Color = NPOI.HSSF.Util.HSSFColor.White.Index;
+            headerStyle.SetFont(headerFont);
+            headerStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Red.Index;
+            headerStyle.FillPattern = NPOI.SS.UserModel.FillPattern.SolidForeground;
+
+            // Header row
+            var headerRow = sheet.CreateRow(0);
+            string[] headers = { "Row #", "Supplier Name", "SKU Code", "Email", "Phone", "Description", "Errors", "Warnings" };
+            
+            for (int i = 0; i < headers.Length; i++)
+            {
+                var cell = headerRow.CreateCell(i);
+                cell.SetCellValue(headers[i]);
+                cell.CellStyle = headerStyle;
+            }
+
+            // Data rows
+            int rowIndex = 1;
+            foreach (var record in failedRecords)
+            {
+                var row = sheet.CreateRow(rowIndex++);
+                row.CreateCell(0).SetCellValue(record.RowNumber);
+                row.CreateCell(1).SetCellValue(record.SupplierName ?? "");
+                row.CreateCell(2).SetCellValue(record.SKUCode ?? "");
+                row.CreateCell(3).SetCellValue(record.Email ?? "");
+                row.CreateCell(4).SetCellValue(record.Phone ?? "");
+                row.CreateCell(5).SetCellValue(record.Description ?? "");
+                row.CreateCell(6).SetCellValue(string.Join("; ", record.ValidationErrors));
+                row.CreateCell(7).SetCellValue(string.Join("; ", record.ValidationWarnings));
+            }
+
+            // Auto-size columns
+            for (int i = 0; i < headers.Length; i++)
+            {
+                sheet.AutoSizeColumn(i);
+            }
+        }
+
+        /// <summary>
+        /// Create successful records sheet
+        /// </summary>
+        private void CreateSuccessfulRecordsSheet(NPOI.SS.UserModel.ISheet sheet, List<SupplierImport> successfulRecords)
+        {
+            var headerStyle = sheet.Workbook.CreateCellStyle();
+            var headerFont = sheet.Workbook.CreateFont();
+            headerFont.IsBold = true;
+            headerFont.Color = NPOI.HSSF.Util.HSSFColor.White.Index;
+            headerStyle.SetFont(headerFont);
+            headerStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Green.Index;
+            headerStyle.FillPattern = NPOI.SS.UserModel.FillPattern.SolidForeground;
+
+            // Header row
+            var headerRow = sheet.CreateRow(0);
+            string[] headers = { "Row #", "ID", "Supplier Name", "SKU Code", "Email", "Phone", "Description", "Status" };
+            
+            for (int i = 0; i < headers.Length; i++)
+            {
+                var cell = headerRow.CreateCell(i);
+                cell.SetCellValue(headers[i]);
+                cell.CellStyle = headerStyle;
+            }
+
+            // Data rows
+            int rowIndex = 1;
+            foreach (var record in successfulRecords)
+            {
+                var row = sheet.CreateRow(rowIndex++);
+                row.CreateCell(0).SetCellValue(record.RowNumber);
+                row.CreateCell(1).SetCellValue(record.Id);
+                row.CreateCell(2).SetCellValue(record.SupplierName ?? "");
+                row.CreateCell(3).SetCellValue(record.SKUCode ?? "");
+                row.CreateCell(4).SetCellValue(record.Email ?? "");
+                row.CreateCell(5).SetCellValue(record.Phone ?? "");
+                row.CreateCell(6).SetCellValue(record.Description ?? "");
+                row.CreateCell(7).SetCellValue(record.IsActive ? "Active" : "Inactive");
+            }
+
+            // Auto-size columns
+            for (int i = 0; i < headers.Length; i++)
+            {
+                sheet.AutoSizeColumn(i);
+            }
+        }
+
+        /// <summary>
+        /// Create duplicates sheet
+        /// </summary>
+        private void CreateDuplicatesSheet(NPOI.SS.UserModel.ISheet sheet, List<DuplicateInfo> duplicates)
+        {
+            var headerStyle = sheet.Workbook.CreateCellStyle();
+            var headerFont = sheet.Workbook.CreateFont();
+            headerFont.IsBold = true;
+            headerFont.Color = NPOI.HSSF.Util.HSSFColor.White.Index;
+            headerStyle.SetFont(headerFont);
+            headerStyle.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Orange.Index;
+            headerStyle.FillPattern = NPOI.SS.UserModel.FillPattern.SolidForeground;
+
+            // Header row
+            var headerRow = sheet.CreateRow(0);
+            string[] headers = { "Field", "Value", "Row Numbers", "Count", "Type" };
+            
+            for (int i = 0; i < headers.Length; i++)
+            {
+                var cell = headerRow.CreateCell(i);
+                cell.SetCellValue(headers[i]);
+                cell.CellStyle = headerStyle;
+            }
+
+            // Data rows
+            int rowIndex = 1;
+            foreach (var duplicate in duplicates)
+            {
+                var row = sheet.CreateRow(rowIndex++);
+                row.CreateCell(0).SetCellValue(duplicate.Field ?? "");
+                row.CreateCell(1).SetCellValue(duplicate.Value ?? "");
+                row.CreateCell(2).SetCellValue(string.Join(", ", duplicate.RowNumbers));
+                row.CreateCell(3).SetCellValue(duplicate.Count);
+                row.CreateCell(4).SetCellValue(duplicate.Type ?? "");
+            }
+
+            // Auto-size columns
+            for (int i = 0; i < headers.Length; i++)
+            {
+                sheet.AutoSizeColumn(i);
             }
         }
 

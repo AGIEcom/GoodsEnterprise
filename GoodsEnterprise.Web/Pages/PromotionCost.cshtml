@@ -290,7 +290,6 @@
         margin-top: 1rem !important;
         text-align: center !important;
     }
-
 </style>
 
 @Html.AntiForgeryToken()
@@ -332,11 +331,11 @@
                                 </select>
 
                                 @* <label for="searchByDropdownPromotionCost" class="modern-form-label" style="font-size: 0.85rem; margin-bottom: 0; white-space: nowrap;">Filter By:</label>
-                                <select id="searchByDropdownPromotionCost" class="modern-select" style="width: 140px;">
-                                    <option value="All">All Fields</option>
-                                    <option value="ProductName">Product Name</option>
-                                    <option value="SupplierName">Supplier Name</option>
-                                </select> *@
+                                    <select id="searchByDropdownPromotionCost" class="modern-select" style="width: 140px;">
+                                        <option value="All">All Fields</option>
+                                        <option value="ProductName">Product Name</option>
+                                        <option value="SupplierName">Supplier Name</option>
+                                    </select> *@
                             </div>
                         </div>
 
@@ -362,12 +361,12 @@
                             </div>
                         </div>
 
-                       @*  <div class="filter-group flex-grow-1">
-                            <div class="d-flex align-items-center gap-2">
-                                <label class="modern-form-label" style="font-size: 0.85rem; margin-bottom: 0; white-space: nowrap;">Search:</label>
-                                <input type="text" id="customSearchInput" class="modern-form-input" style="width: 200px;" placeholder="Search...">
-                            </div>
-                        </div> *@
+                        @*  <div class="filter-group flex-grow-1">
+                                <div class="d-flex align-items-center gap-2">
+                                    <label class="modern-form-label" style="font-size: 0.85rem; margin-bottom: 0; white-space: nowrap;">Search:</label>
+                                    <input type="text" id="customSearchInput" class="modern-form-input" style="width: 200px;" placeholder="Search...">
+                                </div>
+                            </div> *@
                         <div id="promotion-cost-length-menu-placeholder"></div>
                     </div>
                     <div class="d-flex align-items-center" style="gap: 20px;">
@@ -375,14 +374,14 @@
                             <button id="btnImportPromotionCosts" class="modern-btn modern-btn-info" title="Import Excel">
                                 <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                                </svg> 
+                                </svg>
                             </button>
                         </div>
                         <div>
                             <a asp-page-handler="Create" id="lnkCreateProduct" class="modern-btn modern-btn-primary">
                                 <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
-                                </svg> 
+                                </svg>
                             </a>
                         </div>
                     </div>
@@ -406,9 +405,9 @@
         </div>
 
 
-       
+
     </div>
-     
+
 </div>
 
 <!-- Excel Import Modal -->
@@ -690,7 +689,9 @@
                 <input asp-for="objpromotionCost.CreatedBy" type="hidden" class="form-control" id="txtCreatedby">
                 <input asp-for="objpromotionCost.CreatedDate" type="hidden" class="form-control" id="txtCreatedDate">
                 <input asp-for="objpromotionCost.Modifiedby" type="hidden" class="form-control" id="txtModifiedby">
-                <input asp-for="objpromotionCost.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">}
+                <input asp-for="objpromotionCost.ModifiedDate" type="hidden" class="form-control" id="txtModifiedDate">
+                <input asp-for="objpromotionCost.IsDelete" type="hidden" class="form-control" id="txtIsDelete">
+            }
             <div class="row">
                 <div class="col-md-6">
                     <div class="modern-form-group">
@@ -740,22 +741,68 @@
                 </div>
                 <div class="col-md-4">
                     <div class="modern-form-group">
-                        <label class="modern-form-label">Status</label>
-                        <div class="modern-toggle-container">
-                            <input asp-for="objpromotionCost.IsActive" type="checkbox" id="txtIsActive" class="modern-checkbox">
-                            <label for="txtIsActive" class="modern-toggle-label">
-                                <div class="toggle-switch">
-                                    <div class="toggle-slider"></div>
-                                    <span class="toggle-text-off">Inactive</span>
-                                    <span class="toggle-text-on">Active</span>
-                                </div>
-                            </label>
-                        </div>
+                        <label for="txtSelloutStartDate" class="modern-form-label">Sellout Start Date</label>
+                        <input asp-for="objpromotionCost.SelloutStartDate" type="date" class="modern-form-input" id="txtSelloutStartDate">
+                        <span asp-validation-for="objpromotionCost.SelloutStartDate" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="modern-form-group">
+                        <label for="txtSelloutEndDate" class="modern-form-label">Sellout End Date</label>
+                        <input asp-for="objpromotionCost.SelloutEndDate" type="date" class="modern-form-input" id="txtSelloutEndDate">
+                        <span asp-validation-for="objpromotionCost.SelloutEndDate" class="text-danger"></span>
                     </div>
                 </div>
             </div>
 
-            <div class="row mt-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtBonusDescription" class="modern-form-label">Bonus Description</label>
+                        <textarea asp-for="objpromotionCost.BonusDescription" class="modern-form-input" id="txtBonusDescription"
+                                  placeholder="Enter bonus description..." rows="3"></textarea>
+                        <span asp-validation-for="objpromotionCost.BonusDescription" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label for="txtSellOutDescription" class="modern-form-label">Sell Out Description</label>
+                        <textarea asp-for="objpromotionCost.SellOutDescription" class="modern-form-input" id="txtSellOutDescription"
+                                  placeholder="Enter sell out description..." rows="3"></textarea>
+                        <span asp-validation-for="objpromotionCost.SellOutDescription" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="modern-form-group">
+                        <label for="txtRemark" class="modern-form-label">Remark</label>
+                        <textarea asp-for="objpromotionCost.Remark" class="modern-form-input" id="txtRemark"
+                                  placeholder="Enter remarks or comments..." rows="3"></textarea>
+                        <span asp-validation-for="objpromotionCost.Remark" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="modern-form-group">
+                    <label class="modern-form-label">Status</label>
+                    <div class="modern-toggle-container">
+                        <input asp-for="objpromotionCost.IsActive" type="checkbox" id="txtIsActive" class="modern-checkbox">
+                        <label for="txtIsActive" class="modern-toggle-label">
+                            <div class="toggle-switch">
+                                <div class="toggle-slider"></div>
+                                <span class="toggle-text-off">Inactive</span>
+                                <span class="toggle-text-on">Active</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div class="row">
                 <div class="col-12">
                     <div class="modern-form-actions">
                         <button type="submit" class="modern-btn modern-btn-primary product-submit">
